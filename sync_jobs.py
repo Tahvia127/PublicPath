@@ -849,11 +849,36 @@ def main():
     if args.source in ("serpapi", "all"):
         sync_source(supabase, "google_jobs", fetch_all_serpapi)
 
-    if args.source in ("careerjet",):
+    if args.source in ("careerjet", "all"):
         sync_source(supabase, "careerjet", fetch_all_careerjet)
 
     # Expire old jobs after syncing
     expire_old_jobs(supabase)
+
+    # Post-sync cleanup
+    try:
+        supabase.rpc("classify_experience_levels").execute()
+        print("  Classified experience levels")
+    except Exception as e:
+        print(f"  Error: {e}")
+
+    try:
+        supabase.rpc("normalize_employment_types").execute()
+        print("  Normalized employment types")
+    except Exception as e:
+        print(f"  Error: {e}")
+
+    try:
+        supabase.rpc("normalize_state_names").execute()
+        print("  Normalized state names")
+    except Exception as e:
+        print(f"  Error: {e}")
+
+    try:
+        supabase.rpc("reclassify_org_types").execute()
+        print("  Reclassified org types")
+    except Exception as e:
+        print(f"  Error: {e}")
 
     # Print summary
     print_stats(supabase)
