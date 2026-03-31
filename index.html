@@ -135,6 +135,7 @@
       width: 24px;
       height: 24px;
       stroke: var(--navy);
+      pointer-events: none;
     }
 
     /* ── HERO ── */
@@ -1389,60 +1390,67 @@
       <div class="footer-brand">Public<span>Path</span></div>
       <ul class="footer-links">
         <li><a href="jobs.html">Browse Jobs</a></li>
-        <li><a href="#signup">Sign Up</a></li>
-        <!-- Uncomment when resource guide is ready:
         <li><a href="resources.html">Resources</a></li>
-        -->
-        <li><a href="/cdn-cgi/l/email-protection#224a474e4e4d625257404e4b415243564a0c4d5045">Contact</a></li>
+        <li><a href="#signup">Sign Up</a></li>
       </ul>
       <div class="footer-copy">&copy; 2025 PublicPath. Expanding access to public sector careers.</div>
     </div>
   </footer>
 
-  <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+  <script>
+  document.addEventListener('DOMContentLoaded', function() {
     // Save signup preferences to Supabase
-    const sbSignup = window.supabase ? window.supabase.createClient(
-      'https://muuumlbrgnfwhzkqumdu.supabase.co',
-      'sb_publishable_HrizONucUX7mehQ7JCwWQQ_amHU1xO8'
-    ) : null;
+    var sbSignup = null;
+    if (window.supabase) {
+      sbSignup = window.supabase.createClient(
+        'https://muuumlbrgnfwhzkqumdu.supabase.co',
+        'sb_publishable_HrizONucUX7mehQ7JCwWQQ_amHU1xO8'
+      );
+    }
 
-    const signupForm = document.getElementById('signupForm');
+    var signupForm = document.getElementById('signupForm');
     if (signupForm) {
       signupForm.addEventListener('submit', async function() {
         if (!sbSignup) return;
-        const email = document.getElementById('email').value;
-        const firstName = document.getElementById('firstName').value;
-        const lastName = document.getElementById('lastName').value;
-        const school = document.getElementById('school').value;
-        const govLevels = [];
-        document.querySelectorAll('input[name="govLevel"]:checked').forEach(cb => govLevels.push(cb.value));
-        const funcAreas = [];
-        document.querySelectorAll('input[name="funcArea"]:checked').forEach(cb => funcAreas.push(cb.value));
+        var email = document.getElementById('email').value;
+        var firstName = document.getElementById('firstName').value;
+        var lastName = document.getElementById('lastName').value;
+        var school = document.getElementById('school').value;
+        var govLevels = [];
+        document.querySelectorAll('input[name="govLevel"]:checked').forEach(function(cb) { govLevels.push(cb.value); });
+        var funcAreas = [];
+        document.querySelectorAll('input[name="funcArea"]:checked').forEach(function(cb) { funcAreas.push(cb.value); });
         try {
           await sbSignup.from('subscribers').upsert({
-            email, first_name: firstName, last_name: lastName,
-            school, gov_levels: govLevels, func_areas: funcAreas, source: 'website'
+            email: email, first_name: firstName, last_name: lastName,
+            school: school, gov_levels: govLevels, func_areas: funcAreas, source: 'website'
           }, { onConflict: 'email' });
         } catch (err) { console.log('Preference save:', err); }
       });
     }
 
     // Nav scroll shadow
-    const nav = document.getElementById('nav');
-    if(nav) window.addEventListener('scroll', () => {
-      nav.classList.toggle('scrolled', window.scrollY > 10);
-    });
-
-    // Mobile nav toggle
-    const toggle = document.getElementById('mobileToggle');
-    const links = document.getElementById('navLinks');
-    if(toggle && links) {
-      toggle.addEventListener('click', function(e) {
-        e.preventDefault();
-        links.classList.toggle('open');
-      });
-      // Close mobile nav on link click
-      links.querySelectorAll('a').forEach(a => {
-        a.addEventListener('click', () => links.classList.remove('open'));
+    var nav = document.getElementById('nav');
+    if (nav) {
+      window.addEventListener('scroll', function() {
+        nav.classList.toggle('scrolled', window.scrollY > 10);
       });
     }
+
+    // Mobile nav toggle
+    var toggle = document.getElementById('mobileToggle');
+    var links = document.getElementById('navLinks');
+    if (toggle && links) {
+      toggle.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        links.classList.toggle('open');
+      });
+      links.querySelectorAll('a').forEach(function(a) {
+        a.addEventListener('click', function() { links.classList.remove('open'); });
+      });
+    }
+  });
+  </script>
+</body>
+</html>
