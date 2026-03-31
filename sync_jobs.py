@@ -502,7 +502,210 @@ def fetch_all_adzuna(max_pages_per_query: int = 2) -> list:
     result = list(all_jobs.values())
     print(f"    Total unique Adzuna jobs: {len(result)}")
     return result
+# ============================================================
+# THE MUSE FETCHER + NORMALIZER
+# ============================================================
 
+def fetch_muse(page: int = 0, category: str = "Government") -> list:
+    """Fetch jobs from The Muse API. Free, no key needed."""
+    url = "https://www.themuse.com/api/public/jobs"
+    params = {
+        "page": page,
+        "category": category,
+    }
+    response = requests.get(url, params=params)
+    response.raise_for_status()
+    data = response.json()
+    return data.get("results", [])
+
+
+def normalize_muse(raw: dict) -> dict:
+    """Map a Muse job to the unified schema."""
+    title = raw.get("name", "")
+    company = raw.get("company", {}).get("name", "")
+    locations = raw.get("locations", [])
+    loc_name = locations[0].get("name", "") if locations else ""
+    city, state = parse_location(loc_name)
+
+    level = raw.get("levels", [])
+    level_name = level[0].get("name", "").lower() if level else ""
+    exp = "mid"
+    if "entry" in level_name or "intern" in level_name:
+        exp = "entry"
+    elif "senior" in level_name or "management" in level_name:
+        exp = "senior"
+
+    categories = raw.get("categories", [])
+    cat_name = categories[0].get("name", "") if categories else ""
+
+    return {
+        "source": "themuse",
+        "source_id": str(raw.get("id", "")),
+        "title": title,
+        "organization": company,
+        "organization_type": infer_org_type(f"{company} {title} {cat_name}"),
+        "description": clean_html(raw.get("contents", "")),
+        "location_city": city,
+        "location_state": state,
+        "location_country": "US",
+        "is_remote": "remote" in loc_name.lower() or "flexible" in loc_name.lower(),
+        "job_category": cat_name,
+        "experience_level": exp,
+        "employment_type": raw.get("type", "full_time"),
+        "application_url": raw.get("refs", {}).get("landing_page", ""),
+        "posted_date": raw.get("publication_date"),
+        "is_active": True,
+        "raw_data": json.dumps(raw),
+    }
+
+
+def fetch_all_muse(max_pages: int = 10) -> list:
+    """Fetch government and public interest jobs from The Muse."""
+    all_jobs = {}
+    categories = ["Government & Public Administration", "Non-Profit", "Legal", "Education"]
+    for cat in categories:
+        print(f"    Category: {cat}")
+        for page in range(max_pages):
+            try:
+                jobs = fetch_muse(page=page, category=cat)
+                if not jobs:
+                    break
+                for job in jobs:
+                    job_id = str(job.get("id", ""))
+                    if job_id and job_id not in all_jobs:
+                        normalized = normalize_muse(job)
+                        if normalized["source_id"]:
+                            all_jobs[job_id] = normalized
+                time.sleep(0.3)
+            except Exception as e:
+                print(f"      Error on page {page}: {e}")
+                break
+
+    result = list(all_jobs.values())
+    print(f"    Total unique Muse jobs: {len(result)}")
+    return result
+
+# ============================================================
+# ARBEITNOW FETCHER + NORMALIZER
+# ============================================================
+
+def fetch_arbeitnow(page: int = 1) -> list:
+    """Fetch jobs from Arbeitnow. Free, no key needed."""
+    url = "https://www.arbeitnow.com/api/job-board-api"
+    params = {"page": page}
+    response = requests.get(url, params=params)
+    response.raise_for_status()
+    data = response.json()
+    return data.get("data", [])
+
+
+def normalize_arbeitnow(raw: dict) -> dict:
+    """Map an Arbeitnow job to the unified schema."""
+    title = raw.get("title", "")
+    company = raw.get("company_name", "")
+    location = raw.get("location", "")
+    city, state = parse_location(location)
+    tags = raw.get("tags", [])
+
+    return {
+        "source": "arbeitnow",
+        "source_id": raw.get("slug", hashlib.md5(raw.get("url", "").encode()).hexdigest()),
+        "title": title,
+        "organization": company,
+        "organization_type": infer_org_type(f"{company} {title} {' '.join(tags)}"),
+        "description": clean_html(raw.get("description", "")),
+        "location_city": city,
+        "location_state": state,
+        "location_country": "US",
+        "is_remote": raw.get("remote", False),
+        "employment_type": "full_time",
+        "application_url": raw.get("url", ""),
+        "posted_date": datetime.utcfromtimestamp(int(raw.get("created_at", 0))).isoformat() if raw.get("created_at") else None,
+        "is_active": True,
+        "raw_data": json.dumps(raw),
+    }
+
+
+def fetch_all_arbeitnow(max_pages: int = 5) -> list:
+    """Fetch jobs from Arbeitnow."""
+    all_jobs = {}
+    for page in range(1, max_pages + 1):
+        print(f"    Page {page}/{max_pages}")
+        try:
+            jobs = fetch_arbeitnow(page=page)
+            if not jobs:
+                break
+            for job in jobs:
+                slug = job.get("slug", "")
+                if slug and slug not in all_jobs:
+                    normalized = normalize_arbeitnow(job)
+                    all_jobs[slug] = normalized
+            time.sleep(0.3)
+        except Exception as e:
+            print(f"      Error: {e}")
+            break
+
+    result = list(all_jobs.values())
+    print(f"    Total unique Arbeitnow jobs: {len(result)}")
+    return result
+
+# ============================================================
+# REMOTIVE FETCHER + NORMALIZER
+# ============================================================
+
+def fetch_remotive() -> list:
+    """Fetch all remote jobs from Remotive. Free, no key needed."""
+    url = "https://remotive.com/api/remote-jobs"
+    response = requests.get(url)
+    response.raise_for_status()
+    data = response.json()
+    return data.get("jobs", [])
+
+
+def normalize_remotive(raw: dict) -> dict:
+    """Map a Remotive job to the unified schema."""
+    title = raw.get("title", "")
+    company = raw.get("company_name", "")
+    location = raw.get("candidate_required_location", "")
+    city, state = parse_location(location)
+
+    return {
+        "source": "remotive",
+        "source_id": str(raw.get("id", "")),
+        "title": title,
+        "organization": company,
+        "organization_type": infer_org_type(f"{company} {title} {raw.get('category','')}"),
+        "description": clean_html(raw.get("description", "")),
+        "location_city": city,
+        "location_state": state,
+        "location_country": "US",
+        "is_remote": True,
+        "job_category": raw.get("category", ""),
+        "employment_type": raw.get("job_type", "full_time").replace("-", "_").replace(" ", "_").lower(),
+        "application_url": raw.get("url", ""),
+        "posted_date": raw.get("publication_date"),
+        "is_active": True,
+        "raw_data": json.dumps(raw),
+    }
+
+
+def fetch_all_remotive() -> list:
+    """Fetch all remote jobs from Remotive."""
+    try:
+        jobs = fetch_remotive()
+        normalized = []
+        for job in jobs:
+            try:
+                n = normalize_remotive(job)
+                if n["source_id"]:
+                    normalized.append(n)
+            except Exception as e:
+                print(f"      Normalize error: {e}")
+        print(f"    Total Remotive jobs: {len(normalized)}")
+        return normalized
+    except Exception as e:
+        print(f"    Error fetching Remotive: {e}")
+        return []
 
 # ============================================================
 # SYNC ENGINE
@@ -627,7 +830,7 @@ def print_stats(supabase):
 
 def main():
     parser = argparse.ArgumentParser(description="PublicPath Job Sync Pipeline")
-    parser.add_argument("--source", choices=["usajobs", "jooble", "adzuna", "all"], default="all",
+    parser.add_argument("--source", choices=["usajobs", "jooble", "adzuna", "themuse", "arbeitnow", "remotive", "all"], default="all",
                         help="Which source to sync (default: all)")
     parser.add_argument("--stats", action="store_true",
                         help="Print database stats and exit")
@@ -660,6 +863,15 @@ def main():
 
     if args.source in ("adzuna", "all"):
         sync_source(supabase, "adzuna", fetch_all_adzuna)
+
+    if args.source in ("themuse", "all"):
+        sync_source(supabase, "themuse", fetch_all_muse)
+
+    if args.source in ("arbeitnow", "all"):
+        sync_source(supabase, "arbeitnow", fetch_all_arbeitnow)
+
+    if args.source in ("remotive", "all"):
+        sync_source(supabase, "remotive", fetch_all_remotive)    
 
     # Expire old jobs after syncing
     expire_old_jobs(supabase)
