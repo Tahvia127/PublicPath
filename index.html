@@ -969,6 +969,7 @@
         gap: 20px;
         border-bottom: 1px solid var(--border);
         box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+        z-index: 50;
       }
 
       .nav-links.open {
@@ -1033,9 +1034,7 @@
       }
     }
   </style>
-
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
-  
 </head>
 <body>
 
@@ -1047,9 +1046,6 @@
         <li><a href="index.html">Home</a></li>
         <li><a href="jobs.html">Browse Jobs</a></li>
         <li><a href="resources.html">Resources</a></li>
-        <li><a href="#problem">The Problem</a></li>
-        <li><a href="#solution">How It Works</a></li>
-        <li><a href="#digest">Weekly Digest</a></li>
         <li><a href="#founder">About</a></li>
         <li><a href="#signup" class="nav-cta">Sign Up</a></li>
       </ul>
@@ -1410,44 +1406,32 @@
       'sb_publishable_HrizONucUX7mehQ7JCwWQQ_amHU1xO8'
     ) : null;
 
-    document.getElementById('signupForm').addEventListener('submit', async function(e) {
-      // Don't prevent default — let the form submit to Beehiiv normally
-      // But also save preferences to Supabase in the background
-      if (!sbSignup) return;
-
-      const email = document.getElementById('email').value;
-      const firstName = document.getElementById('firstName').value;
-      const lastName = document.getElementById('lastName').value;
-      const school = document.getElementById('school').value;
-
-      const govLevels = [];
-      document.querySelectorAll('input[name="govLevel"]:checked').forEach(cb => govLevels.push(cb.value));
-
-      const funcAreas = [];
-      document.querySelectorAll('input[name="funcArea"]:checked').forEach(cb => funcAreas.push(cb.value));
-
-      try {
-        await sbSignup.from('subscribers').upsert({
-          email: email,
-          first_name: firstName,
-          last_name: lastName,
-          school: school,
-          gov_levels: govLevels,
-          func_areas: funcAreas,
-          source: 'website'
-        }, { onConflict: 'email' });
-      } catch (err) {
-        console.log('Preference save error:', err);
-      }
-    });
+    const signupForm = document.getElementById('signupForm');
+    if (signupForm) {
+      signupForm.addEventListener('submit', async function() {
+        if (!sbSignup) return;
+        const email = document.getElementById('email').value;
+        const firstName = document.getElementById('firstName').value;
+        const lastName = document.getElementById('lastName').value;
+        const school = document.getElementById('school').value;
+        const govLevels = [];
+        document.querySelectorAll('input[name="govLevel"]:checked').forEach(cb => govLevels.push(cb.value));
+        const funcAreas = [];
+        document.querySelectorAll('input[name="funcArea"]:checked').forEach(cb => funcAreas.push(cb.value));
+        try {
+          await sbSignup.from('subscribers').upsert({
+            email, first_name: firstName, last_name: lastName,
+            school, gov_levels: govLevels, func_areas: funcAreas, source: 'website'
+          }, { onConflict: 'email' });
+        } catch (err) { console.log('Preference save:', err); }
+      });
+    }
 
     // Nav scroll shadow
     const nav = document.getElementById('nav');
     window.addEventListener('scroll', () => {
       nav.classList.toggle('scrolled', window.scrollY > 10);
     });
-
-
 
     // Mobile nav toggle
     const toggle = document.getElementById('mobileToggle');
