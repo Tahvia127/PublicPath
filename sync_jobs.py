@@ -849,7 +849,7 @@ def main():
     if args.source in ("serpapi", "all"):
         sync_source(supabase, "google_jobs", fetch_all_serpapi)
 
-    if args.source in ("careerjet", "all"):
+    if args.source in ("careerjet",):
         sync_source(supabase, "careerjet", fetch_all_careerjet)
 
     # Expire old jobs after syncing
