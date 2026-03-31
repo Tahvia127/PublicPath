@@ -1289,57 +1289,18 @@
         <div class="signup-form-container">
           <h3>Sign up for the weekly digest</h3>
 
-          <!--
-            ╔══════════════════════════════════════════════════════════════╗
-            ║  INTEGRATION NOTE:                                          ║
-            ║  Replace this <form> with your Mailchimp or Beehiiv embed.  ║
-            ║  The form below is a working placeholder that demonstrates  ║
-            ║  the fields you need to capture. When you have your embed   ║
-            ║  code, swap out the <form> tag and update the action URL.   ║
-            ╚══════════════════════════════════════════════════════════════╝
-          -->
-          <form id="signupForm" action="#" method="POST">
-            <div class="form-row">
-              <div class="form-group">
-                <label for="firstName">First name</label>
-                <input type="text" id="firstName" name="firstName" placeholder="Jane" required>
-              </div>
-              <div class="form-group">
-                <label for="lastName">Last name</label>
-                <input type="text" id="lastName" name="lastName" placeholder="Doe" required>
-              </div>
-            </div>
-            <div class="form-group">
-              <label for="email">Email</label>
-              <input type="email" id="email" name="email" placeholder="jane@university.edu" required>
-            </div>
-            <div class="form-group">
-              <label for="school">School / University</label>
-              <input type="text" id="school" name="school" placeholder="University of Chicago">
-            </div>
-            <div class="form-group">
-              <label>Government level (select all that interest you)</label>
-              <div class="checkbox-group">
-                <label class="checkbox-label"><input type="checkbox" name="govLevel" value="federal"><span class="checkbox-text">Federal</span></label>
-                <label class="checkbox-label"><input type="checkbox" name="govLevel" value="state"><span class="checkbox-text">State</span></label>
-                <label class="checkbox-label"><input type="checkbox" name="govLevel" value="local"><span class="checkbox-text">Local</span></label>
-                <label class="checkbox-label"><input type="checkbox" name="govLevel" value="fellowship"><span class="checkbox-text">Fellowship</span></label>
-              </div>
-            </div>
-            <div class="form-group">
-              <label>Function area (select all that interest you)</label>
-              <div class="checkbox-group">
-                <label class="checkbox-label"><input type="checkbox" name="funcArea" value="policy"><span class="checkbox-text">Policy</span></label>
-                <label class="checkbox-label"><input type="checkbox" name="funcArea" value="operations"><span class="checkbox-text">Operations</span></label>
-                <label class="checkbox-label"><input type="checkbox" name="funcArea" value="technology"><span class="checkbox-text">Technology</span></label>
-                <label class="checkbox-label"><input type="checkbox" name="funcArea" value="comms"><span class="checkbox-text">Communications</span></label>
-                <label class="checkbox-label"><input type="checkbox" name="funcArea" value="finance"><span class="checkbox-text">Finance</span></label>
-                <label class="checkbox-label"><input type="checkbox" name="funcArea" value="legal"><span class="checkbox-text">Legal</span></label>
-              </div>
-            </div>
-            <button type="submit" class="btn-submit">Get weekly opportunities →</button>
-            <p class="form-note">Free during the pilot. Unsubscribe anytime.</p>
-          </form>
+          <!-- Beehiiv signup form -->
+          <script async src="https://subscribe-forms.beehiiv.com/embed.js"></script>
+          <iframe
+            src="https://subscribe-forms.beehiiv.com/96297861-e4e8-4a45-ba67-7f0d66646f44"
+            class="beehiiv-embed"
+            data-test-id="beehiiv-embed"
+            frameborder="0"
+            scrolling="no"
+            style="width: 100%; min-height: 300px; margin: 0; border-radius: 12px; background-color: transparent; box-shadow: none; max-width: 100%;">
+          </iframe>
+          <script type="text/javascript" async src="https://subscribe-forms.beehiiv.com/attribution.js"></script>
+          <p class="form-note">Free during the pilot. Unsubscribe anytime.</p>
         </div>
       </div>
     </div>
@@ -1423,11 +1384,3 @@
     links.querySelectorAll('a').forEach(a => {
       a.addEventListener('click', () => links.classList.remove('open'));
     });
-
-    // Simple form submission placeholder
-    document.getElementById('signupForm').addEventListener('submit', function(e) {
-      e.preventDefault();
-      const btn = this.querySelector('.btn-submit');
-      const original = btn.textContent;
-      btn.textContent = '✓ You\'re on the list!';
-      btn.style.background = '#059669'
