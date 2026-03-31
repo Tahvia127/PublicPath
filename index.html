@@ -1,0 +1,1433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PublicPath — Your Gateway to Public Sector Careers</title>
+  <meta name="description" content="PublicPath centralizes government job listings across federal, state, and local levels and delivers curated opportunities to your inbox weekly.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300..700;1,9..40,300..700&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --navy: #1B3A5C;
+      --navy-deep: #122840;
+      --teal: #0891B2;
+      --teal-light: #22D3EE;
+      --teal-muted: #0E7490;
+      --warm-white: #FAFAF8;
+      --cream: #F5F3EE;
+      --sand: #EBE8E1;
+      --text-primary: #1E293B;
+      --text-secondary: #475569;
+      --text-muted: #64748B;
+      --border: #E2E0DB;
+      --font-display: 'Lora', Georgia, serif;
+      --font-body: 'DM Sans', -apple-system, sans-serif;
+    }
+
+    *, *::before, *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      font-size: 16px;
+    }
+
+    body {
+      font-family: var(--font-body);
+      color: var(--text-primary);
+      background: var(--warm-white);
+      line-height: 1.65;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── NAV ── */
+    .nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      background: rgba(250, 250, 248, 0.92);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      transition: box-shadow 0.3s ease;
+    }
+
+    .nav.scrolled {
+      box-shadow: 0 1px 12px rgba(27, 58, 92, 0.08);
+    }
+
+    .nav-inner {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 0 24px;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .logo {
+      font-family: var(--font-display);
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: var(--navy);
+      text-decoration: none;
+      letter-spacing: -0.02em;
+    }
+
+    .logo span {
+      color: var(--text-muted);
+      font-weight: 400;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 32px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--text-secondary);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover {
+      color: var(--navy);
+    }
+
+    .nav-cta {
+      display: inline-flex;
+      align-items: center;
+      padding: 8px 20px;
+      background: var(--navy);
+      color: #fff !important;
+      border-radius: 6px;
+      font-size: 0.875rem;
+      font-weight: 600;
+      transition: background 0.2s, transform 0.15s;
+    }
+
+    .nav-cta:hover {
+      background: var(--navy-deep);
+      transform: translateY(-1px);
+    }
+
+    .mobile-toggle {
+      display: none;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 4px;
+    }
+
+    .mobile-toggle svg {
+      width: 24px;
+      height: 24px;
+      stroke: var(--navy);
+    }
+
+    /* ── HERO ── */
+    .hero {
+      padding: 140px 24px 100px;
+      background: linear-gradient(168deg, var(--warm-white) 0%, var(--cream) 50%, #E8EEF4 100%);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -200px;
+      right: -200px;
+      width: 600px;
+      height: 600px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(8, 145, 178, 0.06) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .hero::after {
+      content: '';
+      position: absolute;
+      bottom: -100px;
+      left: -100px;
+      width: 400px;
+      height: 400px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(27, 58, 92, 0.04) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .hero-inner {
+      max-width: 1120px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 14px;
+      background: rgba(8, 145, 178, 0.08);
+      border: 1px solid rgba(8, 145, 178, 0.15);
+      border-radius: 100px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--teal-muted);
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      margin-bottom: 28px;
+      animation: fadeUp 0.6s ease both;
+    }
+
+    .hero-label::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--teal);
+      animation: pulse 2s ease infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+
+    .hero h1 {
+      font-family: var(--font-display);
+      font-size: clamp(2.4rem, 5.5vw, 3.8rem);
+      font-weight: 700;
+      line-height: 1.15;
+      letter-spacing: -0.025em;
+      color: var(--navy);
+      max-width: 720px;
+      margin-bottom: 24px;
+      animation: fadeUp 0.6s ease 0.1s both;
+    }
+
+    .hero p {
+      font-size: 1.15rem;
+      line-height: 1.7;
+      color: var(--text-secondary);
+      max-width: 560px;
+      margin-bottom: 40px;
+      animation: fadeUp 0.6s ease 0.2s both;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      animation: fadeUp 0.6s ease 0.3s both;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 14px 28px;
+      border-radius: 8px;
+      font-family: var(--font-body);
+      font-size: 0.95rem;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.2s ease;
+      cursor: pointer;
+      border: none;
+    }
+
+    .btn-primary {
+      background: var(--navy);
+      color: #fff;
+      box-shadow: 0 1px 3px rgba(27, 58, 92, 0.2), 0 4px 12px rgba(27, 58, 92, 0.1);
+    }
+
+    .btn-primary:hover {
+      background: var(--navy-deep);
+      transform: translateY(-2px);
+      box-shadow: 0 2px 6px rgba(27, 58, 92, 0.25), 0 8px 20px rgba(27, 58, 92, 0.15);
+    }
+
+    .btn-secondary {
+      background: transparent;
+      color: var(--navy);
+      border: 1.5px solid var(--border);
+    }
+
+    .btn-secondary:hover {
+      border-color: var(--navy);
+      background: rgba(27, 58, 92, 0.03);
+    }
+
+    .btn svg {
+      width: 18px;
+      height: 18px;
+    }
+
+    /* ── STATS BAR ── */
+    .stats-bar {
+      padding: 0 24px;
+      margin-top: -40px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .stats-inner {
+      max-width: 1120px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      background: #fff;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      box-shadow: 0 4px 24px rgba(27, 58, 92, 0.06);
+      overflow: hidden;
+    }
+
+    .stat {
+      padding: 28px 32px;
+      text-align: center;
+    }
+
+    .stat + .stat {
+      border-left: 1px solid var(--border);
+    }
+
+    .stat-number {
+      font-family: var(--font-display);
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--navy);
+      letter-spacing: -0.02em;
+    }
+
+    .stat-label {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    /* ── SECTION COMMON ── */
+    .section {
+      padding: 100px 24px;
+    }
+
+    .section-inner {
+      max-width: 1120px;
+      margin: 0 auto;
+    }
+
+    .section-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--teal-muted);
+      margin-bottom: 12px;
+    }
+
+    .section-title {
+      font-family: var(--font-display);
+      font-size: clamp(1.8rem, 3.5vw, 2.4rem);
+      font-weight: 700;
+      color: var(--navy);
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+      margin-bottom: 16px;
+    }
+
+    .section-subtitle {
+      font-size: 1.05rem;
+      color: var(--text-secondary);
+      max-width: 600px;
+      line-height: 1.7;
+    }
+
+    /* ── PROBLEM ── */
+    .problem {
+      background: var(--cream);
+    }
+
+    .problem-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      margin-top: 48px;
+    }
+
+    .problem-card {
+      background: #fff;
+      border-radius: 12px;
+      padding: 32px 28px;
+      border: 1px solid var(--border);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .problem-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 24px rgba(27, 58, 92, 0.07);
+    }
+
+    .problem-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      background: rgba(8, 145, 178, 0.08);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+
+    .problem-icon svg {
+      width: 22px;
+      height: 22px;
+      stroke: var(--teal);
+    }
+
+    .problem-card h3 {
+      font-family: var(--font-display);
+      font-size: 1.15rem;
+      font-weight: 600;
+      color: var(--navy);
+      margin-bottom: 10px;
+    }
+
+    .problem-card p {
+      font-size: 0.92rem;
+      color: var(--text-secondary);
+      line-height: 1.65;
+    }
+
+    .quote-block {
+      margin-top: 48px;
+      padding: 28px 32px;
+      background: #fff;
+      border-left: 3px solid var(--teal);
+      border-radius: 0 12px 12px 0;
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--teal);
+    }
+
+    .quote-block p {
+      font-family: var(--font-display);
+      font-size: 1.1rem;
+      font-style: italic;
+      color: var(--text-primary);
+      line-height: 1.65;
+    }
+
+    .quote-block cite {
+      display: block;
+      margin-top: 12px;
+      font-family: var(--font-body);
+      font-style: normal;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    /* ── SOLUTION ── */
+    .solution-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 24px;
+      margin-top: 48px;
+    }
+
+    .solution-card {
+      padding: 36px 32px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: #fff;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .solution-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 24px rgba(27, 58, 92, 0.07);
+    }
+
+    .solution-number {
+      font-family: var(--font-display);
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--teal);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+
+    .solution-card h3 {
+      font-family: var(--font-display);
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: var(--navy);
+      margin-bottom: 10px;
+    }
+
+    .solution-card p {
+      font-size: 0.92rem;
+      color: var(--text-secondary);
+      line-height: 1.65;
+    }
+
+    /* ── SIGNUP ── */
+    .signup {
+      background: var(--navy);
+      color: #fff;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .signup::before {
+      content: '';
+      position: absolute;
+      top: -150px;
+      right: -150px;
+      width: 500px;
+      height: 500px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(8, 145, 178, 0.15) 0%, transparent 70%);
+    }
+
+    .signup .section-label {
+      color: var(--teal-light);
+    }
+
+    .signup .section-title {
+      color: #fff;
+    }
+
+    .signup .section-subtitle {
+      color: rgba(255, 255, 255, 0.7);
+    }
+
+    .signup-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 64px;
+      align-items: start;
+      margin-top: 48px;
+    }
+
+    .signup-benefits {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .signup-benefit {
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+    }
+
+    .signup-benefit-icon {
+      flex-shrink: 0;
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      background: rgba(8, 145, 178, 0.15);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .signup-benefit-icon svg {
+      width: 18px;
+      height: 18px;
+      stroke: var(--teal-light);
+    }
+
+    .signup-benefit h4 {
+      font-size: 0.95rem;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .signup-benefit p {
+      font-size: 0.88rem;
+      color: rgba(255, 255, 255, 0.65);
+      line-height: 1.55;
+    }
+
+    .signup-form-container {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 14px;
+      padding: 36px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .signup-form-container h3 {
+      font-family: var(--font-display);
+      font-size: 1.15rem;
+      font-weight: 600;
+      margin-bottom: 24px;
+    }
+
+    .form-group {
+      margin-bottom: 18px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: rgba(255, 255, 255, 0.8);
+      margin-bottom: 6px;
+      letter-spacing: 0.02em;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .form-group input,
+    .form-group select {
+      width: 100%;
+      padding: 11px 14px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 8px;
+      color: #fff;
+      font-family: var(--font-body);
+      font-size: 0.9rem;
+      transition: border-color 0.2s, background 0.2s;
+      outline: none;
+    }
+
+    .form-group input::placeholder {
+      color: rgba(255, 255, 255, 0.35);
+    }
+
+    .form-group input:focus,
+    .form-group select:focus {
+      border-color: var(--teal);
+      background: rgba(255, 255, 255, 0.12);
+    }
+
+    .form-group select {
+      cursor: pointer;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='rgba(255,255,255,0.5)' viewBox='0 0 16 16'%3E%3Cpath d='M4.5 6l3.5 3.5L11.5 6'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+      padding-right: 36px;
+    }
+
+    .form-group select option {
+      background: var(--navy-deep);
+      color: #fff;
+    }
+
+    .checkbox-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 4px;
+    }
+
+    .checkbox-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 6px;
+      font-size: 0.82rem;
+      color: rgba(255, 255, 255, 0.75);
+      cursor: pointer;
+      transition: all 0.15s;
+      user-select: none;
+    }
+
+    .checkbox-label:hover {
+      border-color: rgba(255, 255, 255, 0.3);
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .checkbox-label input {
+      display: none;
+    }
+
+    .checkbox-label input:checked + .checkbox-text {
+      color: #fff;
+    }
+
+    .checkbox-label:has(input:checked) {
+      border-color: var(--teal);
+      background: rgba(8, 145, 178, 0.15);
+      color: #fff;
+    }
+
+    .btn-submit {
+      width: 100%;
+      padding: 14px;
+      margin-top: 8px;
+      background: var(--teal);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-family: var(--font-body);
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.15s;
+    }
+
+    .btn-submit:hover {
+      background: var(--teal-muted);
+      transform: translateY(-1px);
+    }
+
+    .form-note {
+      text-align: center;
+      font-size: 0.78rem;
+      color: rgba(255, 255, 255, 0.4);
+      margin-top: 12px;
+    }
+
+    /* ── DIGEST PREVIEW ── */
+    .digest {
+      background: var(--cream);
+    }
+
+    .digest-preview {
+      margin-top: 48px;
+      max-width: 640px;
+      margin-left: auto;
+      margin-right: auto;
+      background: #fff;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      overflow: hidden;
+      box-shadow: 0 4px 24px rgba(27, 58, 92, 0.06);
+    }
+
+    .digest-header {
+      padding: 24px 28px;
+      background: var(--navy);
+      color: #fff;
+    }
+
+    .digest-header h4 {
+      font-family: var(--font-display);
+      font-size: 1rem;
+      font-weight: 600;
+    }
+
+    .digest-header p {
+      font-size: 0.82rem;
+      color: rgba(255, 255, 255, 0.6);
+      margin-top: 4px;
+    }
+
+    .digest-section {
+      padding: 24px 28px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .digest-section:last-child {
+      border-bottom: none;
+    }
+
+    .digest-section-label {
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--teal-muted);
+      margin-bottom: 14px;
+    }
+
+    .digest-job {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      padding: 10px 0;
+    }
+
+    .digest-job + .digest-job {
+      border-top: 1px solid var(--border);
+    }
+
+    .digest-job-title {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .digest-job-agency {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    .digest-job-meta {
+      text-align: right;
+      flex-shrink: 0;
+      margin-left: 16px;
+    }
+
+    .digest-job-location {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .digest-job-closes {
+      font-size: 0.75rem;
+      color: var(--teal-muted);
+      margin-top: 2px;
+    }
+
+    /* ── FOUNDER ── */
+    .founder-layout {
+      display: grid;
+      grid-template-columns: 1fr 1.4fr;
+      gap: 56px;
+      align-items: center;
+      margin-top: 48px;
+    }
+
+    .founder-image {
+      position: relative;
+    }
+
+    .founder-image-frame {
+      border-radius: 14px;
+      overflow: hidden;
+      background: var(--sand);
+      aspect-ratio: 4 / 5;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .founder-image-placeholder {
+      font-family: var(--font-display);
+      font-size: 4rem;
+      font-weight: 700;
+      color: var(--navy);
+      opacity: 0.15;
+    }
+
+    .founder-bio h3 {
+      font-family: var(--font-display);
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 6px;
+    }
+
+    .founder-bio .founder-title {
+      font-size: 0.92rem;
+      color: var(--teal-muted);
+      font-weight: 500;
+      margin-bottom: 20px;
+    }
+
+    .founder-bio p {
+      font-size: 0.95rem;
+      color: var(--text-secondary);
+      line-height: 1.7;
+      margin-bottom: 16px;
+    }
+
+    .founder-credentials {
+      margin-top: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .founder-credential {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+    }
+
+    .credential-marker {
+      flex-shrink: 0;
+      width: 8px;
+      height: 8px;
+      border-radius: 2px;
+      background: var(--teal);
+      margin-top: 7px;
+    }
+
+    .credential-text {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+    }
+
+    .credential-text strong {
+      color: var(--text-primary);
+    }
+
+    .founder-quote {
+      margin-top: 28px;
+      padding: 20px 24px;
+      background: var(--cream);
+      border-radius: 10px;
+      font-family: var(--font-display);
+      font-style: italic;
+      font-size: 0.95rem;
+      line-height: 1.6;
+      color: var(--text-primary);
+    }
+
+    /* ── FOOTER ── */
+    .footer {
+      padding: 56px 24px;
+      background: var(--navy-deep);
+      color: rgba(255, 255, 255, 0.6);
+    }
+
+    .footer-inner {
+      max-width: 1120px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 24px;
+    }
+
+    .footer-brand {
+      font-family: var(--font-display);
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .footer-brand span {
+      color: rgba(255, 255, 255, 0.4);
+      font-weight: 400;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 28px;
+      list-style: none;
+    }
+
+    .footer-links a {
+      font-size: 0.85rem;
+      color: rgba(255, 255, 255, 0.5);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .footer-links a:hover {
+      color: #fff;
+    }
+
+    .footer-copy {
+      font-size: 0.78rem;
+      color: rgba(255, 255, 255, 0.3);
+      width: 100%;
+      text-align: center;
+      margin-top: 32px;
+      padding-top: 28px;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 768px) {
+      .nav-links {
+        display: none;
+        position: fixed;
+        top: 64px;
+        left: 0;
+        right: 0;
+        background: var(--warm-white);
+        flex-direction: column;
+        padding: 24px;
+        gap: 20px;
+        border-bottom: 1px solid var(--border);
+        box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+      }
+
+      .nav-links.open {
+        display: flex;
+      }
+
+      .mobile-toggle {
+        display: block;
+      }
+
+      .hero {
+        padding: 120px 24px 80px;
+      }
+
+      .hero h1 {
+        font-size: 2rem;
+      }
+
+      .stats-inner {
+        grid-template-columns: 1fr;
+      }
+
+      .stat + .stat {
+        border-left: none;
+        border-top: 1px solid var(--border);
+      }
+
+      .problem-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .solution-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .signup-layout {
+        grid-template-columns: 1fr;
+        gap: 40px;
+      }
+
+      .form-row {
+        grid-template-columns: 1fr;
+      }
+
+      .founder-layout {
+        grid-template-columns: 1fr;
+        gap: 32px;
+      }
+
+      .founder-image-frame {
+        max-width: 280px;
+      }
+
+      .footer-inner {
+        flex-direction: column;
+        text-align: center;
+      }
+
+      .footer-links {
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav class="nav" id="nav">
+    <div class="nav-inner">
+      <a href="#" class="logo">Public<span>Path</span></a>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="jobs.html">Browse Jobs</a></li>
+        <li><a href="#problem">The Problem</a></li>
+        <li><a href="#solution">How It Works</a></li>
+        <li><a href="#digest">Weekly Digest</a></li>
+        <li><a href="#founder">About</a></li>
+        <li><a href="#signup" class="nav-cta">Sign Up</a></li>
+      </ul>
+      <button class="mobile-toggle" id="mobileToggle" aria-label="Toggle navigation">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round">
+          <line x1="3" y1="6" x2="21" y2="6"/>
+          <line x1="3" y1="12" x2="21" y2="12"/>
+          <line x1="3" y1="18" x2="21" y2="18"/>
+        </svg>
+      </button>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-inner">
+      <div class="hero-label">Now accepting pilot signups</div>
+      <h1>Your gateway to public sector careers</h1>
+      <p>PublicPath brings together government jobs from federal, state, and local agencies into one place — and delivers the best opportunities to your inbox every week, plus the guidance you need to land them.</p>
+      <div class="hero-actions">
+        <a href="#signup" class="btn btn-primary">
+          Sign up for weekly updates
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </a>
+        <a href="jobs.html" class="btn btn-secondary">
+          Browse jobs
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- STATS BAR -->
+  <div class="stats-bar">
+    <div class="stats-inner">
+      <div class="stat">
+        <div class="stat-number">20M+</div>
+        <div class="stat-label">Public sector jobs in the U.S.</div>
+      </div>
+      <div class="stat">
+        <div class="stat-number">14.5%</div>
+        <div class="stat-label">Of the total U.S. workforce</div>
+      </div>
+      <div class="stat">
+        <div class="stat-number">0</div>
+        <div class="stat-label">Centralized gateways — until now</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PROBLEM -->
+  <section class="section problem" id="problem">
+    <div class="section-inner">
+      <div class="section-label">The Problem</div>
+      <h2 class="section-title">Breaking into public service is harder than it should be</h2>
+      <p class="section-subtitle">Despite millions of government roles, there's no single place to find them — and no clear playbook for how to get hired.</p>
+
+      <div class="problem-grid">
+        <div class="problem-card">
+          <div class="problem-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+          </div>
+          <h3>Fragmented Listings</h3>
+          <p>Jobs are scattered across USAJobs, state portals, city websites, agency pages, and fellowship programs. No single search covers them all.</p>
+        </div>
+        <div class="problem-card">
+          <div class="problem-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          </div>
+          <h3>Unclear Timelines</h3>
+          <p>Federal hiring can take months. Applications disappear into a black hole. Candidates are left guessing at every stage of the process.</p>
+        </div>
+        <div class="problem-card">
+          <div class="problem-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+          </div>
+          <h3>Insider Knowledge</h3>
+          <p>The students who land government roles often have connections and information that isn't publicly available. That shouldn't be a requirement.</p>
+        </div>
+      </div>
+
+      <div class="quote-block">
+        <p>"Government hiring is a black box. I want to work in government, but I don't even know where to start."</p>
+        <cite>— Grad student, public policy program</cite>
+      </div>
+    </div>
+  </section>
+
+  <!-- SOLUTION -->
+  <section class="section" id="solution">
+    <div class="section-inner">
+      <div class="section-label">How PublicPath Helps</div>
+      <h2 class="section-title">One place. Every level. Real guidance.</h2>
+      <p class="section-subtitle">We do the work of finding, filtering, and explaining government opportunities so you can focus on applying.</p>
+
+      <div class="solution-grid">
+        <div class="solution-card">
+          <div class="solution-number">01</div>
+          <h3>Centralized Job Board</h3>
+          <p>Browse aggregated listings from federal agencies, state governments, city portals, and fellowship programs — all in one searchable interface with filters for location, function area, and government level.</p>
+        </div>
+        <div class="solution-card">
+          <div class="solution-number">02</div>
+          <h3>Weekly Curated Digest</h3>
+          <p>Every week, we hand-pick the best roles and deliver them to your inbox — including opportunities shared directly by people working in the field that you won't find on any job board.</p>
+        </div>
+        <div class="solution-card">
+          <div class="solution-number">03</div>
+          <h3>Hiring Process Guidance</h3>
+          <p>Understand federal resumes, GS scales, hiring timelines, clearance processes, and what makes a strong public sector application — without needing insider connections to figure it out.</p>
+        </div>
+        <div class="solution-card">
+          <div class="solution-number">04</div>
+          <h3>Network Access</h3>
+          <p>Get roles sourced from our founder's network of government insiders, political operatives, and public service leaders — the kind of leads that usually only circulate privately.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- DIGEST PREVIEW -->
+  <section class="section digest" id="digest">
+    <div class="section-inner">
+      <div class="section-label">Weekly Digest</div>
+      <h2 class="section-title">What lands in your inbox</h2>
+      <p class="section-subtitle">Each week we hand-pick roles from across federal, state, and local government — plus opportunities shared directly by people working in the field.</p>
+
+      <div class="digest-preview">
+        <div class="digest-header">
+          <h4>PublicPath Weekly — April 7, 2025</h4>
+          <p>8 opportunities hand-picked for you</p>
+        </div>
+        <div class="digest-section">
+          <div class="digest-section-label">This Week's Top Picks</div>
+          <div class="digest-job">
+            <div>
+              <div class="digest-job-title">Policy Analyst</div>
+              <div class="digest-job-agency">U.S. Department of Education</div>
+            </div>
+            <div class="digest-job-meta">
+              <div class="digest-job-location">Washington, DC</div>
+              <div class="digest-job-closes">Closes Apr 14</div>
+            </div>
+          </div>
+          <div class="digest-job">
+            <div>
+              <div class="digest-job-title">Budget Analyst</div>
+              <div class="digest-job-agency">City of Chicago — Office of Budget</div>
+            </div>
+            <div class="digest-job-meta">
+              <div class="digest-job-location">Chicago, IL</div>
+              <div class="digest-job-closes">Closes Apr 18</div>
+            </div>
+          </div>
+          <div class="digest-job">
+            <div>
+              <div class="digest-job-title">Legislative Intern</div>
+              <div class="digest-job-agency">Office of the Illinois Governor</div>
+            </div>
+            <div class="digest-job-meta">
+              <div class="digest-job-location">Springfield, IL</div>
+              <div class="digest-job-closes">Closes Apr 21</div>
+            </div>
+          </div>
+        </div>
+        <div class="digest-section">
+          <div class="digest-section-label">From Our Network</div>
+          <div class="digest-job">
+            <div>
+              <div class="digest-job-title">Digital Content Associate</div>
+              <div class="digest-job-agency">Gov. Hochul's Office · <em style="color:var(--teal-muted);">via contact</em></div>
+            </div>
+            <div class="digest-job-meta">
+              <div class="digest-job-location">Albany, NY</div>
+            </div>
+          </div>
+        </div>
+        <div class="digest-section">
+          <div class="digest-section-label">On Our Radar</div>
+          <div class="digest-job">
+            <div>
+              <div class="digest-job-title">Coding it Forward Fellowship</div>
+              <div class="digest-job-agency">Applications open for Summer 2025</div>
+            </div>
+            <div class="digest-job-meta">
+              <div class="digest-job-location">Remote / DC</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SIGNUP -->
+  <section class="section signup" id="signup">
+    <div class="section-inner">
+      <div class="section-label">Get Started</div>
+      <h2 class="section-title">Join the PublicPath pilot</h2>
+      <p class="section-subtitle">Sign up to receive our weekly digest of curated government opportunities — tailored to your interests.</p>
+
+      <div class="signup-layout">
+        <div class="signup-benefits">
+          <div class="signup-benefit">
+            <div class="signup-benefit-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            </div>
+            <div>
+              <h4>Weekly hand-picked roles</h4>
+              <p>5–10 curated opportunities from across all levels of government, delivered every Monday.</p>
+            </div>
+          </div>
+          <div class="signup-benefit">
+            <div class="signup-benefit-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+            </div>
+            <div>
+              <h4>Insider-sourced opportunities</h4>
+              <p>Roles shared by government insiders and political operatives — not posted publicly.</p>
+            </div>
+          </div>
+          <div class="signup-benefit">
+            <div class="signup-benefit-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg>
+            </div>
+            <div>
+              <h4>Career guidance & resources</h4>
+              <p>Federal resume tips, hiring timelines, clearance basics, and application strategies.</p>
+            </div>
+          </div>
+          <div class="signup-benefit">
+            <div class="signup-benefit-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+            </div>
+            <div>
+              <h4>It's free</h4>
+              <p>PublicPath is free for all users during the pilot. Sign up and start exploring.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="signup-form-container">
+          <h3>Sign up for the weekly digest</h3>
+
+          <!--
+            ╔══════════════════════════════════════════════════════════════╗
+            ║  INTEGRATION NOTE:                                          ║
+            ║  Replace this <form> with your Mailchimp or Beehiiv embed.  ║
+            ║  The form below is a working placeholder that demonstrates  ║
+            ║  the fields you need to capture. When you have your embed   ║
+            ║  code, swap out the <form> tag and update the action URL.   ║
+            ╚══════════════════════════════════════════════════════════════╝
+          -->
+          <form id="signupForm" action="#" method="POST">
+            <div class="form-row">
+              <div class="form-group">
+                <label for="firstName">First name</label>
+                <input type="text" id="firstName" name="firstName" placeholder="Jane" required>
+              </div>
+              <div class="form-group">
+                <label for="lastName">Last name</label>
+                <input type="text" id="lastName" name="lastName" placeholder="Doe" required>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="email">Email</label>
+              <input type="email" id="email" name="email" placeholder="jane@university.edu" required>
+            </div>
+            <div class="form-group">
+              <label for="school">School / University</label>
+              <input type="text" id="school" name="school" placeholder="University of Chicago">
+            </div>
+            <div class="form-group">
+              <label>Government level (select all that interest you)</label>
+              <div class="checkbox-group">
+                <label class="checkbox-label"><input type="checkbox" name="govLevel" value="federal"><span class="checkbox-text">Federal</span></label>
+                <label class="checkbox-label"><input type="checkbox" name="govLevel" value="state"><span class="checkbox-text">State</span></label>
+                <label class="checkbox-label"><input type="checkbox" name="govLevel" value="local"><span class="checkbox-text">Local</span></label>
+                <label class="checkbox-label"><input type="checkbox" name="govLevel" value="fellowship"><span class="checkbox-text">Fellowship</span></label>
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Function area (select all that interest you)</label>
+              <div class="checkbox-group">
+                <label class="checkbox-label"><input type="checkbox" name="funcArea" value="policy"><span class="checkbox-text">Policy</span></label>
+                <label class="checkbox-label"><input type="checkbox" name="funcArea" value="operations"><span class="checkbox-text">Operations</span></label>
+                <label class="checkbox-label"><input type="checkbox" name="funcArea" value="technology"><span class="checkbox-text">Technology</span></label>
+                <label class="checkbox-label"><input type="checkbox" name="funcArea" value="comms"><span class="checkbox-text">Communications</span></label>
+                <label class="checkbox-label"><input type="checkbox" name="funcArea" value="finance"><span class="checkbox-text">Finance</span></label>
+                <label class="checkbox-label"><input type="checkbox" name="funcArea" value="legal"><span class="checkbox-text">Legal</span></label>
+              </div>
+            </div>
+            <button type="submit" class="btn-submit">Get weekly opportunities →</button>
+            <p class="form-note">Free during the pilot. Unsubscribe anytime.</p>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOUNDER -->
+  <section class="section" id="founder">
+    <div class="section-inner">
+      <div class="section-label">About the Founder</div>
+      <h2 class="section-title">Built by someone who's been on the inside</h2>
+
+      <div class="founder-layout">
+        <div class="founder-image">
+          <div class="founder-image-frame">
+            <!--
+              Replace this placeholder with the actual founder photo:
+              <img src="images/hira.jpg" alt="Hira Qureshi" style="width:100%;height:100%;object-fit:cover;">
+            -->
+            <div class="founder-image-placeholder">HQ</div>
+          </div>
+        </div>
+        <div class="founder-bio">
+          <h3>Hira Qureshi</h3>
+          <div class="founder-title">Chicago Booth MBA '26 · 8+ years in government & politics</div>
+          <p>Hira built PublicPath because she experienced firsthand how confusing the path into government is — even as an insider with years of experience in political operations and federal hiring.</p>
+
+          <div class="founder-credentials">
+            <div class="founder-credential">
+              <div class="credential-marker"></div>
+              <div class="credential-text"><strong>Operations Director, Biden Campaign</strong> — oversaw hiring during the growth phase from primary to general election</div>
+            </div>
+            <div class="founder-credential">
+              <div class="credential-marker"></div>
+              <div class="credential-text"><strong>Biden Administration Appointee</strong> — hired hundreds of political appointees into critical roles at the White House and Treasury Department</div>
+            </div>
+            <div class="founder-credential">
+              <div class="credential-marker"></div>
+              <div class="credential-text"><strong>PublicPath Founder</strong> — building the centralized gateway to public sector careers that doesn't exist yet</div>
+            </div>
+          </div>
+
+          <div class="founder-quote">
+            "I built PublicPath because I experienced firsthand how confusing these pathways are — even as an insider. Fixing government hiring requires someone who's been on the inside."
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-brand">Public<span>Path</span></div>
+      <ul class="footer-links">
+        <li><a href="jobs.html">Browse Jobs</a></li>
+        <li><a href="#signup">Sign Up</a></li>
+        <!-- Uncomment when resource guide is ready:
+        <li><a href="resources.html">Resources</a></li>
+        -->
+        <li><a href="/cdn-cgi/l/email-protection#224a474e4e4d625257404e4b415243564a0c4d5045">Contact</a></li>
+      </ul>
+      <div class="footer-copy">&copy; 2025 PublicPath. Expanding access to public sector careers.</div>
+    </div>
+  </footer>
+
+  <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+    // Nav scroll shadow
+    const nav = document.getElementById('nav');
+    window.addEventListener('scroll', () => {
+      nav.classList.toggle('scrolled', window.scrollY > 10);
+    });
+
+    // Mobile nav toggle
+    const toggle = document.getElementById('mobileToggle');
+    const links = document.getElementById('navLinks');
+    toggle.addEventListener('click', () => {
+      links.classList.toggle('open');
+    });
+
+    // Close mobile nav on link click
+    links.querySelectorAll('a').forEach(a => {
+      a.addEventListener('click', () => links.classList.remove('open'));
+    });
+
+    // Simple form submission placeholder
+    document.getElementById('signupForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const btn = this.querySelector('.btn-submit');
+      const original = btn.textContent;
+      btn.textContent = '✓ You\'re on the list!';
+      btn.style.background = '#059669'
