@@ -1290,9 +1290,6 @@
         <div class="signup-form-container">
           <h3>Sign up for the weekly digest</h3>
 
-          <!-- Beehiiv attribution tracking -->
-          <script type="text/javascript" async src="https://subscribe-forms.beehiiv.com/attribution.js"></script>
-
           <form id="signupForm">
             <div class="form-row">
               <div class="form-group">
@@ -1338,9 +1335,25 @@
                 <span class="checkbox-text">I agree to receive weekly emails from PublicPath. We will never share your information with third parties. Unsubscribe anytime.</span>
               </label>
             </div>
-            <button type="submit" class="btn-submit">Get weekly opportunities →</button>
+            <button type="submit" class="btn-submit" id="signupBtn">Save preferences & subscribe →</button>
             <p class="form-note">Free during the pilot. Unsubscribe anytime.</p>
           </form>
+
+          <!-- Success state (hidden by default) -->
+          <div id="signupSuccess" style="display:none;padding:20px 0;">
+            <div style="text-align:center;margin-bottom:20px;">
+              <div style="display:inline-flex;align-items:center;justify-content:center;width:48px;height:48px;border-radius:50%;background:#ECFDF5;color:#059669;font-size:1.5rem;margin-bottom:12px;">&#10003;</div>
+              <h4 style="font-family:var(--font-display);color:var(--navy);margin-bottom:8px;">Preferences saved!</h4>
+              <p style="color:var(--text-muted);font-size:.9rem;">Now enter your email below to subscribe to the weekly digest:</p>
+            </div>
+            <iframe
+              id="beehiivEmbed"
+              src=""
+              frameborder="0"
+              scrolling="no"
+              style="width:100%;min-height:320px;border-radius:8px;background:transparent;">
+            </iframe>
+          </div>
         </div>
       </div>
     </div>
@@ -1403,14 +1416,6 @@
     </div>
   </footer>
 
-  <!-- Hidden Beehiiv form for email subscription -->
-  <iframe id="beehiivFrame" name="beehiivFrame" src="about:blank" style="display:none;width:0;height:0;border:0;"></iframe>
-  <form id="beehiivHiddenForm" action="https://subscribe-forms.beehiiv.com/96297861-e4e8-4a45-ba67-7f0d66646f44" method="POST" target="beehiivFrame" style="display:none;">
-    <input type="email" name="email" id="beehiivEmail">
-    <input type="text" name="first_name" id="beehiivFirstName">
-    <input type="text" name="last_name" id="beehiivLastName">
-  </form>
-
   <script>
   document.addEventListener('DOMContentLoaded', function() {
     // Supabase client for saving preferences
@@ -1431,7 +1436,7 @@
         var firstName = document.getElementById('firstName').value;
         var lastName = document.getElementById('lastName').value;
         var school = document.getElementById('school').value;
-        var btn = signupForm.querySelector('.btn-submit');
+        var btn = document.getElementById('signupBtn');
 
         // Collect preferences
         var govLevels = [];
@@ -1439,37 +1444,27 @@
         var funcAreas = [];
         document.querySelectorAll('input[name="funcArea"]:checked').forEach(function(cb) { funcAreas.push(cb.value); });
 
-        // Disable button while processing
-        var originalText = btn.textContent;
-        btn.textContent = 'Signing up...';
+        // Disable button
+        btn.textContent = 'Saving...';
         btn.disabled = true;
 
-        // 1. Save preferences to Supabase
+        // Save preferences to Supabase
         if (sbSignup) {
           try {
             await sbSignup.from('subscribers').upsert({
               email: email, first_name: firstName, last_name: lastName,
               school: school, gov_levels: govLevels, func_areas: funcAreas, source: 'website'
             }, { onConflict: 'email' });
-          } catch (err) { console.log('Supabase save:', err); }
+            console.log('Saved to Supabase');
+          } catch (err) { console.log('Supabase error:', err); }
         }
 
-        // 2. Submit email to Beehiiv via hidden form
-        try {
-          document.getElementById('beehiivEmail').value = email;
-          document.getElementById('beehiivFirstName').value = firstName;
-          document.getElementById('beehiivLastName').value = lastName;
-          document.getElementById('beehiivHiddenForm').submit();
-        } catch (err) { console.log('Beehiiv submit:', err); }
-
-        // 3. Show success
-        btn.textContent = '\u2713 You\u2019re on the list!';
-        btn.style.background = '#059669';
-        setTimeout(function() {
-          btn.textContent = originalText;
-          btn.style.background = '';
-          btn.disabled = false;
-        }, 3000);
+        // Hide form, show Beehiiv embed for email subscription
+        signupForm.style.display = 'none';
+        var successDiv = document.getElementById('signupSuccess');
+        successDiv.style.display = 'block';
+        // Load Beehiiv iframe only after user submits (faster page load)
+        document.getElementById('beehiivEmbed').src = 'https://subscribe-forms.beehiiv.com/96297861-e4e8-4a45-ba67-7f0d66646f44';
       });
     }
 
