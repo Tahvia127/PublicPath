@@ -9,12 +9,6 @@ Usage:
     python sync_jobs.py --source usajobs # Sync one source
     python sync_jobs.py --stats          # Print database stats
     python sync_jobs.py --expire         # Deactivate expired jobs
-
-Setup:
-    1. Copy .env.example to .env and fill in your keys
-    2. Run 01_create_tables.sql in Supabase SQL Editor
-    3. pip install python-dotenv supabase requests
-    4. python sync_jobs.py
 """
 
 import argparse
@@ -25,44 +19,39 @@ import os
 import re
 import sys
 import time
+import xml.etree.ElementTree as ET
 from datetime import datetime, timedelta
 
 import requests
 from dotenv import load_dotenv
 from supabase import create_client
 
-# ============================================================
-# CONFIGURATION
-# ============================================================
-
 load_dotenv()
 
 SUPABASE_URL = os.getenv("SUPABASE_URL")
-SUPABASE_KEY = os.getenv("SUPABASE_KEY")  # Use service_role key for writes
+SUPABASE_KEY = os.getenv("SUPABASE_KEY")
 USAJOBS_API_KEY = os.getenv("USAJOBS_API_KEY")
-USAJOBS_EMAIL = os.getenv("USAJOBS_EMAIL")  # Your email (required by USAJobs)
+USAJOBS_EMAIL = os.getenv("USAJOBS_EMAIL")
 JOOBLE_API_KEY = os.getenv("JOOBLE_API_KEY")
 ADZUNA_APP_ID = os.getenv("ADZUNA_APP_ID")
 ADZUNA_APP_KEY = os.getenv("ADZUNA_APP_KEY")
 SERPAPI_KEY = os.getenv("SERPAPI_KEY")
+FINDWORK_API_KEY = os.getenv("FINDWORK_API_KEY")
 
-# Pilot states — where Harris School students are most likely to work
 PILOT_STATES = ["Illinois", "Washington DC", "Virginia", "Maryland", "New York", "California"]
 
-# Public sector search terms for aggregator APIs
 PUBLIC_SECTOR_KEYWORDS = [
-    "government",
-    "public policy",
-    "state government",
-    "city government",
-    "public administration",
-    "county government",
-    "public health",
-    "nonprofit policy",
-    "municipal",
+    "government", "public policy", "state government", "city government",
+    "public administration", "county government", "public health",
+    "nonprofit policy", "municipal",
 ]
 
-# US state lookup for normalization
+PUBLIC_SECTOR_TERMS = [
+    "government", "federal", "state", "city", "county", "public",
+    "municipal", "agency", "department", "bureau", "administration",
+    "policy", "nonprofit", "non-profit", "civic", "legislative", "judicial",
+]
+
 STATE_ABBREVS = {
     "AL": "Alabama", "AK": "Alaska", "AZ": "Arizona", "AR": "Arkansas",
     "CA": "California", "CO": "Colorado", "CT": "Connecticut", "DE": "Delaware",
@@ -81,812 +70,533 @@ STATE_ABBREVS = {
 STATE_NAME_TO_ABBREV = {v.upper(): k for k, v in STATE_ABBREVS.items()}
 
 
-# ============================================================
-# SUPABASE CLIENT
-# ============================================================
-
 def get_supabase():
-    """Initialize and return Supabase client."""
     if not SUPABASE_URL or not SUPABASE_KEY:
         print("ERROR: SUPABASE_URL and SUPABASE_KEY must be set in .env")
         sys.exit(1)
     return create_client(SUPABASE_URL, SUPABASE_KEY)
 
 
-# ============================================================
-# UTILITY FUNCTIONS
-# ============================================================
-
-def parse_location(location_str: str) -> tuple:
-    """Parse location string into (city, state_abbrev)."""
+def parse_location(location_str):
     if not location_str:
         return "", ""
     parts = [p.strip() for p in location_str.split(",")]
     city = parts[0] if parts else ""
     state = ""
     for part in parts[1:]:
-        part_clean = part.strip().upper()
-        if part_clean in STATE_ABBREVS:
-            state = part_clean
-            break
-        if part_clean in STATE_NAME_TO_ABBREV:
-            state = STATE_NAME_TO_ABBREV[part_clean]
-            break
+        pc = part.strip().upper()
+        if pc in STATE_ABBREVS:
+            state = pc; break
+        if pc in STATE_NAME_TO_ABBREV:
+            state = STATE_NAME_TO_ABBREV[pc]; break
     return city, state
 
 
-def parse_salary(salary_str: str) -> tuple:
-    """Extract (min, max, basis) from salary string."""
+def job_fingerprint(title, company, state):
+    key = f"{title.lower().strip()}|{company.lower().strip()}|{state.lower().strip()}"
+    return hashlib.md5(key.encode()).hexdigest()
+
+
+def is_public_sector(title, org, description):
+    text = f"{title} {org} {description}".lower()
+    return any(term in text for term in PUBLIC_SECTOR_TERMS)
+
+
+def parse_salary(salary_str):
     if not salary_str:
         return None, None, None
     basis = "annual"
     lower = salary_str.lower()
-    if "hour" in lower:
-        basis = "hourly"
-    elif "month" in lower:
-        basis = "monthly"
-    elif "week" in lower:
-        basis = "weekly"
+    if "hour" in lower: basis = "hourly"
+    elif "month" in lower: basis = "monthly"
     amounts = re.findall(r'[\$]?([\d,]+\.?\d*)', salary_str)
     amounts = [float(a.replace(',', '')) for a in amounts if a]
-    if len(amounts) >= 2:
-        return min(amounts), max(amounts), basis
-    elif len(amounts) == 1:
-        return amounts[0], amounts[0], basis
+    if len(amounts) >= 2: return min(amounts), max(amounts), basis
+    elif len(amounts) == 1: return amounts[0], amounts[0], basis
     return None, None, None
 
 
-def infer_org_type(text: str) -> str:
-    """Infer organization type from text content."""
+def infer_org_type(text):
     text = text.lower()
-    federal = ["federal", "u.s. department", "usda", "doj", "dod", "department of defense",
-               "department of justice", "department of state", "irs", "fbi", "gsa", "epa",
-               "fema", "hhs", "nih", "cdc", "nasa", "va hospital", "usaid"]
-    local = ["city of", "county of", "town of", "village of", "borough of", "township", "municipal", "metro"]
-    state = ["state of", "state department", "state agency", "commonwealth of"]
-    nonprofit = ["nonprofit", "non-profit", "foundation", "ngo", "association", "charity"]
-    if any(kw in text for kw in federal):
-        return "federal"
-    if any(kw in text for kw in local):
-        return "local"
-    if any(kw in text for kw in state):
-        return "state"
-    if any(kw in text for kw in nonprofit):
-        return "nonprofit"
+    if any(kw in text for kw in ["federal", "u.s. department", "usda", "doj", "dod", "irs", "fbi", "gsa", "epa", "fema", "hhs", "nih", "cdc", "nasa", "usaid"]): return "federal"
+    if any(kw in text for kw in ["city of", "county of", "town of", "village of", "township", "municipal", "metro"]): return "local"
+    if any(kw in text for kw in ["state of", "state department", "state agency", "commonwealth of"]): return "state"
+    if any(kw in text for kw in ["nonprofit", "non-profit", "foundation", "ngo", "association", "charity"]): return "nonprofit"
     return "unknown"
 
 
-def clean_html(text: str) -> str:
-    """Remove HTML tags from text."""
-    if not text:
-        return ""
+def clean_html(text):
+    if not text: return ""
     return re.sub(r'<[^>]+>', '', text).strip()
 
 
-# ============================================================
-# USAJOBS FETCHER + NORMALIZER
-# ============================================================
+# ── USAJOBS ──────────────────────────────────────────────────
 
-def fetch_usajobs(keyword: str = "", location: str = "", page: int = 1, results_per_page: int = 250) -> dict:
-    """Fetch jobs from USAJobs Search API."""
+def fetch_usajobs(keyword="", location="", page=1, results_per_page=250):
     if not USAJOBS_API_KEY or not USAJOBS_EMAIL:
-        print("  WARNING: USAJOBS_API_KEY and USAJOBS_EMAIL not set — skipping")
         return {"SearchResult": {"SearchResultItems": [], "SearchResultCount": 0}}
-
     url = "https://data.usajobs.gov/api/Search"
-    headers = {
-        "Authorization-Key": USAJOBS_API_KEY,
-        "User-Agent": USAJOBS_EMAIL,
-        "Host": "data.usajobs.gov",
-    }
-    params = {
-        "Page": page,
-        "ResultsPerPage": results_per_page,
-    }
-    if keyword:
-        params["Keyword"] = keyword
-    if location:
-        params["LocationName"] = location
-
+    headers = {"Authorization-Key": USAJOBS_API_KEY, "User-Agent": USAJOBS_EMAIL, "Host": "data.usajobs.gov"}
+    params = {"Page": page, "ResultsPerPage": results_per_page}
+    if keyword: params["Keyword"] = keyword
+    if location: params["LocationName"] = location
     response = requests.get(url, headers=headers, params=params)
     response.raise_for_status()
     return response.json()
 
-
-def normalize_usajobs(raw_item: dict) -> dict:
-    """Map a USAJobs search result item to the unified schema."""
-    matched = raw_item.get("MatchedObjectDescriptor", {})
-    details = matched.get("UserArea", {}).get("Details", {})
-    remuneration = matched.get("PositionRemuneration", [{}])
-    rem = remuneration[0] if remuneration else {}
-    locations = matched.get("PositionLocation", [{}])
-    loc = locations[0] if locations else {}
-
-    # Parse hiring path
-    hiring_path_raw = details.get("HiringPath", [])
-    if isinstance(hiring_path_raw, str):
-        hiring_path_raw = [hiring_path_raw]
-
-    # Determine employment type from schedule
-    schedule_list = details.get("PositionSchedule", [])
-    emp_type = "full_time"
-    if schedule_list:
-        sched_name = schedule_list[0].get("Name", "").lower() if isinstance(schedule_list[0], dict) else str(schedule_list[0]).lower()
-        if "part" in sched_name:
-            emp_type = "part_time"
-        elif "intern" in sched_name:
-            emp_type = "internship"
-
-    # Check remote/telework
-    telework = details.get("TeleworkEligible", False)
-    if isinstance(telework, str):
-        telework = telework.lower() in ("true", "yes", "1")
-
+def normalize_usajobs(raw_item):
+    m = raw_item.get("MatchedObjectDescriptor", {})
+    d = m.get("UserArea", {}).get("Details", {})
+    rem = (m.get("PositionRemuneration") or [{}])[0]
+    loc = (m.get("PositionLocation") or [{}])[0]
+    hp = d.get("HiringPath", [])
+    if isinstance(hp, str): hp = [hp]
+    sl = d.get("PositionSchedule", [])
+    emp = "full_time"
+    if sl:
+        sn = sl[0].get("Name", "").lower() if isinstance(sl[0], dict) else str(sl[0]).lower()
+        if "part" in sn: emp = "part_time"
+        elif "intern" in sn: emp = "internship"
+    tw = d.get("TeleworkEligible", False)
+    if isinstance(tw, str): tw = tw.lower() in ("true", "yes", "1")
+    title = m.get("PositionTitle", "")
+    org = m.get("OrganizationName", "")
+    st = loc.get("CountrySubDivisionCode", "")
     return {
-        "source": "usajobs",
-        "source_id": matched.get("PositionID", ""),
-        "title": matched.get("PositionTitle", ""),
-        "organization": matched.get("OrganizationName", ""),
-        "organization_type": "federal",
-        "description": clean_html(matched.get("QualificationSummary", "")),
-        "qualifications": clean_html(matched.get("QualificationSummary", "")),
-        "location_city": loc.get("CityName", ""),
-        "location_state": loc.get("CountrySubDivisionCode", ""),
-        "location_country": "US",
-        "is_remote": telework,
+        "source": "usajobs", "source_id": m.get("PositionID", ""),
+        "title": title, "organization": org, "organization_type": "federal",
+        "description": clean_html(m.get("QualificationSummary", "")),
+        "qualifications": clean_html(m.get("QualificationSummary", "")),
+        "location_city": loc.get("CityName", ""), "location_state": st, "location_country": "US",
+        "is_remote": tw,
         "salary_min": float(rem.get("MinimumRange", 0) or 0) or None,
         "salary_max": float(rem.get("MaximumRange", 0) or 0) or None,
         "salary_basis": rem.get("Description", "Per Year"),
-        "pay_grade": f"GS-{details.get('LowGrade', '')}" if details.get("LowGrade") else None,
-        "employment_type": emp_type,
-        "schedule": details.get("PositionOfferingType", ""),
-        "hiring_path": hiring_path_raw if hiring_path_raw else None,
-        "application_url": matched.get("ApplyURI", [""])[0] if matched.get("ApplyURI") else "",
-        "posted_date": matched.get("PublicationStartDate"),
-        "closing_date": matched.get("ApplicationCloseDate"),
-        "is_active": True,
-        "raw_data": json.dumps(raw_item),  # Store as JSON string for Supabase
+        "pay_grade": f"GS-{d.get('LowGrade', '')}" if d.get("LowGrade") else None,
+        "employment_type": emp, "schedule": d.get("PositionOfferingType", ""),
+        "hiring_path": hp if hp else None,
+        "application_url": m.get("ApplyURI", [""])[0] if m.get("ApplyURI") else "",
+        "posted_date": m.get("PublicationStartDate"), "closing_date": m.get("ApplicationCloseDate"),
+        "fingerprint": job_fingerprint(title, org, st),
+        "is_active": True, "raw_data": json.dumps(raw_item),
     }
 
-
-def fetch_all_usajobs() -> list:
-    """Fetch all current federal jobs, paginating through results."""
-    all_normalized = []
-    page = 1
-    total_pages = 1  # Will be updated after first request
-
-    print(f"  Fetching USAJobs (all current federal listings)...")
-
-    while page <= total_pages:
+def fetch_all_usajobs():
+    all_n = []; page = 1; tp = 1
+    print("  Fetching USAJobs (all current federal listings)...")
+    while page <= tp:
         try:
             data = fetch_usajobs(page=page, results_per_page=500)
-            search_result = data.get("SearchResult", {})
-            items = search_result.get("SearchResultItems", [])
-            total_count = int(search_result.get("SearchResultCountAll", 0))
-            total_pages = min((total_count // 500) + 1, 20)  # Cap at 20 pages = 10,000 jobs
-
+            sr = data.get("SearchResult", {})
+            items = sr.get("SearchResultItems", [])
+            tc = int(sr.get("SearchResultCountAll", 0))
+            tp = min((tc // 500) + 1, 20)
             for item in items:
                 try:
-                    normalized = normalize_usajobs(item)
-                    if normalized["source_id"]:
-                        all_normalized.append(normalized)
-                except Exception as e:
-                    print(f"    Normalize error: {e}")
-
-            print(f"    Page {page}/{total_pages}: got {len(items)} jobs (total so far: {len(all_normalized)})")
-            page += 1
-            time.sleep(1)  # Be polite to USAJobs API
-
+                    n = normalize_usajobs(item)
+                    if n["source_id"]: all_n.append(n)
+                except Exception as e: print(f"    Normalize error: {e}")
+            print(f"    Page {page}/{tp}: got {len(items)} jobs (total so far: {len(all_n)})")
+            page += 1; time.sleep(1)
         except Exception as e:
-            print(f"    Fetch error on page {page}: {e}")
-            break
-
-    return all_normalized
+            print(f"    Fetch error on page {page}: {e}"); break
+    return all_n
 
 
-# ============================================================
-# JOOBLE FETCHER + NORMALIZER
-# ============================================================
+# ── JOOBLE ───────────────────────────────────────────────────
 
-def fetch_jooble(keywords: str, location: str, page: int = 1) -> list:
-    """Fetch jobs from Jooble API using their official http.client pattern."""
-    if not JOOBLE_API_KEY:
-        print("  WARNING: JOOBLE_API_KEY not set — skipping")
-        return []
-
-    connection = http.client.HTTPSConnection("jooble.org")
-    headers = {"Content-type": "application/json"}
-    body = json.dumps({
-        "keywords": keywords,
-        "location": location,
-        "page": str(page),
-    })
-
-    connection.request("POST", "/api/" + JOOBLE_API_KEY, body, headers)
-    response = connection.getresponse()
-
-    if response.status != 200:
-        print(f"    Jooble error: {response.status} {response.reason}")
-        return []
-
-    raw = response.read().decode("utf-8")
-    data = json.loads(raw)
-    connection.close()
-
+def fetch_jooble(keywords, location, page=1):
+    if not JOOBLE_API_KEY: return []
+    conn = http.client.HTTPSConnection("jooble.org")
+    body = json.dumps({"keywords": keywords, "location": location, "page": str(page)})
+    conn.request("POST", "/api/" + JOOBLE_API_KEY, body, {"Content-type": "application/json"})
+    resp = conn.getresponse()
+    if resp.status != 200: return []
+    data = json.loads(resp.read().decode("utf-8"))
+    conn.close()
     return data.get("jobs", [])
 
-
-def normalize_jooble(raw: dict) -> dict:
-    """Map a Jooble job to the unified schema."""
+def normalize_jooble(raw):
     city, state = parse_location(raw.get("location", ""))
     sal_min, sal_max, sal_basis = parse_salary(raw.get("salary", ""))
-    title = raw.get("title", "")
-    company = raw.get("company", "")
+    title = raw.get("title", ""); company = raw.get("company", "")
     snippet = clean_html(raw.get("snippet", ""))
-    combined_text = f"{company} {title} {snippet}"
-
-    # Generate stable ID
-    source_id = str(raw.get("id", ""))
-    if not source_id:
-        source_id = hashlib.md5(raw.get("link", "").encode()).hexdigest()
-
+    sid = str(raw.get("id", ""))
+    if not sid: sid = hashlib.md5(raw.get("link", "").encode()).hexdigest()
     return {
-        "source": "jooble",
-        "source_id": source_id,
-        "title": title,
-        "organization": company,
-        "organization_type": infer_org_type(combined_text),
-        "description": snippet,
-        "location_city": city,
-        "location_state": state,
-        "location_country": "US",
+        "source": "jooble", "source_id": sid, "title": title, "organization": company,
+        "organization_type": infer_org_type(f"{company} {title} {snippet}"),
+        "description": snippet, "location_city": city, "location_state": state, "location_country": "US",
         "is_remote": "remote" in title.lower() or "remote" in raw.get("location", "").lower(),
-        "salary_min": sal_min,
-        "salary_max": sal_max,
-        "salary_basis": sal_basis,
+        "salary_min": sal_min, "salary_max": sal_max, "salary_basis": sal_basis,
         "employment_type": raw.get("type", "full_time"),
-        "application_url": raw.get("link", ""),
-        "posted_date": raw.get("updated"),
-        "is_active": True,
-        "raw_data": json.dumps(raw),
+        "application_url": raw.get("link", ""), "posted_date": raw.get("updated"),
+        "fingerprint": job_fingerprint(title, company, state),
+        "is_active": True, "raw_data": json.dumps(raw),
     }
 
-
-def fetch_all_jooble(max_pages_per_query: int = 2) -> list:
-    """Fetch public sector jobs from Jooble across all keyword/location combos."""
-    all_jobs = {}  # Deduplicate by link URL
-    total_queries = len(PUBLIC_SECTOR_KEYWORDS) * len(PILOT_STATES)
-    query_num = 0
-
-    for keyword in PUBLIC_SECTOR_KEYWORDS:
-        for location in PILOT_STATES:
-            query_num += 1
-            print(f"    [{query_num}/{total_queries}] '{keyword}' in {location}")
-
-            for page in range(1, max_pages_per_query + 1):
+def fetch_all_jooble(max_pages_per_query=2):
+    all_jobs = {}
+    total_q = len(PUBLIC_SECTOR_KEYWORDS) * len(PILOT_STATES); qn = 0
+    for kw in PUBLIC_SECTOR_KEYWORDS:
+        for loc in PILOT_STATES:
+            qn += 1; print(f"    [{qn}/{total_q}] '{kw}' in {loc}")
+            for pg in range(1, max_pages_per_query + 1):
                 try:
-                    jobs = fetch_jooble(keyword, location, page=page)
-                    if not jobs:
-                        break
-
+                    jobs = fetch_jooble(kw, loc, page=pg)
+                    if not jobs: break
                     for job in jobs:
                         link = job.get("link", "")
                         if link and link not in all_jobs:
-                            normalized = normalize_jooble(job)
-                            if normalized["source_id"]:
-                                all_jobs[link] = normalized
-
-                    time.sleep(0.5)  # Rate limit protection
-
-                except Exception as e:
-                    print(f"      Error: {e}")
-                    break
-
+                            n = normalize_jooble(job)
+                            if n["source_id"] and is_public_sector(n["title"], n["organization"], n.get("description", "")):
+                                all_jobs[link] = n
+                    time.sleep(0.5)
+                except Exception as e: print(f"      Error: {e}"); break
     result = list(all_jobs.values())
     print(f"    Total unique Jooble jobs: {len(result)}")
     return result
 
 
-# ============================================================
-# ADZUNA FETCHER + NORMALIZER
-# ============================================================
+# ── ADZUNA ───────────────────────────────────────────────────
 
-def fetch_adzuna(keyword: str, location: str, page: int = 1, results_per_page: int = 50) -> list:
-    """Fetch jobs from Adzuna API. Uses country code 'us'."""
-    if not ADZUNA_APP_ID or not ADZUNA_APP_KEY:
-        print("  WARNING: ADZUNA_APP_ID / ADZUNA_APP_KEY not set — skipping")
-        return []
-
+def fetch_adzuna(keyword, location, page=1, rpp=50):
+    if not ADZUNA_APP_ID or not ADZUNA_APP_KEY: return []
     url = f"https://api.adzuna.com/v1/api/jobs/us/search/{page}"
-    params = {
-        "app_id": ADZUNA_APP_ID,
-        "app_key": ADZUNA_APP_KEY,
-        "what": keyword,
-        "where": location,
-        "results_per_page": results_per_page,
-        "content-type": "application/json",
-    }
-
+    params = {"app_id": ADZUNA_APP_ID, "app_key": ADZUNA_APP_KEY, "what": keyword, "where": location, "results_per_page": rpp, "content-type": "application/json"}
     response = requests.get(url, params=params)
     response.raise_for_status()
-    data = response.json()
-    return data.get("results", [])
+    return response.json().get("results", [])
 
-
-def normalize_adzuna(raw: dict) -> dict:
-    """Map an Adzuna job result to the unified schema."""
-    location_obj = raw.get("location", {})
-    area = location_obj.get("area", [])
-    display = location_obj.get("display_name", "")
+def normalize_adzuna(raw):
+    lo = raw.get("location", {}); area = lo.get("area", []); display = lo.get("display_name", "")
     city, state = parse_location(display)
-
-    # If parse_location didn't find a state, try the area array
     if not state and len(area) >= 2:
-        for part in area[1:]:
-            upper = part.strip().upper()
-            if upper in STATE_ABBREVS:
-                state = upper
-                break
-            if upper in STATE_NAME_TO_ABBREV:
-                state = STATE_NAME_TO_ABBREV[upper]
-                break
-
+        for p in area[1:]:
+            u = p.strip().upper()
+            if u in STATE_ABBREVS: state = u; break
+            if u in STATE_NAME_TO_ABBREV: state = STATE_NAME_TO_ABBREV[u]; break
     company = raw.get("company", {}).get("display_name", "")
-    category = raw.get("category", {})
-    title = raw.get("title", "")
-    description = clean_html(raw.get("description", ""))
-    combined_text = f"{company} {title} {description}"
-
-    # Contract type mapping
-    contract_type = raw.get("contract_type", "")
-    contract_time = raw.get("contract_time", "")
-    emp_type = "full_time"
-    if contract_time == "part_time":
-        emp_type = "part_time"
-    elif "intern" in title.lower():
-        emp_type = "internship"
-
+    title = raw.get("title", ""); desc = clean_html(raw.get("description", ""))
+    ct = raw.get("contract_time", ""); emp = "full_time"
+    if ct == "part_time": emp = "part_time"
+    elif "intern" in title.lower(): emp = "internship"
     return {
-        "source": "adzuna",
-        "source_id": str(raw.get("id", "")),
-        "title": clean_html(title),
-        "organization": company,
-        "organization_type": infer_org_type(combined_text),
-        "description": description,
-        "location_city": city,
-        "location_state": state,
-        "location_country": "US",
+        "source": "adzuna", "source_id": str(raw.get("id", "")),
+        "title": clean_html(title), "organization": company,
+        "organization_type": infer_org_type(f"{company} {title} {desc}"),
+        "description": desc, "location_city": city, "location_state": state, "location_country": "US",
         "is_remote": "remote" in title.lower() or "remote" in display.lower(),
-        "salary_min": raw.get("salary_min"),
-        "salary_max": raw.get("salary_max"),
-        "salary_basis": "annual",
-        "job_category": category.get("label", ""),
-        "employment_type": emp_type,
-        "schedule": contract_type if contract_type else None,
-        "application_url": raw.get("redirect_url", ""),
-        "posted_date": raw.get("created"),
-        "is_active": True,
-        "raw_data": json.dumps(raw),
+        "salary_min": raw.get("salary_min"), "salary_max": raw.get("salary_max"), "salary_basis": "annual",
+        "job_category": raw.get("category", {}).get("label", ""),
+        "employment_type": emp, "schedule": raw.get("contract_type") or None,
+        "application_url": raw.get("redirect_url", ""), "posted_date": raw.get("created"),
+        "fingerprint": job_fingerprint(title, company, state),
+        "is_active": True, "raw_data": json.dumps(raw),
     }
 
-
-def fetch_all_adzuna(max_pages_per_query: int = 2) -> list:
-    """Fetch public sector jobs from Adzuna across keyword/location combos."""
-    all_jobs = {}  # Deduplicate by Adzuna job ID
-    total_queries = len(PUBLIC_SECTOR_KEYWORDS) * len(PILOT_STATES)
-    query_num = 0
-
-    for keyword in PUBLIC_SECTOR_KEYWORDS:
-        for location in PILOT_STATES:
-            query_num += 1
-            print(f"    [{query_num}/{total_queries}] '{keyword}' in {location}")
-
-            for page in range(1, max_pages_per_query + 1):
+def fetch_all_adzuna(max_pages_per_query=2):
+    all_jobs = {}
+    total_q = len(PUBLIC_SECTOR_KEYWORDS) * len(PILOT_STATES); qn = 0
+    for kw in PUBLIC_SECTOR_KEYWORDS:
+        for loc in PILOT_STATES:
+            qn += 1; print(f"    [{qn}/{total_q}] '{kw}' in {loc}")
+            for pg in range(1, max_pages_per_query + 1):
                 try:
-                    jobs = fetch_adzuna(keyword, location, page=page)
-                    if not jobs:
-                        break
-
+                    jobs = fetch_adzuna(kw, loc, page=pg)
+                    if not jobs: break
                     for job in jobs:
-                        job_id = str(job.get("id", ""))
-                        if job_id and job_id not in all_jobs:
-                            normalized = normalize_adzuna(job)
-                            if normalized["source_id"]:
-                                all_jobs[job_id] = normalized
-
-                    time.sleep(0.3)  # Adzuna rate limit
-
-                except Exception as e:
-                    print(f"      Error: {e}")
-                    break
-
+                        jid = str(job.get("id", ""))
+                        if jid and jid not in all_jobs:
+                            n = normalize_adzuna(job)
+                            if n["source_id"]: all_jobs[jid] = n
+                    time.sleep(0.3)
+                except Exception as e: print(f"      Error: {e}"); break
     result = list(all_jobs.values())
     print(f"    Total unique Adzuna jobs: {len(result)}")
     return result
 
 
-# ============================================================
-# SERPAPI (GOOGLE JOBS) FETCHER + NORMALIZER
-# ============================================================
+# ── SERPAPI (GOOGLE JOBS) ────────────────────────────────────
 
-def fetch_serpapi(query: str, location: str = "United States") -> list:
-    """Fetch jobs from Google Jobs via SerpApi. 100 free searches/month."""
-    if not SERPAPI_KEY:
-        print("  WARNING: SERPAPI_KEY not set — skipping")
-        return []
-    url = "https://serpapi.com/search.json"
-    params = {
-        "engine": "google_jobs",
-        "q": query,
-        "location": location,
-        "api_key": SERPAPI_KEY,
-    }
-    response = requests.get(url, params=params)
+def fetch_serpapi(query, location="United States"):
+    if not SERPAPI_KEY: print("  WARNING: SERPAPI_KEY not set"); return []
+    params = {"engine": "google_jobs", "q": query, "location": location, "api_key": SERPAPI_KEY}
+    response = requests.get("https://serpapi.com/search.json", params=params)
     response.raise_for_status()
-    data = response.json()
-    return data.get("jobs_results", [])
+    return response.json().get("jobs_results", [])
 
-
-def normalize_serpapi(raw: dict) -> dict:
-    """Map a Google Jobs result to the unified schema."""
-    title = raw.get("title", "")
-    company = raw.get("company_name", "")
-    location = raw.get("location", "")
-    city, state = parse_location(location)
-    description = raw.get("description", "")
-    combined = f"{company} {title} {description}"
-    extensions = raw.get("detected_extensions", {})
-    schedule = extensions.get("schedule_type", "")
-    emp_type = "full_time"
-    if "part" in schedule.lower():
-        emp_type = "part_time"
-    elif "intern" in title.lower():
-        emp_type = "internship"
-
+def normalize_serpapi(raw):
+    title = raw.get("title", ""); company = raw.get("company_name", "")
+    location = raw.get("location", ""); city, state = parse_location(location)
+    desc = raw.get("description", ""); ext = raw.get("detected_extensions", {})
+    sched = ext.get("schedule_type", ""); emp = "full_time"
+    if "part" in sched.lower(): emp = "part_time"
+    elif "intern" in title.lower(): emp = "internship"
     return {
-        "source": "google_jobs",
-        "source_id": hashlib.md5(f"{title}{company}{location}".encode()).hexdigest(),
-        "title": title,
-        "organization": company,
-        "organization_type": infer_org_type(combined),
-        "description": description[:2000],
-        "location_city": city,
-        "location_state": state,
-        "location_country": "US",
-        "is_remote": extensions.get("work_from_home", False),
-        "salary_min": extensions.get("salary_min"),
-        "salary_max": extensions.get("salary_max"),
-        "salary_basis": "annual" if extensions.get("salary_min") else None,
-        "employment_type": emp_type,
-        "is_active": True,
-        "raw_data": json.dumps(raw),
+        "source": "google_jobs", "source_id": hashlib.md5(f"{title}{company}{location}".encode()).hexdigest(),
+        "title": title, "organization": company, "organization_type": infer_org_type(f"{company} {title} {desc}"),
+        "description": desc[:2000], "location_city": city, "location_state": state, "location_country": "US",
+        "is_remote": ext.get("work_from_home", False),
+        "salary_min": ext.get("salary_min"), "salary_max": ext.get("salary_max"),
+        "salary_basis": "annual" if ext.get("salary_min") else None,
+        "employment_type": emp, "fingerprint": job_fingerprint(title, company, state),
+        "is_active": True, "raw_data": json.dumps(raw),
     }
 
-
-def fetch_all_serpapi(max_queries: int = 10) -> list:
-    """Fetch government jobs from Google Jobs. Uses max_queries of 100/month free."""
+def fetch_all_serpapi(max_queries=10):
     all_jobs = {}
-    queries = [
-        "government jobs entry level",
-        "public policy jobs",
-        "state government jobs",
-        "city government jobs",
-        "federal government internship",
-        "public health government",
-        "nonprofit policy jobs",
-        "government analyst",
-        "public administration jobs",
-        "government fellowship",
-    ]
-    for i, query in enumerate(queries[:max_queries]):
-        print(f"    [{i+1}/{min(len(queries), max_queries)}] '{query}'")
+    queries = ["government jobs entry level", "public policy jobs", "state government jobs",
+        "city government jobs", "federal government internship", "public health government",
+        "nonprofit policy jobs", "government analyst", "public administration jobs", "government fellowship"]
+    for i, q in enumerate(queries[:max_queries]):
+        print(f"    [{i+1}/{min(len(queries), max_queries)}] '{q}'")
         try:
-            jobs = fetch_serpapi(query)
-            for job in jobs:
-                key = f"{job.get('title','')}{job.get('company_name','')}"
-                job_id = hashlib.md5(key.encode()).hexdigest()
-                if job_id not in all_jobs:
-                    all_jobs[job_id] = normalize_serpapi(job)
+            for job in fetch_serpapi(q):
+                key = hashlib.md5(f"{job.get('title','')}{job.get('company_name','')}".encode()).hexdigest()
+                if key not in all_jobs: all_jobs[key] = normalize_serpapi(job)
             time.sleep(1)
-        except Exception as e:
-            print(f"      Error: {e}")
+        except Exception as e: print(f"      Error: {e}")
     result = list(all_jobs.values())
     print(f"    Total unique Google Jobs: {len(result)}")
     return result
 
 
-# ============================================================
-# CAREERJET FETCHER + NORMALIZER
-# ============================================================
+# ── FINDWORK ─────────────────────────────────────────────────
 
-def fetch_careerjet(keywords: str, location: str, page: int = 1) -> list:
-    """Fetch jobs from Careerjet. Free, uses their affiliate API."""
-    url = "http://public.api.careerjet.net/search"
-    params = {
-        "keywords": keywords,
-        "location": location,
-        "affid": "publicpath",
-        "user_ip": "0.0.0.0",
-        "user_agent": "Mozilla/5.0",
-        "url": "https://tahvia127.github.io/PublicPath/jobs.html",
-        "sort": "date",
-        "pagesize": 50,
-        "page": page,
-        "locale_code": "en_US",
-    }
-    response = requests.get(url, params=params)
-    response.raise_for_status()
-    data = response.json()
-    return data.get("jobs", [])
+def fetch_findwork(search="", location="", page=1):
+    if not FINDWORK_API_KEY: print("  WARNING: FINDWORK_API_KEY not set"); return []
+    params = {"search": search, "location": location, "page": page, "sort_by": "date"}
+    headers = {"Authorization": f"Token {FINDWORK_API_KEY}"}
+    resp = requests.get("https://findwork.dev/api/jobs/", params=params, headers=headers)
+    resp.raise_for_status()
+    return resp.json().get("results", [])
 
-
-def normalize_careerjet(raw: dict) -> dict:
-    """Map a Careerjet job to the unified schema."""
-    title = raw.get("title", "")
-    company = raw.get("company", "")
-    loc = raw.get("locations", "")
-    city, state = parse_location(loc)
-    description = clean_html(raw.get("description", ""))
-    combined = f"{company} {title} {description}"
-    sal = raw.get("salary", "")
-    sal_min, sal_max, sal_basis = parse_salary(sal) if sal else (None, None, None)
-
+def normalize_findwork(raw):
+    title = raw.get("role", ""); company = raw.get("company_name", "")
+    location = raw.get("location", ""); city, state = parse_location(location)
+    desc = clean_html(raw.get("text", ""))
     return {
-        "source": "careerjet",
-        "source_id": hashlib.md5(raw.get("url", "").encode()).hexdigest(),
-        "title": title,
-        "organization": company,
-        "organization_type": infer_org_type(combined),
-        "description": description,
-        "location_city": city,
-        "location_state": state,
-        "location_country": "US",
-        "is_remote": "remote" in title.lower() or "remote" in loc.lower(),
-        "salary_min": sal_min,
-        "salary_max": sal_max,
-        "salary_basis": sal_basis,
-        "employment_type": "full_time",
-        "application_url": raw.get("url", ""),
-        "posted_date": raw.get("date"),
-        "is_active": True,
-        "raw_data": json.dumps(raw),
+        "source": "findwork", "source_id": f"findwork_{raw.get('id', '')}",
+        "title": title, "organization": company,
+        "organization_type": infer_org_type(f"{company} {title} {desc}"),
+        "description": desc[:2000], "location_city": city, "location_state": state,
+        "location_country": raw.get("country_iso", "US"),
+        "is_remote": raw.get("remote", False),
+        "employment_type": raw.get("employment_type", "full_time").lower().replace("-", "_").replace(" ", "_"),
+        "application_url": raw.get("url", ""), "posted_date": raw.get("date_posted"),
+        "fingerprint": job_fingerprint(title, company, state),
+        "is_active": True, "raw_data": json.dumps(raw),
     }
 
-
-def fetch_all_careerjet(max_pages: int = 2) -> list:
-    """Fetch public sector jobs from Careerjet."""
+def fetch_all_findwork():
     all_jobs = {}
-    total_queries = len(PUBLIC_SECTOR_KEYWORDS) * len(PILOT_STATES)
-    query_num = 0
+    queries = ["government", "public policy", "public health", "nonprofit", "federal"]
+    for i, q in enumerate(queries):
+        print(f"    [{i+1}/{len(queries)}] '{q}'")
+        try:
+            for pg in range(1, 4):
+                jobs = fetch_findwork(search=q, page=pg)
+                if not jobs: break
+                for job in jobs:
+                    jid = str(job.get("id", ""))
+                    if jid and jid not in all_jobs:
+                        n = normalize_findwork(job)
+                        if n.get("location_country", "").upper() in ("US", "UNITED STATES", ""):
+                            all_jobs[jid] = n
+                time.sleep(0.5)
+        except Exception as e: print(f"      Error: {e}")
+    result = list(all_jobs.values())
+    print(f"    Total unique Findwork jobs: {len(result)}")
+    return result
 
-    for keyword in PUBLIC_SECTOR_KEYWORDS:
-        for location in PILOT_STATES:
-            query_num += 1
-            print(f"    [{query_num}/{total_queries}] '{keyword}' in {location}")
-            for page in range(1, max_pages + 1):
+
+# ── JOBICY (RSS) ─────────────────────────────────────────────
+
+def fetch_all_jobicy():
+    try:
+        resp = requests.get("https://jobicy.com/feed/newjobs"); resp.raise_for_status()
+        root = ET.fromstring(resp.content)
+        normalized = []
+        for item in root.findall(".//item"):
+            title = item.findtext("title", "")
+            desc = clean_html(item.findtext("description", ""))
+            cats = [c.text for c in item.findall("category") if c.text]
+            link = item.findtext("link", "")
+            if is_public_sector(title, "", desc):
+                normalized.append({
+                    "source": "jobicy",
+                    "source_id": f"jobicy_{hashlib.md5(link.encode()).hexdigest()}",
+                    "title": title, "organization": "", "organization_type": infer_org_type(f"{title} {desc}"),
+                    "description": desc[:2000], "location_city": "", "location_state": "",
+                    "location_country": "US", "is_remote": True, "employment_type": "full_time",
+                    "application_url": link, "posted_date": item.findtext("pubDate"),
+                    "fingerprint": job_fingerprint(title, "", ""),
+                    "is_active": True, "raw_data": json.dumps({"title": title, "link": link, "categories": cats}),
+                })
+        print(f"    Total Jobicy jobs (filtered): {len(normalized)}")
+        return normalized
+    except Exception as e:
+        print(f"    Error fetching Jobicy: {e}"); return []
+
+
+# ── CAREERJET (disabled from auto-sync) ──────────────────────
+
+def fetch_all_careerjet(max_pages=2):
+    all_jobs = {}
+    for kw in PUBLIC_SECTOR_KEYWORDS:
+        for loc in PILOT_STATES:
+            for pg in range(1, max_pages + 1):
                 try:
-                    jobs = fetch_careerjet(keyword, location, page=page)
-                    if not jobs:
-                        break
+                    params = {"keywords": kw, "location": loc, "affid": "publicpath", "user_ip": "0.0.0.0",
+                        "user_agent": "Mozilla/5.0", "url": "https://tahvia127.github.io/PublicPath/jobs.html",
+                        "sort": "date", "pagesize": 50, "page": pg, "locale_code": "en_US"}
+                    resp = requests.get("http://public.api.careerjet.net/search", params=params)
+                    resp.raise_for_status()
+                    jobs = resp.json().get("jobs", [])
+                    if not jobs: break
                     for job in jobs:
-                        url = job.get("url", "")
-                        if url and url not in all_jobs:
-                            all_jobs[url] = normalize_careerjet(job)
+                        u = job.get("url", "")
+                        if u and u not in all_jobs:
+                            title = job.get("title", ""); company = job.get("company", "")
+                            city, state = parse_location(job.get("locations", ""))
+                            all_jobs[u] = {
+                                "source": "careerjet", "source_id": hashlib.md5(u.encode()).hexdigest(),
+                                "title": title, "organization": company,
+                                "organization_type": infer_org_type(f"{company} {title}"),
+                                "description": clean_html(job.get("description", "")),
+                                "location_city": city, "location_state": state, "location_country": "US",
+                                "is_remote": "remote" in title.lower(), "employment_type": "full_time",
+                                "application_url": u, "posted_date": job.get("date"),
+                                "fingerprint": job_fingerprint(title, company, state),
+                                "is_active": True, "raw_data": json.dumps(job),
+                            }
                     time.sleep(0.5)
-                except Exception as e:
-                    print(f"      Error: {e}")
-                    break
-
+                except Exception as e: print(f"      Error: {e}"); break
     result = list(all_jobs.values())
     print(f"    Total unique Careerjet jobs: {len(result)}")
     return result
 
 
-# ============================================================
-# SYNC ENGINE
-# ============================================================
+# ── SYNC ENGINE ──────────────────────────────────────────────
 
-def upsert_jobs(supabase, jobs: list, source_name: str, batch_size: int = 50) -> dict:
-    """Upsert normalized jobs into Supabase in batches."""
+def upsert_jobs(supabase, jobs, source_name, batch_size=50):
     stats = {"inserted": 0, "errors": 0, "error_messages": []}
-
-    # Deduplicate by source + source_id before upserting
-    seen = set()
-    cleaned = []
+    seen = set(); cleaned = []
     for job in jobs:
         key = (job.get("source", ""), job.get("source_id", ""))
-        if key in seen or not key[1]:
-            continue
+        if key in seen or not key[1]: continue
         seen.add(key)
-        clean = {k: v for k, v in job.items() if v is not None}
-        cleaned.append(clean)
-
-    print(f"  Deduplicated: {len(jobs)} → {len(cleaned)} unique jobs")
-
+        cleaned.append({k: v for k, v in job.items() if v is not None})
+    print(f"  Deduplicated: {len(jobs)} -> {len(cleaned)} unique jobs")
     for i in range(0, len(cleaned), batch_size):
         batch = cleaned[i:i + batch_size]
         try:
-            supabase.table("jobs").upsert(
-                batch,
-                on_conflict="source,source_id"
-            ).execute()
+            supabase.table("jobs").upsert(batch, on_conflict="source,source_id").execute()
             stats["inserted"] += len(batch)
         except Exception as e:
             stats["errors"] += len(batch)
             stats["error_messages"].append(str(e))
             print(f"    Upsert error (batch {i//batch_size + 1}): {e}")
-
     return stats
 
-
-def sync_source(supabase, source_name: str, fetch_fn, **kwargs):
-    """Sync a single source: fetch, normalize, upsert, log."""
-    print(f"\n{'='*60}")
-    print(f"SYNCING: {source_name.upper()}")
-    print(f"{'='*60}")
-
-    log_entry = {
-        "source": source_name,
-        "started_at": datetime.utcnow().isoformat(),
-        "jobs_fetched": 0,
-        "jobs_new": 0,
-        "jobs_updated": 0,
-        "errors": [],
-    }
-
+def sync_source(supabase, source_name, fetch_fn, **kwargs):
+    print(f"\n{'='*60}\nSYNCING: {source_name.upper()}\n{'='*60}")
+    log_entry = {"source": source_name, "started_at": datetime.utcnow().isoformat(),
+        "jobs_fetched": 0, "jobs_new": 0, "jobs_updated": 0, "errors": []}
     try:
-        # Fetch and normalize
         normalized_jobs = fetch_fn(**kwargs)
         log_entry["jobs_fetched"] = len(normalized_jobs)
         print(f"  Fetched {len(normalized_jobs)} jobs")
-
-        if not normalized_jobs:
-            print("  No jobs to upsert")
-        else:
-            # Upsert to Supabase
+        if normalized_jobs:
             stats = upsert_jobs(supabase, normalized_jobs, source_name)
             log_entry["jobs_new"] = stats["inserted"]
             log_entry["errors"] = stats["error_messages"]
             print(f"  Upserted: {stats['inserted']}, Errors: {stats['errors']}")
-
+        else:
+            print("  No jobs to upsert")
     except Exception as e:
-        log_entry["errors"] = [str(e)]
-        print(f"  FATAL ERROR: {e}")
-
+        log_entry["errors"] = [str(e)]; print(f"  FATAL ERROR: {e}")
     log_entry["completed_at"] = datetime.utcnow().isoformat()
-
-    # Write sync log
-    try:
-        supabase.table("sync_log").insert(log_entry).execute()
-    except Exception as e:
-        print(f"  Could not write sync log: {e}")
-
+    try: supabase.table("sync_log").insert(log_entry).execute()
+    except Exception as e: print(f"  Could not write sync log: {e}")
     return log_entry
 
+def dedup_cross_source(supabase):
+    try:
+        result = supabase.rpc("dedup_cross_source_jobs").execute()
+        count = result.data if result.data else 0
+        print(f"  Deactivated {count} cross-source duplicates")
+    except Exception as e: print(f"  Error in cross-source dedup: {e}")
 
 def expire_old_jobs(supabase):
-    """Mark jobs past their closing date as inactive."""
-    print(f"\n{'='*60}")
-    print("EXPIRING OLD JOBS")
-    print(f"{'='*60}")
+    print(f"\n{'='*60}\nEXPIRING OLD JOBS\n{'='*60}")
     try:
         result = supabase.rpc("deactivate_expired_jobs").execute()
-        count = result.data if result.data else 0
-        print(f"  Deactivated {count} expired jobs")
-    except Exception as e:
-        print(f"  Error: {e}")
-
+        print(f"  Deactivated {result.data if result.data else 0} expired jobs")
+    except Exception as e: print(f"  Error: {e}")
 
 def print_stats(supabase):
-    """Print database summary stats."""
-    print(f"\n{'='*60}")
-    print("DATABASE STATS")
-    print(f"{'='*60}")
+    print(f"\n{'='*60}\nDATABASE STATS\n{'='*60}")
     try:
-        result = supabase.rpc("get_job_stats").execute()
-        stats = result.data
+        stats = supabase.rpc("get_job_stats").execute().data
         if stats:
             print(f"  Total jobs:           {stats.get('total_jobs', 0)}")
             print(f"  Active jobs:          {stats.get('active_jobs', 0)}")
             print(f"  Closing in 7 days:    {stats.get('closing_within_7_days', 0)}")
             print(f"\n  By Source:")
-            for source, count in (stats.get("by_source") or {}).items():
-                print(f"    {source}: {count}")
+            for s, c in (stats.get("by_source") or {}).items(): print(f"    {s}: {c}")
             print(f"\n  By Org Type:")
-            for org, count in (stats.get("by_org_type") or {}).items():
-                print(f"    {org}: {count}")
+            for o, c in (stats.get("by_org_type") or {}).items(): print(f"    {o}: {c}")
             print(f"\n  By State (top 15):")
-            for state, count in sorted((stats.get("by_state") or {}).items(), key=lambda x: -x[1]):
-                print(f"    {state}: {count}")
+            for s, c in sorted((stats.get("by_state") or {}).items(), key=lambda x: -x[1])[:15]: print(f"    {s}: {c}")
             last = stats.get("last_sync")
-            if last:
-                print(f"\n  Last sync: {last.get('source')} at {last.get('completed_at')} ({last.get('jobs_fetched')} jobs)")
-    except Exception as e:
-        print(f"  Error fetching stats: {e}")
-        print("  (Have you run 01_create_tables.sql in Supabase yet?)")
+            if last: print(f"\n  Last sync: {last.get('source')} at {last.get('completed_at')} ({last.get('jobs_fetched')} jobs)")
+    except Exception as e: print(f"  Error fetching stats: {e}")
 
 
-# ============================================================
-# MAIN
-# ============================================================
+# ── MAIN ─────────────────────────────────────────────────────
 
 def main():
     parser = argparse.ArgumentParser(description="PublicPath Job Sync Pipeline")
-    parser.add_argument("--source", choices=["usajobs", "jooble", "adzuna", "serpapi", "careerjet", "all"], default="all",
-                        help="Which source to sync (default: all)")
-    parser.add_argument("--stats", action="store_true",
-                        help="Print database stats and exit")
-    parser.add_argument("--expire", action="store_true",
-                        help="Deactivate expired jobs and exit")
-    parser.add_argument("--jooble-pages", type=int, default=2,
-                        help="Max pages per Jooble query (default: 2)")
+    parser.add_argument("--source",
+        choices=["usajobs", "jooble", "adzuna", "serpapi", "findwork", "jobicy", "careerjet", "all"],
+        default="all", help="Which source to sync (default: all)")
+    parser.add_argument("--stats", action="store_true", help="Print database stats and exit")
+    parser.add_argument("--expire", action="store_true", help="Deactivate expired jobs and exit")
+    parser.add_argument("--jooble-pages", type=int, default=2, help="Max pages per Jooble query")
     args = parser.parse_args()
 
     supabase = get_supabase()
 
-    if args.stats:
-        print_stats(supabase)
-        return
+    if args.stats: print_stats(supabase); return
+    if args.expire: expire_old_jobs(supabase); return
 
-    if args.expire:
-        expire_old_jobs(supabase)
-        return
+    print(f"{'='*60}\nPublicPath Job Sync — {datetime.utcnow().strftime('%Y-%m-%d %H:%M UTC')}\n{'='*60}")
 
-    print("=" * 60)
-    print(f"PublicPath Job Sync — {datetime.utcnow().strftime('%Y-%m-%d %H:%M UTC')}")
-    print("=" * 60)
+    if args.source in ("usajobs", "all"): sync_source(supabase, "usajobs", fetch_all_usajobs)
+    if args.source in ("jooble", "all"): sync_source(supabase, "jooble", fetch_all_jooble, max_pages_per_query=args.jooble_pages)
+    if args.source in ("adzuna", "all"): sync_source(supabase, "adzuna", fetch_all_adzuna)
+    if args.source in ("serpapi", "all"): sync_source(supabase, "google_jobs", fetch_all_serpapi)
+    if args.source in ("findwork", "all"): sync_source(supabase, "findwork", fetch_all_findwork)
+    if args.source in ("jobicy", "all"): sync_source(supabase, "jobicy", fetch_all_jobicy)
+    if args.source == "careerjet": sync_source(supabase, "careerjet", fetch_all_careerjet)
 
-    # Sync sources
-    if args.source in ("usajobs", "all"):
-        sync_source(supabase, "usajobs", fetch_all_usajobs)
-
-    if args.source in ("jooble", "all"):
-        sync_source(supabase, "jooble", fetch_all_jooble, max_pages_per_query=args.jooble_pages)
-
-    if args.source in ("adzuna", "all"):
-        sync_source(supabase, "adzuna", fetch_all_adzuna)
-
-    if args.source in ("serpapi", "all"):
-        sync_source(supabase, "google_jobs", fetch_all_serpapi)
-
-    if args.source in ("careerjet", "all"):
-        sync_source(supabase, "careerjet", fetch_all_careerjet)
-
-    # Expire old jobs after syncing
     expire_old_jobs(supabase)
 
-    # Post-sync cleanup
-    try:
-        supabase.rpc("classify_experience_levels").execute()
-        print("  Classified experience levels")
-    except Exception as e:
-        print(f"  Error: {e}")
+    print(f"\n{'='*60}\nPOST-SYNC CLEANUP\n{'='*60}")
+    for fn, label in [
+        ("classify_experience_levels", "Classified experience levels"),
+        ("normalize_employment_types", "Normalized employment types"),
+        ("normalize_state_names", "Normalized state names"),
+        ("reclassify_org_types", "Reclassified org types"),
+    ]:
+        try: supabase.rpc(fn).execute(); print(f"  {label}")
+        except Exception as e: print(f"  Error ({fn}): {e}")
 
-    try:
-        supabase.rpc("normalize_employment_types").execute()
-        print("  Normalized employment types")
-    except Exception as e:
-        print(f"  Error: {e}")
-
-    try:
-        supabase.rpc("normalize_state_names").execute()
-        print("  Normalized state names")
-    except Exception as e:
-        print(f"  Error: {e}")
-
-    try:
-        supabase.rpc("reclassify_org_types").execute()
-        print("  Reclassified org types")
-    except Exception as e:
-        print(f"  Error: {e}")
-
-    # Print summary
+    dedup_cross_source(supabase)
     print_stats(supabase)
-
-    print(f"\n{'='*60}")
-    print("SYNC COMPLETE")
-    print(f"{'='*60}")
-
+    print(f"\n{'='*60}\nSYNC COMPLETE\n{'='*60}")
 
 if __name__ == "__main__":
     main()
