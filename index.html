@@ -1293,7 +1293,7 @@
           <!-- Beehiiv attribution tracking -->
           <script type="text/javascript" async src="https://subscribe-forms.beehiiv.com/attribution.js"></script>
 
-          <form id="signupForm" action="https://subscribe-forms.beehiiv.com/96297861-e4e8-4a45-ba67-7f0d66646f44" method="POST" target="_blank">
+          <form id="signupForm">
             <div class="form-row">
               <div class="form-group">
                 <label for="firstName">First name</label>
@@ -1403,9 +1403,17 @@
     </div>
   </footer>
 
+  <!-- Hidden Beehiiv form for email subscription -->
+  <iframe id="beehiivFrame" name="beehiivFrame" src="about:blank" style="display:none;width:0;height:0;border:0;"></iframe>
+  <form id="beehiivHiddenForm" action="https://subscribe-forms.beehiiv.com/96297861-e4e8-4a45-ba67-7f0d66646f44" method="POST" target="beehiivFrame" style="display:none;">
+    <input type="email" name="email" id="beehiivEmail">
+    <input type="text" name="first_name" id="beehiivFirstName">
+    <input type="text" name="last_name" id="beehiivLastName">
+  </form>
+
   <script>
   document.addEventListener('DOMContentLoaded', function() {
-    // Save signup preferences to Supabase
+    // Supabase client for saving preferences
     var sbSignup = null;
     if (window.supabase) {
       sbSignup = window.supabase.createClient(
@@ -1416,22 +1424,52 @@
 
     var signupForm = document.getElementById('signupForm');
     if (signupForm) {
-      signupForm.addEventListener('submit', async function() {
-        if (!sbSignup) return;
+      signupForm.addEventListener('submit', async function(e) {
+        e.preventDefault();
+
         var email = document.getElementById('email').value;
         var firstName = document.getElementById('firstName').value;
         var lastName = document.getElementById('lastName').value;
         var school = document.getElementById('school').value;
+        var btn = signupForm.querySelector('.btn-submit');
+
+        // Collect preferences
         var govLevels = [];
         document.querySelectorAll('input[name="govLevel"]:checked').forEach(function(cb) { govLevels.push(cb.value); });
         var funcAreas = [];
         document.querySelectorAll('input[name="funcArea"]:checked').forEach(function(cb) { funcAreas.push(cb.value); });
+
+        // Disable button while processing
+        var originalText = btn.textContent;
+        btn.textContent = 'Signing up...';
+        btn.disabled = true;
+
+        // 1. Save preferences to Supabase
+        if (sbSignup) {
+          try {
+            await sbSignup.from('subscribers').upsert({
+              email: email, first_name: firstName, last_name: lastName,
+              school: school, gov_levels: govLevels, func_areas: funcAreas, source: 'website'
+            }, { onConflict: 'email' });
+          } catch (err) { console.log('Supabase save:', err); }
+        }
+
+        // 2. Submit email to Beehiiv via hidden form
         try {
-          await sbSignup.from('subscribers').upsert({
-            email: email, first_name: firstName, last_name: lastName,
-            school: school, gov_levels: govLevels, func_areas: funcAreas, source: 'website'
-          }, { onConflict: 'email' });
-        } catch (err) { console.log('Preference save:', err); }
+          document.getElementById('beehiivEmail').value = email;
+          document.getElementById('beehiivFirstName').value = firstName;
+          document.getElementById('beehiivLastName').value = lastName;
+          document.getElementById('beehiivHiddenForm').submit();
+        } catch (err) { console.log('Beehiiv submit:', err); }
+
+        // 3. Show success
+        btn.textContent = '\u2713 You\u2019re on the list!';
+        btn.style.background = '#059669';
+        setTimeout(function() {
+          btn.textContent = originalText;
+          btn.style.background = '';
+          btn.disabled = false;
+        }, 3000);
       });
     }
 
