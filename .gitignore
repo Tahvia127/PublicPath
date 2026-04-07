@@ -1,0 +1,37 @@
+# Environment / secrets
+.env
+*.env
+!.env.example
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+dist/
+build/
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# VS Code
+.vscode/
+
+# Local directories
+New/
+anaconda_projects/
+
+# Office docs (keep PDFs in git if desired, but not local drafts)
+*.docx
+*.xlsx
+
+# Logs
+*.log
