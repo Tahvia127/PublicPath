@@ -40,6 +40,31 @@ FINDWORK_API_KEY = os.getenv("FINDWORK_API_KEY")
 
 PILOT_STATES = ["Illinois", "Washington DC", "Virginia", "Maryland", "New York", "California"]
 
+# Organizations permanently blocked from ingestion — confirmed private sector
+ORG_BLOCKLIST = {
+    # Travel nursing / locum staffing
+    "travelnursesource", "locumjobsnetwork", "locumjobsonline", "comphealth",
+    "docgo", "aya healthcare", "host healthcare", "lancesoft", "atlas medstaff",
+    "ahs staffing", "onestaff medical", "talent4health", "care career",
+    "malone healthcare",
+    # Private security
+    "allied universal", "allied universal inc", "inter-con security",
+    # Finance / banking / consulting
+    "ey", "fidelity investments", "citigroup", "smbc group", "td bank",
+    "goldman sachs", "morgan stanley", "jpmorgan", "blackrock", "kpmg",
+    "pwc", "bcg", "mckinsey", "bain", "deloitte",
+    # Defense contractors (not government employers)
+    "clearancejobs", "clearance jobs", "booz allen hamilton",
+    "general dynamics information technology", "leidos", "aecom", "serco",
+    "prosidian consulting", "genesis10", "koniag government services",
+    "sosi", "venesco", "ripple effect", "alert it solutions",
+    # Private healthcare / real estate / other
+    "medstar health", "optum", "adventist healthcare", "amr",
+    "equity lifestyle properties", "insite real estate llc", "headway",
+    "diversityjobs", "diversityjobs inc", "compass inc", "sunbit",
+    "tylin", "congruex", "general motors",
+}
+
 PUBLIC_SECTOR_KEYWORDS = [
     "government", "public policy", "state government", "city government",
     "public administration", "county government", "public health",
@@ -526,11 +551,19 @@ def fetch_all_careerjet(max_pages=2):
 def upsert_jobs(supabase, jobs, source_name, batch_size=50):
     stats = {"inserted": 0, "errors": 0, "error_messages": []}
     seen = set(); cleaned = []
+    blocked = 0
     for job in jobs:
         key = (job.get("source", ""), job.get("source_id", ""))
         if key in seen or not key[1]: continue
+        # Skip blocklisted organizations
+        org = job.get("organization", "").lower().strip()
+        if org in ORG_BLOCKLIST:
+            blocked += 1
+            continue
         seen.add(key)
         cleaned.append({k: v for k, v in job.items() if v is not None})
+    if blocked:
+        print(f"  Blocked {blocked} jobs from blocklisted orgs")
     print(f"  Deduplicated: {len(jobs)} -> {len(cleaned)} unique jobs")
     for i in range(0, len(cleaned), batch_size):
         batch = cleaned[i:i + batch_size]
