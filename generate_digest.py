@@ -91,16 +91,14 @@ def get_network_picks(supabase):
 
 
 def get_jobs_for_segment(supabase, gov_level=None, func_area=None, state=None, limit=10):
-    """Get entry-level jobs matching a preference segment."""
+    """Get jobs matching a preference segment."""
     now = datetime.utcnow().isoformat()
-    future = (datetime.utcnow() + timedelta(days=21)).isoformat()
 
+    # Include jobs that are still open (closing_date in future or not set)
     query = supabase.table("jobs") \
         .select("title, organization, organization_type, location_city, location_state, salary_min, salary_max, closing_date, application_url") \
         .eq("is_active", True) \
-        .eq("experience_level", "entry") \
-        .gt("closing_date", now) \
-        .lt("closing_date", future)
+        .or_(f"closing_date.gt.{now},closing_date.is.null")
 
     if gov_level:
         query = query.eq("organization_type", gov_level)
@@ -250,6 +248,7 @@ def print_digest_text(segment_name, jobs, network_picks, fellowships):
 
     print("─" * 50)
     print(f"Browse all {segment_name} jobs: https://tahvia127.github.io/PublicPath/jobs.html")
+    # Note: update this URL if jobs.html moves
     print("─" * 50)
 
 

@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PublicPath — Browse Public Sector Jobs</title>
+  <meta name="description" content="Search federal, state, and local government jobs — all in one place. Filter by location, government level, and more.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300..700;1,9..40,300..700&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <style>
+    :root{--navy:#1B3A5C;--navy-deep:#122840;--teal:#0891B2;--teal-light:#22D3EE;--teal-muted:#0E7490;--warm-white:#FAFAF8;--cream:#F5F3EE;--sand:#EBE8E1;--text-primary:#1E293B;--text-secondary:#475569;--text-muted:#64748B;--border:#E2E0DB;--font-display:'Lora',Georgia,serif;--font-body:'DM Sans',-apple-system,sans-serif}
+    *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}html{scroll-behavior:smooth;font-size:16px}body{font-family:var(--font-body);color:var(--text-primary);background:var(--warm-white);line-height:1.65;-webkit-font-smoothing:antialiased}a{color:var(--teal);text-decoration:none}a:hover{color:var(--teal-muted)}
+    .nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(250,250,248,0.92);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--border);transition:box-shadow .3s ease}.nav.scrolled{box-shadow:0 1px 12px rgba(27,58,92,.08)}.nav-inner{max-width:1120px;margin:0 auto;padding:0 24px;height:64px;display:flex;align-items:center;justify-content:space-between}.logo{font-family:var(--font-display);font-size:1.35rem;font-weight:700;color:var(--navy);text-decoration:none;letter-spacing:-.02em}.logo span{color:var(--text-muted);font-weight:400}.nav-links{display:flex;align-items:center;gap:32px;list-style:none}.nav-links a{font-size:.9rem;font-weight:500;color:var(--text-secondary);text-decoration:none;transition:color .2s}.nav-links a:hover{color:var(--navy)}.nav-links a.active{color:var(--teal-muted);font-weight:600}.nav-cta{display:inline-flex;align-items:center;padding:8px 20px;background:var(--navy);color:#fff!important;border-radius:6px;font-size:.875rem;font-weight:600;transition:background .2s,transform .15s}.nav-cta:hover{background:var(--navy-deep);transform:translateY(-1px)}.mobile-toggle{display:none;background:none;border:none;cursor:pointer;padding:4px}.mobile-toggle svg{width:24px;height:24px;stroke:var(--navy)}
+    .search-hero{padding:120px 24px 56px;background:linear-gradient(168deg,var(--warm-white) 0%,var(--cream) 50%,#E8EEF4 100%);text-align:center;position:relative;overflow:hidden}.search-hero::before{content:'';position:absolute;top:-200px;right:-200px;width:600px;height:600px;border-radius:50%;background:radial-gradient(circle,rgba(8,145,178,.06) 0%,transparent 70%);pointer-events:none}.search-hero h1{font-family:var(--font-display);font-size:clamp(1.8rem,4vw,2.6rem);font-weight:700;color:var(--navy);letter-spacing:-.025em;margin-bottom:12px;animation:fadeUp .6s ease both}.search-hero p{font-size:1.05rem;color:var(--text-secondary);max-width:520px;margin:0 auto 32px;animation:fadeUp .6s ease .1s both}@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}.search-bar-wrap{max-width:640px;margin:0 auto;animation:fadeUp .6s ease .2s both}.search-bar{display:flex;background:#fff;border-radius:10px;overflow:hidden;border:1.5px solid var(--border);box-shadow:0 4px 24px rgba(27,58,92,.06);transition:border-color .2s,box-shadow .2s}.search-bar:focus-within{border-color:var(--teal);box-shadow:0 4px 24px rgba(8,145,178,.1)}.search-bar input{flex:1;border:none;padding:15px 20px;font-size:1rem;font-family:var(--font-body);color:var(--text-primary);outline:none;background:transparent}.search-bar input::placeholder{color:var(--text-muted)}.search-bar button{background:var(--navy);color:#fff;border:none;padding:15px 28px;font-size:.9rem;font-weight:600;font-family:var(--font-body);cursor:pointer;transition:background .2s;display:flex;align-items:center;gap:6px;white-space:nowrap}.search-bar button:hover{background:var(--navy-deep)}.search-bar button svg{width:16px;height:16px}
+    .main{max-width:1120px;margin:0 auto;padding:32px 24px 60px;display:grid;grid-template-columns:260px 1fr;gap:32px}.sidebar{position:sticky;top:84px;align-self:start}.filter-card{background:#fff;border-radius:12px;border:1px solid var(--border);padding:24px;box-shadow:0 4px 24px rgba(27,58,92,.04)}.filter-card h3{font-family:var(--font-display);font-size:1.05rem;font-weight:600;color:var(--navy);margin-bottom:20px}.filter-group{margin-bottom:18px;padding-bottom:18px;border-bottom:1px solid #F1F0ED}.filter-group:last-of-type{border-bottom:none;margin-bottom:0;padding-bottom:0}.filter-label{display:block;font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text-muted);margin-bottom:8px}.filter-group select{width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:8px;font-family:var(--font-body);font-size:.875rem;color:var(--text-secondary);background:#fff;cursor:pointer;outline:none;transition:border-color .2s;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2364748B' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center}.filter-group select:focus{border-color:var(--teal)}.cb-group{display:flex;flex-direction:column;gap:6px}.cb-item{display:flex;align-items:center;gap:8px;font-size:.875rem;color:var(--text-secondary);cursor:pointer}.cb-item input[type="checkbox"]{width:15px;height:15px;accent-color:var(--teal);cursor:pointer}.toggle-row{display:flex;justify-content:space-between;align-items:center;font-size:.875rem;color:var(--text-secondary);padding:2px 0}.toggle{width:38px;height:20px;background:var(--sand);border-radius:10px;position:relative;cursor:pointer;transition:background .2s}.toggle.on{background:var(--teal)}.toggle::after{content:'';position:absolute;top:2px;left:2px;width:16px;height:16px;background:#fff;border-radius:50%;transition:transform .2s;box-shadow:0 1px 3px rgba(0,0,0,.12)}.toggle.on::after{transform:translateX(18px)}.clear-btn{display:block;width:100%;margin-top:16px;padding:9px;background:none;border:1.5px solid var(--border);border-radius:8px;font-family:var(--font-body);font-size:.8rem;color:var(--text-muted);cursor:pointer;transition:all .2s}.clear-btn:hover{border-color:#E05252;color:#E05252}
+    .results-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}.results-count{font-size:.9rem;color:var(--text-muted)}.results-count strong{color:var(--navy)}.sort-sel{padding:7px 12px;border:1.5px solid var(--border);border-radius:8px;font-family:var(--font-body);font-size:.8rem;color:var(--text-secondary);background:#fff;cursor:pointer}.job-list{display:flex;flex-direction:column;gap:10px}.job-card{background:#fff;border:1px solid var(--border);border-radius:12px;padding:20px 24px;transition:all .2s ease;cursor:pointer}.job-card:hover{border-color:rgba(8,145,178,.35);box-shadow:0 4px 20px rgba(27,58,92,.06);transform:translateY(-1px)}.jc-title{font-family:var(--font-display);font-size:1.02rem;font-weight:600;color:var(--navy);line-height:1.35;margin-bottom:3px}.jc-org{font-size:.88rem;color:var(--text-secondary);margin-bottom:10px}.jc-tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}.jc-tag{display:inline-flex;align-items:center;padding:3px 10px;border-radius:100px;font-size:.72rem;font-weight:500}.t-loc{background:#F1F3F5;color:var(--text-secondary)}.t-sal{background:#ECFDF5;color:#047857}.t-federal{background:#EFF6FF;color:#1D4ED8}.t-state{background:#FFF7ED;color:#C2410C}.t-local{background:#F5F3FF;color:#6D28D9}.t-nonprofit{background:#ECFDF5;color:#15803D}.t-remote{background:rgba(8,145,178,.07);color:var(--teal-muted)}.t-closing{background:#FEF2F2;color:#DC2626;font-weight:600}.t-grade{background:#F1F3F5;color:var(--text-muted)}.jc-desc{font-size:.84rem;color:var(--text-muted);line-height:1.55;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}.jc-footer{display:flex;justify-content:space-between;align-items:center;margin-top:12px;padding-top:12px;border-top:1px solid #F5F3EE}.jc-date{font-size:.76rem;color:var(--text-muted)}.jc-apply{display:inline-flex;align-items:center;gap:4px;padding:7px 16px;background:var(--navy);color:#fff;border-radius:6px;font-size:.8rem;font-weight:600;transition:background .2s,transform .15s}.jc-apply:hover{background:var(--navy-deep);color:#fff;transform:translateY(-1px)}
+    .loading-state{text-align:center;padding:60px 20px;color:var(--text-muted)}.spinner{width:32px;height:32px;border:3px solid var(--sand);border-top-color:var(--teal);border-radius:50%;animation:spin .7s linear infinite;margin:0 auto 12px}@keyframes spin{to{transform:rotate(360deg)}}.empty-state{text-align:center;padding:60px 20px}.empty-state h3{font-family:var(--font-display);color:var(--navy);font-size:1.15rem;margin-bottom:8px}.empty-state p{color:var(--text-muted);font-size:.9rem}
+    .pagination{display:flex;justify-content:center;gap:6px;margin-top:28px}.pg-btn{padding:8px 14px;border:1.5px solid var(--border);border-radius:8px;background:#fff;font-family:var(--font-body);font-size:.85rem;color:var(--text-secondary);cursor:pointer;transition:all .2s}.pg-btn:hover{border-color:var(--teal);color:var(--teal-muted)}.pg-btn.active{background:var(--navy);color:#fff;border-color:var(--navy)}.pg-btn:disabled{opacity:.35;cursor:not-allowed}
+    .jc-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.jc-save,.jc-applied{display:inline-flex;align-items:center;gap:4px;padding:5px 12px;border-radius:6px;font-family:var(--font-body);font-size:.78rem;font-weight:600;cursor:pointer;transition:all .2s;border:1.5px solid var(--border);background:#fff;color:var(--text-muted)}.jc-save:hover{border-color:var(--teal);color:var(--teal-muted)}.jc-save.saved{background:rgba(8,145,178,.07);border-color:var(--teal);color:var(--teal-muted)}.jc-applied:hover{border-color:#059669;color:#059669}.jc-applied.applied{background:#ECFDF5;border-color:#059669;color:#059669}
+    .email-modal{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.4);z-index:200;align-items:center;justify-content:center}.email-modal.show{display:flex}.email-modal-box{background:#fff;border-radius:14px;padding:32px;max-width:400px;width:90%;box-shadow:0 20px 60px rgba(0,0,0,.15)}.email-modal-box h3{font-family:var(--font-display);color:var(--navy);font-size:1.1rem;margin-bottom:8px}.email-modal-box p{color:var(--text-muted);font-size:.88rem;margin-bottom:20px}.email-modal-box input{width:100%;padding:12px 14px;border:1.5px solid var(--border);border-radius:8px;font-family:var(--font-body);font-size:.9rem;margin-bottom:14px;outline:none}.email-modal-box input:focus{border-color:var(--teal)}.email-modal-box button{width:100%;padding:12px;background:var(--navy);color:#fff;border:none;border-radius:8px;font-family:var(--font-body);font-size:.9rem;font-weight:600;cursor:pointer}.email-modal-box button:hover{background:var(--navy-deep)}
+    .guide-flow{max-width:1120px;margin:0 auto;padding:0 24px}.guide-inner{background:#fff;border:1px solid var(--border);border-radius:12px;padding:20px 28px;margin-top:-20px;margin-bottom:24px;box-shadow:0 4px 24px rgba(27,58,92,.04)}.guide-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}.guide-label{font-family:var(--font-display);font-size:1rem;font-weight:600;color:var(--navy)}.guide-close{background:none;border:none;font-size:1.3rem;color:var(--text-muted);cursor:pointer;padding:0 4px;line-height:1}.guide-close:hover{color:var(--navy)}.guide-questions{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}.guide-q select{width:100%;padding:10px 12px;border:1.5px solid var(--border);border-radius:8px;font-family:var(--font-body);font-size:.875rem;color:var(--text-secondary);background:#fff;cursor:pointer;outline:none;transition:border-color .2s;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2364748B' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center}.guide-q select:focus{border-color:var(--teal)}.guide-flow.hidden{display:none}
+    @media(max-width:700px){.guide-questions{grid-template-columns:1fr}}
+    .mob-filter-toggle{display:none;width:100%;padding:12px;background:#fff;border:1.5px solid var(--border);border-radius:10px;font-family:var(--font-body);font-size:.9rem;font-weight:600;color:var(--navy);cursor:pointer;text-align:center;margin-bottom:16px}.mob-filter-toggle:hover{border-color:var(--teal)}
+    .footer{border-top:1px solid var(--border);padding:40px 24px;text-align:center}.footer-inner{max-width:1120px;margin:0 auto}.footer-brand{font-family:var(--font-display);font-size:1.2rem;font-weight:700;color:var(--navy);margin-bottom:16px}.footer-brand span{color:var(--text-muted);font-weight:400}.footer-links{display:flex;justify-content:center;gap:24px;list-style:none;margin-bottom:16px}.footer-links a{font-size:.875rem;color:var(--text-muted)}.footer-links a:hover{color:var(--navy)}.footer-copy{font-size:.8rem;color:var(--text-muted)}
+    @media(max-width:860px){.main{grid-template-columns:1fr}.sidebar{position:static;order:2}.sidebar .filter-card{display:none}.sidebar .filter-card.show{display:block}.mob-filter-toggle{display:block}.guide-flow{display:none}.nav-links{display:none}.nav-links.open{display:flex;flex-direction:column;position:absolute;top:64px;left:0;right:0;background:var(--warm-white);border-bottom:1px solid var(--border);padding:16px 24px;gap:12px;box-shadow:0 8px 24px rgba(27,58,92,.08);z-index:50}.mobile-toggle{display:block}.jc-actions{flex-direction:column;gap:6px;align-items:stretch}.jc-actions .jc-apply,.jc-actions .jc-save,.jc-actions .jc-applied{justify-content:center;text-align:center}}@media(max-width:600px){.search-bar{flex-direction:column;border-radius:10px}.search-bar button{border-radius:0 0 8px 8px;justify-content:center}.search-hero{padding:100px 16px 40px}.search-hero h1{font-size:1.5rem}.main{padding:20px 16px 40px}}
+  </style>
+</head>
+<body>
+
+<nav class="nav" id="nav">
+  <div class="nav-inner">
+    <a href="index.html" class="logo">Public<span>Path</span></a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="jobs.html" class="active">Browse Jobs</a></li>
+      <li><a href="resources.html">Resources</a></li>
+      <li><a href="index.html#digest">Weekly Digest</a></li>
+      <li><a href="index.html#founder">About</a></li>
+      <li><a href="index.html#signup" class="nav-cta">Sign Up</a></li>
+    </ul>
+    <button class="mobile-toggle" id="mobileToggle" aria-label="Toggle navigation">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+  </div>
+</nav>
+
+<section class="search-hero">
+  <h1>Find your role in public service</h1>
+  <p>Search federal, state, and local government jobs — all in one place.</p>
+  <div class="search-bar-wrap">
+    <div class="search-bar">
+      <input type="text" id="searchInput" placeholder="Search by title, keyword, or agency..." autocomplete="off">
+      <button onclick="performSearch()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+        Search Jobs
+      </button>
+    </div>
+  </div>
+</section>
+
+<!-- GUIDED FLOW: "Not sure where to start?" -->
+<div class="guide-flow" id="guideFlow">
+  <div class="guide-inner">
+    <div class="guide-header">
+      <span class="guide-label">Not sure where to start?</span>
+      <button class="guide-close" onclick="closeGuide()" title="Dismiss">&times;</button>
+    </div>
+    <div class="guide-questions">
+      <div class="guide-q">
+        <label class="filter-label">What do you want to work on?</label>
+        <select id="guideArea" onchange="runGuide()">
+          <option value="">Choose an area...</option>
+          <option value="policy">Policy & Analysis</option>
+          <option value="operations">Operations & Management</option>
+          <option value="technology">Technology & Data</option>
+          <option value="communications">Communications & PR</option>
+          <option value="finance">Finance & Budget</option>
+          <option value="legal">Legal & Compliance</option>
+          <option value="health">Public Health</option>
+          <option value="education">Education</option>
+        </select>
+      </div>
+      <div class="guide-q">
+        <label class="filter-label">What level of government?</label>
+        <select id="guideLevel" onchange="runGuide()">
+          <option value="">Any level</option>
+          <option value="federal">Federal</option>
+          <option value="state">State</option>
+          <option value="local">Local / City / County</option>
+        </select>
+      </div>
+      <div class="guide-q">
+        <label class="filter-label">Where?</label>
+        <select id="guideState" onchange="runGuide()">
+          <option value="">Anywhere</option>
+          <option value="IL">Illinois / Chicago</option>
+          <option value="DC">Washington DC</option>
+          <option value="NY">New York</option>
+          <option value="CA">California</option>
+          <option value="VA">Virginia</option>
+          <option value="MD">Maryland</option>
+          <option value="TX">Texas</option>
+        </select>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="main">
+  <aside class="sidebar">
+    <button class="mob-filter-toggle" onclick="document.querySelector('.filter-card').classList.toggle('show');this.textContent=this.textContent.includes('Show')?'Hide Filters':'Show Filters'">Show Filters</button>
+    <div class="filter-card">
+      <h3>Filter Results</h3>
+      <div class="filter-group">
+        <label class="filter-label">Government Level</label>
+        <div class="cb-group" id="orgTypeFilters">
+          <label class="cb-item"><input type="checkbox" value="federal" checked onchange="applyFilters()"> Federal</label>
+          <label class="cb-item"><input type="checkbox" value="state" checked onchange="applyFilters()"> State</label>
+          <label class="cb-item"><input type="checkbox" value="local" checked onchange="applyFilters()"> Local</label>
+          <label class="cb-item"><input type="checkbox" value="nonprofit" checked onchange="applyFilters()"> Nonprofit</label>
+        </div>
+      </div>
+      <div class="filter-group">
+        <label class="filter-label">State / Location</label>
+        <select id="stateFilter" onchange="applyFilters()">
+          <option value="">All States</option>
+          <option value="IL">Illinois</option>
+          <option value="DC">Washington DC</option>
+          <option value="VA">Virginia</option>
+          <option value="MD">Maryland</option>
+          <option value="NY">New York</option>
+          <option value="CA">California</option>
+          <option value="TX">Texas</option>
+          <option value="GA">Georgia</option>
+          <option value="MA">Massachusetts</option>
+          <option value="PA">Pennsylvania</option>
+          <option value="OH">Ohio</option>
+          <option value="FL">Florida</option>
+          <option value="WA">Washington</option>
+          <option value="CO">Colorado</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label class="filter-label">Employment Type</label>
+        <select id="empTypeFilter" onchange="applyFilters()">
+          <option value="">All Types</option>
+          <option value="full_time">Full-Time</option>
+          <option value="part_time">Part-Time</option>
+          <option value="internship">Internship</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label class="filter-label">Experience Level</label>
+        <select id="expFilter" onchange="applyFilters()">
+          <option value="">All Levels</option>
+          <option value="entry">Entry Level (5,870)</option>
+          <option value="mid">Mid Level (5,850)</option>
+          <option value="senior">Senior (3,302)</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <div class="toggle-row"><span>Remote eligible only</span><div class="toggle" id="remoteToggle" onclick="toggleRemote()"></div></div>
+      </div>
+      <div class="filter-group">
+        <div class="toggle-row"><span>Closing within 7 days</span><div class="toggle" id="closingToggle" onclick="toggleClosing()"></div></div>
+      </div>
+      <button class="clear-btn" onclick="clearFilters()">Clear all filters</button>
+    </div>
+  </aside>
+
+  <section class="results">
+    <div class="results-header">
+      <div class="results-count" id="resultsCount">Loading...</div>
+      <select class="sort-sel" id="sortSelect" onchange="applyFilters()">
+        <option value="newest">Newest first</option>
+        <option value="closing">Closing soonest</option>
+        <option value="salary">Highest salary</option>
+      </select>
+    </div>
+    <div class="job-list" id="jobList"><div class="loading-state"><div class="spinner"></div><p>Loading jobs...</p></div></div>
+    <div class="pagination" id="pagination"></div>
+  </section>
+</div>
+
+<!-- Email prompt modal -->
+<div class="email-modal" id="emailModal">
+  <div class="email-modal-box">
+    <h3>Save jobs to your account</h3>
+    <p>Enter your email to save and track jobs across visits.</p>
+    <input type="email" id="userEmailInput" placeholder="jane@university.edu">
+    <button onclick="saveUserEmail()">Continue</button>
+  </div>
+</div>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-brand">Public<span>Path</span></div>
+    <ul class="footer-links">
+      <li><a href="index.html">Home</a></li><li><a href="jobs.html">Browse Jobs</a></li><li><a href="resources.html">Resources</a></li><li><a href="index.html#signup">Sign Up</a></li>
+    </ul>
+    <div class="footer-copy">&copy; 2025 PublicPath. Expanding access to public sector careers.</div>
+  </div>
+</footer>
+
+<script>
+const SUPABASE_URL      = 'https://muuumlbrgnfwhzkqumdu.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_HrizONucUX7mehQ7JCwWQQ_amHU1xO8';
+
+// State abbreviation ↔ full name mapping for filter matching
+const STATE_MAP = {
+  'IL': ['IL','Illinois'], 'DC': ['DC','District of Columbia','Washington DC'],
+  'VA': ['VA','Virginia'], 'MD': ['MD','Maryland'],
+  'NY': ['NY','New York'], 'CA': ['CA','California'],
+  'TX': ['TX','Texas'], 'GA': ['GA','Georgia'],
+  'MA': ['MA','Massachusetts'], 'PA': ['PA','Pennsylvania'],
+  'OH': ['OH','Ohio'], 'FL': ['FL','Florida'],
+  'WA': ['WA','Washington'], 'CO': ['CO','Colorado'],
+  'AZ': ['AZ','Arizona'], 'NC': ['NC','North Carolina'],
+  'MI': ['MI','Michigan'], 'NJ': ['NJ','New Jersey'],
+  'OR': ['OR','Oregon'], 'MN': ['MN','Minnesota'],
+  'CT': ['CT','Connecticut'], 'SC': ['SC','South Carolina'],
+  'TN': ['TN','Tennessee'], 'IN': ['IN','Indiana'],
+  'MO': ['MO','Missouri'], 'WI': ['WI','Wisconsin'],
+};
+
+let sb, currentPage = 1, remoteOnly = false, closingSoon = false, totalResults = 0;
+const PAGE_SIZE = 25;
+let userEmail = null;
+let savedJobs = new Set();
+let appliedJobs = new Set();
+
+function init() {
+  sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  document.getElementById('searchInput').addEventListener('keydown', e => { if (e.key === 'Enter') performSearch(); });
+
+  // Load user email from localStorage
+  userEmail = localStorage.getItem('publicpath_email');
+  if (userEmail) {
+    loadUserActions();
+  }
+
+  applyFilters();
+}
+
+async function loadUserActions() {
+  if (!sb || !userEmail) return;
+  try {
+    const { data } = await sb.from('user_actions').select('job_id, action_type').eq('user_email', userEmail);
+    if (data) {
+      data.forEach(a => {
+        if (a.action_type === 'save') savedJobs.add(a.job_id);
+        if (a.action_type === 'applied') appliedJobs.add(a.job_id);
+      });
+    }
+  } catch (e) { console.log('Load actions error:', e); }
+}
+
+function requireEmail(callback) {
+  if (userEmail) { callback(); return; }
+  document.getElementById('emailModal').classList.add('show');
+  window._pendingAction = callback;
+}
+
+function saveUserEmail() {
+  const input = document.getElementById('userEmailInput');
+  const email = input.value.trim();
+  if (!email || !email.includes('@')) { input.style.borderColor = '#E05252'; return; }
+  userEmail = email;
+  localStorage.setItem('publicpath_email', email);
+  document.getElementById('emailModal').classList.remove('show');
+  if (window._pendingAction) { window._pendingAction(); window._pendingAction = null; }
+}
+
+async function toggleSave(jobId, btn) {
+  requireEmail(async () => {
+    const isSaved = savedJobs.has(jobId);
+    if (isSaved) {
+      // Unsave — delete from database
+      try {
+        await sb.from('user_actions').delete()
+          .eq('user_email', userEmail).eq('job_id', jobId).eq('action_type', 'save');
+        savedJobs.delete(jobId);
+        btn.classList.remove('saved');
+        btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg> Save';
+      } catch (e) { console.log('Unsave error:', e); }
+    } else {
+      // Save
+      try {
+        await sb.from('user_actions').insert({
+          user_email: userEmail, job_id: jobId, action_type: 'save'
+        });
+        savedJobs.add(jobId);
+        btn.classList.add('saved');
+        btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg> Saved';
+      } catch (e) { console.log('Save error:', e); }
+    }
+  });
+}
+
+async function markApplied(jobId, btn) {
+  requireEmail(async () => {
+    if (appliedJobs.has(jobId)) return; // Already applied, don't toggle off
+    try {
+      await sb.from('user_actions').upsert({
+        user_email: userEmail, job_id: jobId, action_type: 'applied'
+      }, { onConflict: 'user_email,job_id,action_type' });
+      appliedJobs.add(jobId);
+      btn.classList.add('applied');
+      btn.innerHTML = '&#10003; Applied';
+    } catch (e) { console.log('Applied error:', e); }
+  });
+}
+function performSearch() { currentPage = 1; applyFilters(); }
+function toggleRemote() { remoteOnly = !remoteOnly; document.getElementById('remoteToggle').classList.toggle('on', remoteOnly); currentPage = 1; applyFilters(); }
+function toggleClosing() { closingSoon = !closingSoon; document.getElementById('closingToggle').classList.toggle('on', closingSoon); currentPage = 1; applyFilters(); }
+function clearFilters() {
+  document.getElementById('searchInput').value = '';
+  document.getElementById('stateFilter').value = '';
+  document.getElementById('empTypeFilter').value = '';
+  document.getElementById('expFilter').value = '';
+  document.getElementById('sortSelect').value = 'newest';
+  document.querySelectorAll('#orgTypeFilters input').forEach(cb => cb.checked = true);
+  remoteOnly = false; closingSoon = false;
+  document.getElementById('remoteToggle').classList.remove('on');
+  document.getElementById('closingToggle').classList.remove('on');
+  currentPage = 1; applyFilters();
+}
+
+async function applyFilters() {
+  if (!sb) return;
+  const search = document.getElementById('searchInput').value.trim();
+  const stateKey = document.getElementById('stateFilter').value;
+  const empType = document.getElementById('empTypeFilter').value;
+  const exp = document.getElementById('expFilter').value;
+  const sort = document.getElementById('sortSelect').value;
+  const orgTypes = [];
+  document.querySelectorAll('#orgTypeFilters input:checked').forEach(cb => orgTypes.push(cb.value));
+
+  document.getElementById('jobList').innerHTML = '<div class="loading-state"><div class="spinner"></div><p>Searching...</p></div>';
+
+  try {
+    let q = sb.from('jobs').select('*', { count: 'exact' }).eq('is_active', true);
+
+    // Keyword search
+    if (search) {
+      q = q.or(`title.ilike.%${search}%,description.ilike.%${search}%,organization.ilike.%${search}%`);
+    }
+
+    // State filter — matches abbreviation AND full name variants
+    if (stateKey && STATE_MAP[stateKey]) {
+      const variants = STATE_MAP[stateKey];
+      const orClause = variants.map(v => `location_state.eq.${v}`).join(',');
+      q = q.or(orClause);
+    }
+
+    // Employment type — match case-insensitively by including variants
+    if (empType) {
+      const empVariants = {
+        'full_time': ['full_time', 'Full-time', 'Full Time', 'fulltime', ''],
+        'part_time': ['part_time', 'Part-time', 'Part Time', 'parttime'],
+        'internship': ['internship', 'Internship', 'INTERNSHIP'],
+      };
+      const variants = empVariants[empType] || [empType];
+      q = q.in('employment_type', variants);
+    }
+
+    // Experience level
+    if (exp) q = q.eq('experience_level', exp);
+
+    // Remote only
+    if (remoteOnly) q = q.is('is_remote', true);
+
+    // Government level — only filter when not all 4 checked
+    if (orgTypes.length > 0 && orgTypes.length < 4) {
+      // Include 'unknown' with whatever is checked so we don't hide unclassified jobs
+      const withUnknown = [...orgTypes, 'unknown'];
+      q = q.in('organization_type', withUnknown);
+    }
+    // If 0 checked, show nothing
+    if (orgTypes.length === 0) {
+      q = q.in('organization_type', ['__none__']);
+    }
+
+    // Closing within 7 days
+    if (closingSoon) {
+      const now = new Date().toISOString();
+      const d = new Date(); d.setDate(d.getDate() + 7);
+      q = q.not('closing_date', 'is', null).gte('closing_date', now).lte('closing_date', d.toISOString());
+    }
+
+    // Sort
+    switch (sort) {
+      case 'closing': q = q.order('closing_date', {ascending:true, nullsFirst:false}); break;
+      case 'salary': q = q.order('salary_max', {ascending:false, nullsFirst:false}); break;
+      default: q = q.order('posted_date', {ascending:false, nullsFirst:false});
+    }
+
+    // Pagination
+    const from = (currentPage - 1) * PAGE_SIZE;
+    q = q.range(from, from + PAGE_SIZE - 1);
+
+    const { data: jobs, error, count } = await q;
+    if (error) throw error;
+    totalResults = count || 0;
+    renderJobs(jobs);
+    renderPagination();
+  } catch (err) {
+    console.error(err);
+    document.getElementById('jobList').innerHTML =
+      '<div class="empty-state"><h3>Something went wrong</h3><p>' + (err.message||'Check browser console.') + '</p></div>';
+  }
+}
+
+function renderJobs(jobs) {
+  const el = document.getElementById('jobList'), ct = document.getElementById('resultsCount');
+  if (!jobs || !jobs.length) {
+    el.innerHTML = '<div class="empty-state"><h3>No jobs found</h3><p>Try adjusting your search or filters.</p></div>';
+    ct.innerHTML = '<strong>0</strong> jobs found'; return;
+  }
+  ct.innerHTML = `<strong>${totalResults.toLocaleString()}</strong> jobs found`;
+  el.innerHTML = jobs.map(j => {
+    const tags = buildTags(j);
+    const desc = (j.description||'').substring(0,220);
+    const date = j.posted_date ? fmtDate(j.posted_date) : '';
+    const isSaved = savedJobs.has(j.id);
+    const isApplied = appliedJobs.has(j.id);
+    return `<div class="job-card">
+      <div class="jc-title">${esc(j.title)}</div>
+      <div class="jc-org">${esc(j.organization||'Organization not listed')}</div>
+      <div class="jc-tags">${tags}</div>
+      ${desc?`<div class="jc-desc">${esc(desc)}</div>`:''}
+      <div class="jc-footer">
+        <span class="jc-date">${date?'Posted '+date:''}</span>
+        <div class="jc-actions">
+          <button class="jc-save ${isSaved?'saved':''}" onclick="toggleSave('${j.id}', this)" title="${isSaved?'Saved':'Save this job'}">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="${isSaved?'currentColor':'none'}" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg>
+            ${isSaved?'Saved':'Save'}
+          </button>
+          <button class="jc-applied ${isApplied?'applied':''}" onclick="markApplied('${j.id}', this)" title="${isApplied?'Applied':'Mark as applied'}">
+            ${isApplied?'&#10003; Applied':'I Applied'}
+          </button>
+          ${j.application_url?`<a href="${esc(j.application_url)}" target="_blank" rel="noopener" class="jc-apply">Apply &rarr;</a>`:''}
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function buildTags(j) {
+  let t = '';
+  if (j.organization_type && j.organization_type !== 'unknown') {
+    const l = j.organization_type.charAt(0).toUpperCase()+j.organization_type.slice(1);
+    t += `<span class="jc-tag t-${j.organization_type}">${l}</span>`;
+  }
+  // Normalize state display
+  let displayState = j.location_state || '';
+  if (displayState.length > 2) {
+    // Convert full name to abbreviation for display
+    const found = Object.entries(STATE_MAP).find(([k,v]) => v.includes(displayState));
+    if (found) displayState = found[0];
+  }
+  if (j.location_city || displayState) {
+    t += `<span class="jc-tag t-loc">${esc([j.location_city, displayState].filter(Boolean).join(', '))}</span>`;
+  }
+  if (j.salary_min && j.salary_max) {
+    const mn = fmtSal(j.salary_min), mx = fmtSal(j.salary_max);
+    t += `<span class="jc-tag t-sal">${mn===mx?mn:mn+' – '+mx}</span>`;
+  }
+  if (j.is_remote) t += '<span class="jc-tag t-remote">Remote</span>';
+  if (j.pay_grade) t += `<span class="jc-tag t-grade">${esc(j.pay_grade)}</span>`;
+  if (j.closing_date) {
+    const days = Math.ceil((new Date(j.closing_date)-new Date())/86400000);
+    if (days >= 0 && days <= 7) t += `<span class="jc-tag t-closing">${days===0?'Closes today':days+'d left'}</span>`;
+  }
+  return t;
+}
+
+function renderPagination() {
+  const el = document.getElementById('pagination'), tp = Math.ceil(totalResults/PAGE_SIZE);
+  if (tp <= 1) { el.innerHTML = ''; return; }
+  let h = `<button class="pg-btn" onclick="goTo(${currentPage-1})" ${currentPage===1?'disabled':''}>&larr; Prev</button>`;
+  const s = Math.max(1,currentPage-2), e = Math.min(tp,currentPage+2);
+  if (s>1){h+='<button class="pg-btn" onclick="goTo(1)">1</button>';if(s>2)h+='<span style="color:var(--text-muted);padding:0 4px">…</span>';}
+  for(let i=s;i<=e;i++)h+=`<button class="pg-btn ${i===currentPage?'active':''}" onclick="goTo(${i})">${i}</button>`;
+  if(e<tp){if(e<tp-1)h+='<span style="color:var(--text-muted);padding:0 4px">…</span>';h+=`<button class="pg-btn" onclick="goTo(${tp})">${tp}</button>`;}
+  h+=`<button class="pg-btn" onclick="goTo(${currentPage+1})" ${currentPage===tp?'disabled':''}>Next &rarr;</button>`;
+  el.innerHTML = h;
+}
+function goTo(p) { currentPage = p; applyFilters(); window.scrollTo({top:200,behavior:'smooth'}); }
+function esc(s) { return s?s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'):''; }
+function fmtDate(d) { try{return new Date(d).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});}catch{return '';} }
+function fmtSal(n) { return n>=1000?'$'+Math.round(n/1000)+'k':'$'+n.toLocaleString(); }
+
+document.addEventListener('DOMContentLoaded', function() {
+  // Nav scroll shadow
+  const nav=document.getElementById('nav');
+  if(nav) window.addEventListener('scroll',()=>nav.classList.toggle('scrolled',window.scrollY>10));
+
+  // Mobile hamburger toggle
+  const toggle=document.getElementById('mobileToggle');
+  const links=document.getElementById('navLinks');
+  if(toggle && links) {
+    toggle.addEventListener('click',function(e) {
+      e.preventDefault();
+      links.classList.toggle('open');
+    });
+    links.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>links.classList.remove('open')));
+  }
+
+  // Init the job search
+  init();
+});
+
+// Guided "what role fits me" flow
+const AREA_KEYWORDS = {
+  'policy': 'policy analyst program',
+  'operations': 'operations manager program specialist',
+  'technology': 'technology IT data developer engineer',
+  'communications': 'communications public affairs writer media',
+  'finance': 'budget finance accountant auditor fiscal',
+  'legal': 'attorney counsel legal compliance',
+  'health': 'public health epidemiologist nurse clinical',
+  'education': 'education teacher training workforce',
+};
+
+function runGuide() {
+  const area = document.getElementById('guideArea').value;
+  const level = document.getElementById('guideLevel').value;
+  const state = document.getElementById('guideState').value;
+
+  // Set the search bar to the area keywords
+  if (area && AREA_KEYWORDS[area]) {
+    document.getElementById('searchInput').value = AREA_KEYWORDS[area].split(' ')[0];
+  }
+
+  // Set the sidebar filters to match
+  if (level) {
+    document.querySelectorAll('#orgTypeFilters input').forEach(cb => {
+      cb.checked = (cb.value === level);
+    });
+  } else {
+    document.querySelectorAll('#orgTypeFilters input').forEach(cb => cb.checked = true);
+  }
+
+  if (state) {
+    document.getElementById('stateFilter').value = state;
+  } else {
+    document.getElementById('stateFilter').value = '';
+  }
+
+  // Set experience to entry level (these are students)
+  document.getElementById('expFilter').value = 'entry';
+
+  currentPage = 1;
+  applyFilters();
+}
+
+function closeGuide() {
+  document.getElementById('guideFlow').classList.add('hidden');
+}
+
+
+</script>
+</body>
+</html>
