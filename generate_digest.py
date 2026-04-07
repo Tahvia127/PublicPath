@@ -90,15 +90,18 @@ def get_network_picks(supabase):
     return result.data or []
 
 
+PILOT_STATES = ["IL", "DC", "VA", "MD", "NY", "CA"]
+
 def get_jobs_for_segment(supabase, gov_level=None, func_area=None, state=None, limit=10):
-    """Get jobs matching a preference segment."""
+    """Get jobs matching a preference segment, restricted to pilot states or remote."""
     now = datetime.utcnow().isoformat()
 
     # Include jobs that are still open (closing_date in future or not set)
     query = supabase.table("jobs") \
-        .select("title, organization, organization_type, location_city, location_state, salary_min, salary_max, closing_date, application_url") \
+        .select("title, organization, organization_type, location_city, location_state, is_remote, salary_min, salary_max, closing_date, application_url") \
         .eq("is_active", True) \
-        .or_(f"closing_date.gt.{now},closing_date.is.null")
+        .or_(f"closing_date.gt.{now},closing_date.is.null") \
+        .or_("location_state.in.(IL,DC,VA,MD,NY,CA),is_remote.eq.true")
 
     if gov_level:
         query = query.eq("organization_type", gov_level)
@@ -106,7 +109,7 @@ def get_jobs_for_segment(supabase, gov_level=None, func_area=None, state=None, l
     if state:
         query = query.eq("location_state", state)
 
-    # For func_area, search title and description
+    # For func_area, search title
     if func_area:
         area_keywords = {
             "policy": "policy",
@@ -119,9 +122,18 @@ def get_jobs_for_segment(supabase, gov_level=None, func_area=None, state=None, l
         kw = area_keywords.get(func_area, func_area)
         query = query.ilike("title", f"%{kw}%")
 
-    result = query.order("closing_date").limit(limit).execute()
+    # Sort by closing_date descending (furthest-out jobs first — most actionable)
+    # Jobs with no closing date go last via nullslast
+    result = query.order("closing_date", desc=True, nulls_first=False).limit(limit).execute()
     return result.data or []
 
+
+STATE_ABBREVS = {
+    "AL","AK","AZ","AR","CA","CO","CT","DE","DC","FL","GA","HI","ID","IL","IN",
+    "IA","KS","KY","LA","ME","MD","MA","MI","MN","MS","MO","MT","NE","NV","NH",
+    "NJ","NM","NY","NC","ND","OH","OK","OR","PA","RI","SC","SD","TN","TX","UT",
+    "VT","VA","WA","WV","WI","WY",
+}
 
 def format_job(job, include_salary=True):
     """Format a single job for the digest."""
@@ -129,7 +141,12 @@ def format_job(job, include_salary=True):
     org = job.get("organization", "")
     city = job.get("location_city", "")
     state = job.get("location_state", "")
-    location = ", ".join(filter(None, [city, state]))
+    # Normalize: if state is a full name (e.g. "California"), use city, state_name
+    # If state is already a 2-letter abbrev, use city, ABBREV — avoid "City, StateName, ABBREV"
+    if state and state.upper() in STATE_ABBREVS:
+        location = ", ".join(filter(None, [city, state.upper()]))
+    else:
+        location = ", ".join(filter(None, [city, state]))
 
     salary = ""
     if include_salary and job.get("salary_min") and job.get("salary_max"):
@@ -323,17 +340,18 @@ def generate_digest(supabase, segment=None, html=False):
     # Get network picks (same for all segments)
     network_picks = get_network_picks(supabase)
 
-    # Get fellowships (same for all segments)
-    fellowships = get_jobs_for_segment(supabase, limit=3)
-    # Filter to just fellowships
+    # Get fellowships / early-career programs for "On Our Radar"
+    # Tighter filter: must have "fellow" or "intern" in title (not just "program")
+    # Closing within 60 days so they're actionable
     fellowship_result = supabase.table("jobs") \
-        .select("title, organization, organization_type, location_city, location_state, closing_date, application_url") \
+        .select("title, organization, organization_type, location_city, location_state, is_remote, closing_date, application_url") \
         .eq("is_active", True) \
-        .or_("title.ilike.%fellow%,title.ilike.%intern%,title.ilike.%program%") \
+        .or_("title.ilike.%fellow%,title.ilike.%internship%,title.ilike.%intern %") \
+        .or_("location_state.in.(IL,DC,VA,MD,NY,CA),is_remote.eq.true") \
         .gt("closing_date", datetime.utcnow().isoformat()) \
-        .lt("closing_date", (datetime.utcnow() + timedelta(days=30)).isoformat()) \
+        .lt("closing_date", (datetime.utcnow() + timedelta(days=60)).isoformat()) \
         .order("closing_date") \
-        .limit(3) \
+        .limit(4) \
         .execute()
     fellowships = fellowship_result.data or []
 
@@ -346,11 +364,15 @@ def generate_digest(supabase, segment=None, html=False):
 
     if segment and segment in segments:
         seg = segments[segment]
-        jobs = get_jobs_for_segment(supabase, gov_level=seg["gov_level"], limit=10)
         if segment == "state_local":
             jobs_state = get_jobs_for_segment(supabase, gov_level="state", limit=5)
             jobs_local = get_jobs_for_segment(supabase, gov_level="local", limit=5)
             jobs = jobs_state + jobs_local
+        else:
+            jobs = get_jobs_for_segment(supabase, gov_level=seg["gov_level"], limit=10)
+        # Remove any fellowship duplicates from top picks
+        fellowship_urls = {f.get("application_url") for f in fellowships}
+        jobs = [j for j in jobs if j.get("application_url") not in fellowship_urls]
         output_fn = print_digest_html if html else print_digest_text
         output_fn(seg["label"], jobs, network_picks, fellowships)
     else:
@@ -364,6 +386,9 @@ def generate_digest(supabase, segment=None, html=False):
                 jobs = get_jobs_for_segment(supabase, gov_level="federal", limit=10)
             else:
                 jobs = get_jobs_for_segment(supabase, limit=10)
+            # Remove any fellowship duplicates from top picks
+            fellowship_urls = {f.get("application_url") for f in fellowships}
+            jobs = [j for j in jobs if j.get("application_url") not in fellowship_urls]
             output_fn = print_digest_html if html else print_digest_text
             output_fn(seg["label"], jobs, network_picks, fellowships)
 
