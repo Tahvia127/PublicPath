@@ -47,9 +47,20 @@ PUBLIC_SECTOR_KEYWORDS = [
 ]
 
 PUBLIC_SECTOR_TERMS = [
-    "government", "federal", "state", "city", "county", "public",
-    "municipal", "agency", "department", "bureau", "administration",
-    "policy", "nonprofit", "non-profit", "civic", "legislative", "judicial",
+    # Government / federal
+    "government", "federal government", "federal agency", "federal employee",
+    "u.s. department", "us department", "united states department",
+    "department of ", "bureau of ", "office of ",
+    "usajobs", "general schedule", "gs-", "competitive service",
+    # State / local
+    "state government", "state agency", "state of ", "commonwealth of ",
+    "city of ", "county of ", "town of ", "village of ",
+    "municipal", "public works", "transit authority", "school district",
+    # Civic / nonprofit
+    "nonprofit", "non-profit", "501(c)", "public interest", "civic",
+    "public administration", "public policy", "public health", "public sector",
+    # Legislative / judicial
+    "legislature", "legislative", "judicial", "city council", "county board",
 ]
 
 STATE_ABBREVS = {
@@ -118,10 +129,42 @@ def parse_salary(salary_str):
 
 def infer_org_type(text):
     text = text.lower()
-    if any(kw in text for kw in ["federal", "u.s. department", "usda", "doj", "dod", "irs", "fbi", "gsa", "epa", "fema", "hhs", "nih", "cdc", "nasa", "usaid"]): return "federal"
-    if any(kw in text for kw in ["city of", "county of", "town of", "village of", "township", "municipal", "metro"]): return "local"
-    if any(kw in text for kw in ["state of", "state department", "state agency", "commonwealth of"]): return "state"
-    if any(kw in text for kw in ["nonprofit", "non-profit", "foundation", "ngo", "association", "charity"]): return "nonprofit"
+    if any(kw in text for kw in [
+        "federal", "u.s. department", "us department", "united states department",
+        "usda", "doj", "dod", "irs", "fbi", "gsa", "epa", "fema", "hhs", "nih",
+        "cdc", "nasa", "usaid", "cia", "nsa", "dhs", "dot", "hud", "sba", "va ",
+        "veterans affairs", "social security", "office of management and budget",
+        "office of personnel management", "general services", "u.s. army", "u.s. navy",
+        "u.s. air force", "u.s. marine", "u.s. coast guard", "department of defense",
+        "department of state", "department of justice", "department of energy",
+        "department of health", "department of labor", "department of treasury",
+        "department of commerce", "department of interior", "department of education",
+        "department of agriculture", "department of homeland", "department of housing",
+        "department of transportation", "usajobs", "opm.gov", "general schedule",
+        "competitive service", "excepted service", "federal employee",
+    ]): return "federal"
+    if any(kw in text for kw in [
+        "city of", "county of", "town of", "village of", "township", "municipal",
+        "metro ", "metropolitan", "transit authority", "port authority",
+        "housing authority", "water authority", "public works", "parks and recreation",
+        "city council", "mayor", "alderman", "borough", "district of columbia",
+        "school district", "unified school", "community college", "public library",
+        " mta ", " cta ", " wmata ", " bart ", " septa ",
+    ]): return "local"
+    if any(kw in text for kw in [
+        "state of ", "state department", "state agency", "commonwealth of",
+        "state legislature", "state capitol", "state board", "state commission",
+        "state police", "state university", "state college", "governor",
+        "lieutenant governor", "attorney general", "state treasurer",
+        "state comptroller", "department of motor vehicles", "dmv",
+    ]): return "state"
+    if any(kw in text for kw in [
+        "nonprofit", "non-profit", "foundation", "ngo", "association", "charity",
+        "501(c)", "501c3", "civil society", "advocacy", "mission-driven",
+        "mission driven", "social impact", "philanthropic", "charitable",
+        "public interest", "community organization", "think tank",
+        "institute for", "center for", "action network", "policy center",
+    ]): return "nonprofit"
     return "unknown"
 
 
