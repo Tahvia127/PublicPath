@@ -143,6 +143,20 @@
         </select>
       </div>
       <div class="filter-group">
+        <label class="filter-label">Function Area</label>
+        <select id="funcAreaFilter" onchange="applyFilters()">
+          <option value="">All Functions</option>
+          <option value="policy">Policy & Analysis</option>
+          <option value="operations">Operations & Management</option>
+          <option value="technology">Technology & Data</option>
+          <option value="communications">Communications & PR</option>
+          <option value="finance">Finance & Budget</option>
+          <option value="legal">Legal & Compliance</option>
+          <option value="health">Public Health</option>
+          <option value="education">Education</option>
+        </select>
+      </div>
+      <div class="filter-group">
         <label class="filter-label">Employment Type</label>
         <select id="empTypeFilter" onchange="applyFilters()">
           <option value="">All Types</option>
@@ -155,9 +169,9 @@
         <label class="filter-label">Experience Level</label>
         <select id="expFilter" onchange="applyFilters()">
           <option value="">All Levels</option>
-          <option value="entry">Entry Level (5,870)</option>
-          <option value="mid">Mid Level (5,850)</option>
-          <option value="senior">Senior (3,302)</option>
+          <option value="entry">Entry Level</option>
+          <option value="mid">Mid Level</option>
+          <option value="senior">Senior</option>
         </select>
       </div>
       <div class="filter-group">
@@ -318,6 +332,7 @@ function toggleClosing() { closingSoon = !closingSoon; document.getElementById('
 function clearFilters() {
   document.getElementById('searchInput').value = '';
   document.getElementById('stateFilter').value = '';
+  document.getElementById('funcAreaFilter').value = '';
   document.getElementById('empTypeFilter').value = '';
   document.getElementById('expFilter').value = '';
   document.getElementById('sortSelect').value = 'newest';
@@ -332,6 +347,7 @@ async function applyFilters() {
   if (!sb) return;
   const search = document.getElementById('searchInput').value.trim();
   const stateKey = document.getElementById('stateFilter').value;
+  const funcArea = document.getElementById('funcAreaFilter').value;
   const empType = document.getElementById('empTypeFilter').value;
   const exp = document.getElementById('expFilter').value;
   const sort = document.getElementById('sortSelect').value;
@@ -346,6 +362,12 @@ async function applyFilters() {
     // Keyword search
     if (search) {
       q = q.or(`title.ilike.%${search}%,description.ilike.%${search}%,organization.ilike.%${search}%`);
+    }
+
+    // Function area filter — searches title for the primary keyword of that area
+    if (funcArea && AREA_KEYWORDS[funcArea]) {
+      const kw = AREA_KEYWORDS[funcArea].split(' ')[0];
+      q = q.ilike('title', `%${kw}%`);
     }
 
     // State filter — matches abbreviation AND full name variants

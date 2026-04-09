@@ -1091,6 +1091,10 @@
         <div class="stat-label">Of the total U.S. workforce</div>
       </div>
       <div class="stat">
+        <div class="stat-number" id="liveJobCount">—</div>
+        <div class="stat-label">Active listings in PublicPath</div>
+      </div>
+      <div class="stat">
         <div class="stat-number">0</div>
         <div class="stat-label">Centralized gateways — until now</div>
       </div>
@@ -1412,7 +1416,7 @@
         <li><a href="resources.html">Resources</a></li>
         <li><a href="#signup">Sign Up</a></li>
       </ul>
-      <div class="footer-copy">&copy; 2025 PublicPath. Expanding access to public sector careers.</div>
+      <div class="footer-copy">&copy; 2026 PublicPath. Expanding access to public sector careers.</div>
     </div>
   </footer>
 
@@ -1425,6 +1429,17 @@
         'https://muuumlbrgnfwhzkqumdu.supabase.co',
         'sb_publishable_HrizONucUX7mehQ7JCwWQQ_amHU1xO8'
       );
+
+      // Live job count in stats bar
+      sbSignup.from('jobs').select('id', { count: 'exact', head: true })
+        .eq('is_active', true)
+        .then(function(res) {
+          var el = document.getElementById('liveJobCount');
+          if (el && res.count) {
+            var n = res.count;
+            el.textContent = n >= 1000 ? (n / 1000).toFixed(1).replace(/\.0$/, '') + 'K+' : n.toLocaleString();
+          }
+        });
     }
 
     var signupForm = document.getElementById('signupForm');
