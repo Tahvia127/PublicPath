@@ -116,15 +116,15 @@
       <div class="filter-group">
         <label class="filter-label">Government Level</label>
         <div class="cb-group" id="orgTypeFilters">
-          <label class="cb-item"><input type="checkbox" value="federal" checked onchange="applyFilters()"> Federal</label>
-          <label class="cb-item"><input type="checkbox" value="state" checked onchange="applyFilters()"> State</label>
-          <label class="cb-item"><input type="checkbox" value="local" checked onchange="applyFilters()"> Local</label>
-          <label class="cb-item"><input type="checkbox" value="nonprofit" checked onchange="applyFilters()"> Nonprofit</label>
+          <label class="cb-item"><input type="checkbox" value="federal" checked onchange="debouncedApplyFilters()"> Federal</label>
+          <label class="cb-item"><input type="checkbox" value="state" checked onchange="debouncedApplyFilters()"> State</label>
+          <label class="cb-item"><input type="checkbox" value="local" checked onchange="debouncedApplyFilters()"> Local</label>
+          <label class="cb-item"><input type="checkbox" value="nonprofit" checked onchange="debouncedApplyFilters()"> Nonprofit</label>
         </div>
       </div>
       <div class="filter-group">
         <label class="filter-label">State / Location</label>
-        <select id="stateFilter" onchange="applyFilters()">
+        <select id="stateFilter" onchange="debouncedApplyFilters()">
           <option value="">All States</option>
           <option value="IL">Illinois</option>
           <option value="DC">Washington DC</option>
@@ -144,7 +144,7 @@
       </div>
       <div class="filter-group">
         <label class="filter-label">Function Area</label>
-        <select id="funcAreaFilter" onchange="applyFilters()">
+        <select id="funcAreaFilter" onchange="debouncedApplyFilters()">
           <option value="">All Functions</option>
           <option value="policy">Policy & Analysis</option>
           <option value="operations">Operations & Management</option>
@@ -158,7 +158,7 @@
       </div>
       <div class="filter-group">
         <label class="filter-label">Employment Type</label>
-        <select id="empTypeFilter" onchange="applyFilters()">
+        <select id="empTypeFilter" onchange="debouncedApplyFilters()">
           <option value="">All Types</option>
           <option value="full_time">Full-Time</option>
           <option value="part_time">Part-Time</option>
@@ -167,7 +167,7 @@
       </div>
       <div class="filter-group">
         <label class="filter-label">Experience Level</label>
-        <select id="expFilter" onchange="applyFilters()">
+        <select id="expFilter" onchange="debouncedApplyFilters()">
           <option value="">All Levels</option>
           <option value="entry">Entry Level</option>
           <option value="mid">Mid Level</option>
@@ -187,7 +187,7 @@
   <section class="results">
     <div class="results-header">
       <div class="results-count" id="resultsCount">Loading...</div>
-      <select class="sort-sel" id="sortSelect" onchange="applyFilters()">
+      <select class="sort-sel" id="sortSelect" onchange="debouncedApplyFilters()">
         <option value="newest">Newest first</option>
         <option value="closing">Closing soonest</option>
         <option value="salary">Highest salary</option>
@@ -241,6 +241,8 @@ const STATE_MAP = {
 
 let sb, currentPage = 1, remoteOnly = false, closingSoon = false, totalResults = 0;
 const PAGE_SIZE = 25;
+let _filterTimer = null;
+function debouncedApplyFilters() { clearTimeout(_filterTimer); _filterTimer = setTimeout(applyFilters, 250); }
 let userEmail = null;
 let savedJobs = new Set();
 let appliedJobs = new Set();
@@ -359,15 +361,15 @@ async function applyFilters() {
   try {
     let q = sb.from('jobs').select('*', { count: 'exact' }).eq('is_active', true);
 
-    // Keyword search
+    // Keyword search — title + org only (description ilike is a full table scan)
     if (search) {
-      q = q.or(`title.ilike.%${search}%,description.ilike.%${search}%,organization.ilike.%${search}%`);
+      q = q.or(`title.ilike.%${search}%,organization.ilike.%${search}%`);
     }
 
-    // Function area filter — searches title for the primary keyword of that area
+    // Function area filter — OR across multiple relevant title keywords
     if (funcArea && AREA_KEYWORDS[funcArea]) {
-      const kw = AREA_KEYWORDS[funcArea].split(' ')[0];
-      q = q.ilike('title', `%${kw}%`);
+      const kws = AREA_KEYWORDS[funcArea].split(' ');
+      q = q.or(kws.map(k => `title.ilike.%${k}%`).join(','));
     }
 
     // State filter — matches abbreviation AND full name variants
@@ -377,10 +379,10 @@ async function applyFilters() {
       q = q.or(orClause);
     }
 
-    // Employment type — match case-insensitively by including variants
+    // Employment type
     if (empType) {
       const empVariants = {
-        'full_time': ['full_time', 'Full-time', 'Full Time', 'fulltime', ''],
+        'full_time': ['full_time', 'Full-time', 'Full Time', 'fulltime'],
         'part_time': ['part_time', 'Part-time', 'Part Time', 'parttime'],
         'internship': ['internship', 'Internship', 'INTERNSHIP'],
       };
@@ -388,8 +390,15 @@ async function applyFilters() {
       q = q.in('employment_type', variants);
     }
 
-    // Experience level
-    if (exp) q = q.eq('experience_level', exp);
+    // Experience level — combine DB field (sparse) with title keyword fallback
+    if (exp) {
+      const EXP_KW = {
+        entry:  'title.ilike.%analyst%,title.ilike.%associate%,title.ilike.%coordinator%,title.ilike.%assistant%,title.ilike.%junior%,title.ilike.%fellow%,experience_level.eq.entry',
+        mid:    'title.ilike.%specialist%,title.ilike.%officer%,title.ilike.%program%,title.ilike.%advisor%,experience_level.eq.mid',
+        senior: 'title.ilike.%senior%,title.ilike.%director%,title.ilike.%chief%,title.ilike.%lead%,title.ilike.%supervisor%,title.ilike.%manager%,title.ilike.%deputy%,experience_level.eq.senior',
+      };
+      if (EXP_KW[exp]) q = q.or(EXP_KW[exp]);
+    }
 
     // Remote only
     if (remoteOnly) q = q.is('is_remote', true);
@@ -537,14 +546,14 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // Guided "what role fits me" flow
 const AREA_KEYWORDS = {
-  'policy': 'policy analyst program',
-  'operations': 'operations manager program specialist',
-  'technology': 'technology IT data developer engineer',
-  'communications': 'communications public affairs writer media',
-  'finance': 'budget finance accountant auditor fiscal',
-  'legal': 'attorney counsel legal compliance',
-  'health': 'public health epidemiologist nurse clinical',
-  'education': 'education teacher training workforce',
+  'policy':         'policy analyst legislative regulatory',
+  'operations':     'operations administrator logistics management',
+  'technology':     'technology IT data software engineer developer',
+  'communications': 'communications affairs outreach writer media',
+  'finance':        'budget finance accountant auditor fiscal',
+  'legal':          'attorney counsel legal compliance',
+  'health':         'health epidemiologist nurse clinical medical',
+  'education':      'education teacher curriculum training',
 };
 
 function runGuide() {
@@ -571,9 +580,6 @@ function runGuide() {
   } else {
     document.getElementById('stateFilter').value = '';
   }
-
-  // Set experience to entry level (these are students)
-  document.getElementById('expFilter').value = 'entry';
 
   currentPage = 1;
   applyFilters();
