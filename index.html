@@ -12,22 +12,23 @@
   <style>
     :root {
       --navy: #1C2E6B;
-      --navy-deep: #121E48;
+      --navy-dark: #0C1A48;
+      --navy-mid: #16266A;
+      --navy-deep: #080F2E;
       --red: #E83527;
-      --red-hover: #C62C1F;
-      --teal: #0891B2;
-      --teal-light: #22D3EE;
-      --teal-muted: #0E7490;
-      --warm-white: #F5F2EC;
-      --cream: #EDE9DF;
+      --red-hover: #C42E22;
+      --paper: #F4F1EA;
+      --cream: #EDE9E0;
       --sand: #E3DDD4;
-      --text-primary: #1E293B;
-      --text-secondary: #475569;
-      --text-muted: #64748B;
+      --text-primary: #111827;
+      --text-secondary: #4A506A;
+      --text-muted: #70768B;
       --border: #E0DDD5;
-      --font-display: 'Playfair Display', 'Lora', Georgia, serif;
+      --font-display: 'Playfair Display', Georgia, serif;
       --font-body: 'DM Sans', -apple-system, sans-serif;
     }
+    /* warm-white alias */
+    :root { --warm-white: var(--paper); }
 
     *, *::before, *::after {
       margin: 0;
@@ -55,15 +56,17 @@
       left: 0;
       right: 0;
       z-index: 100;
-      background: rgba(250, 250, 248, 0.92);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border-bottom: 1px solid var(--border);
-      transition: box-shadow 0.3s ease;
+      background: transparent;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      transition: background 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease;
     }
 
     .nav.scrolled {
-      box-shadow: 0 1px 12px rgba(27, 58, 92, 0.08);
+      background: rgba(12, 26, 72, 0.97);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      box-shadow: 0 2px 24px rgba(0,0,0,0.25);
     }
 
     .nav-inner {
@@ -78,16 +81,22 @@
 
     .logo {
       font-family: var(--font-display);
-      font-size: 1.35rem;
-      font-weight: 700;
-      color: var(--navy);
+      font-size: 1.4rem;
+      font-weight: 900;
+      color: #fff;
       text-decoration: none;
-      letter-spacing: -0.02em;
+      letter-spacing: -0.03em;
+      display: inline-flex;
+      align-items: baseline;
+      gap: 1px;
     }
 
-    .logo span {
-      color: var(--text-muted);
-      font-weight: 400;
+    .logo-arr {
+      color: var(--red);
+      font-style: normal;
+      font-size: 1.15rem;
+      margin-left: 3px;
+      line-height: 1;
     }
 
     .nav-links {
@@ -100,20 +109,20 @@
     .nav-links a {
       font-size: 0.9rem;
       font-weight: 500;
-      color: var(--text-secondary);
+      color: rgba(255,255,255,0.75);
       text-decoration: none;
       transition: color 0.2s;
     }
 
     .nav-links a:hover {
-      color: var(--navy);
+      color: #fff;
     }
 
     .nav-cta {
       display: inline-flex;
       align-items: center;
       padding: 8px 20px;
-      background: var(--navy);
+      background: var(--red);
       color: #fff !important;
       border-radius: 6px;
       font-size: 0.875rem;
@@ -122,7 +131,7 @@
     }
 
     .nav-cta:hover {
-      background: var(--navy-deep);
+      background: var(--red-hover);
       transform: translateY(-1px);
     }
 
@@ -137,14 +146,14 @@
     .mobile-toggle svg {
       width: 24px;
       height: 24px;
-      stroke: var(--navy);
+      stroke: rgba(255,255,255,0.85);
       pointer-events: none;
     }
 
     /* ── HERO ── */
     .hero {
-      padding: 140px 24px 100px;
-      background: linear-gradient(168deg, var(--warm-white) 0%, var(--cream) 55%, #DDD8CE 100%);
+      padding: 160px 24px 120px;
+      background: var(--navy-dark);
       position: relative;
       overflow: hidden;
     }
@@ -152,24 +161,35 @@
     .hero::before {
       content: '';
       position: absolute;
-      top: -200px;
+      top: -300px;
       right: -200px;
-      width: 600px;
-      height: 600px;
+      width: 700px;
+      height: 700px;
       border-radius: 50%;
-      background: radial-gradient(circle, rgba(28, 46, 107, 0.07) 0%, transparent 70%);
+      background: radial-gradient(circle, rgba(28, 46, 107, 0.6) 0%, transparent 70%);
       pointer-events: none;
     }
 
     .hero::after {
       content: '';
       position: absolute;
-      bottom: -100px;
-      left: -100px;
+      bottom: -80px;
+      left: -80px;
       width: 400px;
       height: 400px;
       border-radius: 50%;
-      background: radial-gradient(circle, rgba(232, 53, 39, 0.04) 0%, transparent 70%);
+      background: radial-gradient(circle, rgba(232, 53, 39, 0.12) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    /* decorative grid lines */
+    .hero-grid {
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+      background-size: 80px 80px;
       pointer-events: none;
     }
 
@@ -184,14 +204,14 @@
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      padding: 6px 14px;
-      background: rgba(232, 53, 39, 0.07);
-      border: 1px solid rgba(232, 53, 39, 0.2);
+      padding: 6px 16px;
+      background: rgba(232, 53, 39, 0.15);
+      border: 1px solid rgba(232, 53, 39, 0.4);
       border-radius: 100px;
-      font-size: 0.8rem;
-      font-weight: 600;
-      color: var(--red);
-      letter-spacing: 0.04em;
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: #FFB5B0;
+      letter-spacing: 0.07em;
       text-transform: uppercase;
       margin-bottom: 28px;
       animation: fadeUp 0.6s ease both;
@@ -213,22 +233,27 @@
 
     .hero h1 {
       font-family: var(--font-display);
-      font-size: clamp(2.4rem, 5.5vw, 3.8rem);
+      font-size: clamp(2.8rem, 6vw, 4.8rem);
       font-weight: 900;
-      line-height: 1.15;
-      letter-spacing: -0.025em;
-      color: var(--navy);
-      max-width: 720px;
+      line-height: 1.1;
+      letter-spacing: -0.03em;
+      color: #fff;
+      max-width: 800px;
       margin-bottom: 24px;
       animation: fadeUp 0.6s ease 0.1s both;
     }
 
+    .hero h1 em {
+      font-style: normal;
+      color: var(--red);
+    }
+
     .hero p {
       font-size: 1.15rem;
-      line-height: 1.7;
-      color: var(--text-secondary);
+      line-height: 1.72;
+      color: rgba(255,255,255,0.65);
       max-width: 560px;
-      margin-bottom: 40px;
+      margin-bottom: 44px;
       animation: fadeUp 0.6s ease 0.2s both;
     }
 
@@ -260,26 +285,27 @@
     }
 
     .btn-primary {
-      background: var(--navy);
+      background: var(--red);
       color: #fff;
-      box-shadow: 0 1px 3px rgba(27, 58, 92, 0.2), 0 4px 12px rgba(27, 58, 92, 0.1);
+      box-shadow: 0 2px 8px rgba(232,53,39,0.25), 0 6px 20px rgba(232,53,39,0.15);
     }
 
     .btn-primary:hover {
-      background: var(--navy-deep);
+      background: var(--red-hover);
       transform: translateY(-2px);
-      box-shadow: 0 2px 6px rgba(27, 58, 92, 0.25), 0 8px 20px rgba(27, 58, 92, 0.15);
+      box-shadow: 0 4px 16px rgba(232,53,39,0.35), 0 8px 24px rgba(232,53,39,0.2);
     }
 
     .btn-secondary {
       background: transparent;
-      color: var(--navy);
-      border: 1.5px solid var(--border);
+      color: rgba(255,255,255,0.85);
+      border: 1.5px solid rgba(255,255,255,0.25);
     }
 
     .btn-secondary:hover {
-      border-color: var(--navy);
-      background: rgba(27, 58, 92, 0.03);
+      border-color: rgba(255,255,255,0.6);
+      background: rgba(255,255,255,0.07);
+      color: #fff;
     }
 
     .btn svg {
@@ -290,9 +316,9 @@
     /* ── STATS BAR ── */
     .stats-bar {
       padding: 0 24px;
-      margin-top: -40px;
       position: relative;
       z-index: 2;
+      background: var(--paper);
     }
 
     .stats-inner {
@@ -300,34 +326,102 @@
       margin: 0 auto;
       display: grid;
       grid-template-columns: repeat(4, 1fr);
-      background: #fff;
-      border-radius: 14px;
-      border: 1px solid var(--border);
-      box-shadow: 0 4px 24px rgba(27, 58, 92, 0.06);
-      overflow: hidden;
+      border-bottom: 1px solid var(--border);
     }
 
     .stat {
-      padding: 28px 32px;
+      padding: 36px 28px;
       text-align: center;
+      border-right: 1px solid var(--border);
     }
 
-    .stat + .stat {
-      border-left: 1px solid var(--border);
-    }
+    .stat:last-child { border-right: none; }
 
     .stat-number {
       font-family: var(--font-display);
-      font-size: 1.8rem;
-      font-weight: 700;
+      font-size: 2.4rem;
+      font-weight: 900;
       color: var(--navy);
-      letter-spacing: -0.02em;
+      letter-spacing: -0.04em;
+      line-height: 1;
     }
 
+    .stat-number.live { color: var(--red); }
+
     .stat-label {
-      font-size: 0.85rem;
+      font-size: 0.8rem;
       color: var(--text-muted);
-      margin-top: 4px;
+      margin-top: 8px;
+      line-height: 1.4;
+    }
+
+    /* ── IMPACT STATS (dark) ── */
+    .impact {
+      background: var(--navy-mid);
+      padding: 72px 24px;
+      border-top: 1px solid rgba(255,255,255,0.07);
+    }
+
+    .impact-inner {
+      max-width: 1120px;
+      margin: 0 auto;
+    }
+
+    .impact-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.4);
+      margin-bottom: 48px;
+      text-align: center;
+    }
+
+    .impact-grid {
+      display: grid;
+      grid-template-columns: repeat(3,1fr);
+      gap: 2px;
+    }
+
+    .impact-stat {
+      background: rgba(255,255,255,0.04);
+      padding: 48px 40px;
+      text-align: center;
+      border-radius: 4px;
+      transition: background 0.2s;
+    }
+
+    .impact-stat:hover { background: rgba(255,255,255,0.07); }
+
+    .impact-num {
+      font-family: var(--font-display);
+      font-size: clamp(3rem, 6vw, 5rem);
+      font-weight: 900;
+      color: #fff;
+      letter-spacing: -0.04em;
+      line-height: 1;
+      margin-bottom: 16px;
+    }
+
+    .impact-num.accent { color: var(--red); }
+
+    .impact-desc {
+      font-size: 0.95rem;
+      color: rgba(255,255,255,0.55);
+      line-height: 1.6;
+      max-width: 220px;
+      margin: 0 auto;
+    }
+
+    .impact-footer {
+      text-align: center;
+      margin-top: 48px;
+      font-size: 1rem;
+      font-style: italic;
+      color: rgba(255,255,255,0.38);
+      max-width: 640px;
+      margin-left: auto;
+      margin-right: auto;
     }
 
     /* ── SECTION COMMON ── */
@@ -341,54 +435,55 @@
     }
 
     .section-label {
-      font-size: 0.75rem;
-      font-weight: 700;
-      letter-spacing: 0.1em;
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0.12em;
       text-transform: uppercase;
-      color: var(--teal-muted);
-      margin-bottom: 12px;
+      color: var(--red);
+      margin-bottom: 14px;
     }
 
     .section-title {
       font-family: var(--font-display);
-      font-size: clamp(1.8rem, 3.5vw, 2.4rem);
-      font-weight: 700;
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 900;
       color: var(--navy);
-      letter-spacing: -0.02em;
-      line-height: 1.2;
-      margin-bottom: 16px;
+      letter-spacing: -0.03em;
+      line-height: 1.15;
+      margin-bottom: 18px;
     }
 
     .section-subtitle {
       font-size: 1.05rem;
       color: var(--text-secondary);
       max-width: 600px;
-      line-height: 1.7;
+      line-height: 1.72;
     }
 
     /* ── PROBLEM ── */
     .problem {
-      background: var(--cream);
+      background: var(--paper);
     }
 
     .problem-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 24px;
+      gap: 2px;
       margin-top: 48px;
+      background: var(--border);
+      border-radius: 14px;
+      overflow: hidden;
+      border: 1px solid var(--border);
     }
 
     .problem-card {
       background: #fff;
-      border-radius: 12px;
-      padding: 32px 28px;
-      border: 1px solid var(--border);
-      transition: transform 0.2s, box-shadow 0.2s;
+      padding: 36px 32px;
+      transition: background 0.2s;
     }
 
     .problem-card:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 8px 24px rgba(27, 58, 92, 0.07);
+      background: var(--paper);
     }
 
     .problem-icon {
@@ -462,22 +557,24 @@
       border-radius: 12px;
       border: 1px solid var(--border);
       background: #fff;
-      transition: transform 0.2s, box-shadow 0.2s;
+      transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
     }
 
     .solution-card:hover {
       transform: translateY(-3px);
-      box-shadow: 0 8px 24px rgba(27, 58, 92, 0.07);
+      box-shadow: 0 8px 32px rgba(28,46,107,0.1);
+      border-color: var(--navy);
     }
 
     .solution-number {
       font-family: var(--font-display);
-      font-size: 0.8rem;
-      font-weight: 700;
+      font-size: 4rem;
+      font-weight: 900;
       color: var(--red);
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      margin-bottom: 16px;
+      opacity: 0.18;
+      letter-spacing: -0.04em;
+      line-height: 1;
+      margin-bottom: 4px;
     }
 
     .solution-card h3 {
@@ -716,24 +813,24 @@
 
     /* ── DIGEST PREVIEW ── */
     .digest {
-      background: var(--cream);
+      background: var(--paper);
     }
 
     .digest-preview {
       margin-top: 48px;
-      max-width: 640px;
+      max-width: 680px;
       margin-left: auto;
       margin-right: auto;
       background: #fff;
       border-radius: 14px;
       border: 1px solid var(--border);
       overflow: hidden;
-      box-shadow: 0 4px 24px rgba(27, 58, 92, 0.06);
+      box-shadow: 0 8px 40px rgba(28,46,107,0.1);
     }
 
     .digest-header {
       padding: 24px 28px;
-      background: var(--navy);
+      background: var(--navy-dark);
       color: #fff;
     }
 
@@ -906,7 +1003,7 @@
     /* ── FOOTER ── */
     .footer {
       padding: 56px 24px;
-      background: var(--navy-deep);
+      background: var(--navy-dark);
       color: rgba(255, 255, 255, 0.6);
     }
 
@@ -922,14 +1019,14 @@
 
     .footer-brand {
       font-family: var(--font-display);
-      font-size: 1.15rem;
-      font-weight: 700;
+      font-size: 1.25rem;
+      font-weight: 900;
       color: #fff;
+      letter-spacing: -0.03em;
     }
 
-    .footer-brand span {
-      color: rgba(255, 255, 255, 0.4);
-      font-weight: 400;
+    .footer-brand .logo-arr {
+      color: var(--red);
     }
 
     .footer-links {
@@ -967,75 +1064,38 @@
         top: 64px;
         left: 0;
         right: 0;
-        background: var(--warm-white);
+        background: var(--navy-dark);
         flex-direction: column;
         padding: 24px;
         gap: 20px;
-        border-bottom: 1px solid var(--border);
-        box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+        box-shadow: 0 12px 32px rgba(0,0,0,0.3);
         z-index: 50;
       }
 
-      .nav-links.open {
-        display: flex;
-      }
+      .nav-links.open { display: flex; }
+      .mobile-toggle { display: block; }
 
-      .mobile-toggle {
-        display: block;
-      }
+      .hero { padding: 130px 20px 80px; }
+      .hero h1 { font-size: 2.4rem; }
 
-      .hero {
-        padding: 120px 24px 80px;
-      }
+      .stats-inner { grid-template-columns: repeat(2,1fr); }
+      .stat:nth-child(2) { border-right: none; }
+      .stat:nth-child(3) { border-top: 1px solid var(--border); }
+      .stat:nth-child(4) { border-top: 1px solid var(--border); border-right: none; }
 
-      .hero h1 {
-        font-size: 2rem;
-      }
+      .impact-grid { grid-template-columns: 1fr; gap: 2px; }
+      .impact-stat { padding: 36px 24px; }
+      .impact-num { font-size: 3.5rem; }
 
-      .stats-inner {
-        grid-template-columns: 1fr;
-      }
+      .problem-grid { grid-template-columns: 1fr; }
+      .solution-grid { grid-template-columns: 1fr; }
 
-      .stat + .stat {
-        border-left: none;
-        border-top: 1px solid var(--border);
-      }
+      .founder-layout { grid-template-columns: 1fr; gap: 32px; }
+      .founder-image-frame { max-width: 280px; }
 
-      .problem-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .solution-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .signup-layout {
-        grid-template-columns: 1fr;
-        gap: 40px;
-      }
-
-      .form-row {
-        grid-template-columns: 1fr;
-      }
-
-      .founder-layout {
-        grid-template-columns: 1fr;
-        gap: 32px;
-      }
-
-      .founder-image-frame {
-        max-width: 280px;
-      }
-
-      .footer-inner {
-        flex-direction: column;
-        text-align: center;
-      }
-
-      .footer-links {
-        flex-wrap: wrap;
-        justify-content: center;
-      }
+      .footer-inner { flex-direction: column; text-align: center; }
+      .footer-links { flex-wrap: wrap; justify-content: center; }
     }
   </style>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
@@ -1045,13 +1105,13 @@
   <!-- NAV -->
   <nav class="nav" id="nav">
     <div class="nav-inner">
-      <a href="#" class="logo">Public<span>Path</span></a>
+      <a href="index.html" class="logo">PublicPath<span class="logo-arr">↗</span></a>
       <ul class="nav-links" id="navLinks">
-        <li><a href="index.html">Home</a></li>
         <li><a href="jobs.html">Browse Jobs</a></li>
         <li><a href="resources.html">Resources</a></li>
+        <li><a href="#digest">Weekly Digest</a></li>
         <li><a href="#founder">About</a></li>
-        <li><a href="jobs.html" class="nav-cta">Browse Jobs</a></li>
+        <li><a href="jobs.html" class="nav-cta">Find Your Role</a></li>
       </ul>
       <button class="mobile-toggle" id="mobileToggle" aria-label="Toggle navigation">
         <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round">
@@ -1065,17 +1125,18 @@
 
   <!-- HERO -->
   <section class="hero">
+    <div class="hero-grid"></div>
     <div class="hero-inner">
-      <div class="hero-label">Now accepting pilot signups</div>
-      <h1>Your gateway to public sector careers</h1>
-      <p>PublicPath brings together government jobs from federal, state, and local agencies into one place — and delivers the best opportunities to your inbox every week, plus the guidance you need to land them.</p>
+      <div class="hero-label">Now live &nbsp;·&nbsp; Chicago &nbsp;·&nbsp; DC &nbsp;·&nbsp; New York &nbsp;·&nbsp; California</div>
+      <h1>Getting the next generation of talent into <em>public service</em></h1>
+      <p>PublicPath centralizes government jobs from federal, state, and local agencies into one searchable place — with curated opportunities and the guidance to land them.</p>
       <div class="hero-actions">
         <a href="jobs.html" class="btn btn-primary">
-          Browse public sector jobs
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          Browse open roles
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
         </a>
         <a href="#digest" class="btn btn-secondary">
-          See this week's picks
+          This week's picks
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
         </a>
       </div>
@@ -1094,7 +1155,7 @@
         <div class="stat-label">Of the total U.S. workforce</div>
       </div>
       <div class="stat">
-        <div class="stat-number" id="liveJobCount">—</div>
+        <div class="stat-number live" id="liveJobCount">—</div>
         <div class="stat-label">Active listings in PublicPath</div>
       </div>
       <div class="stat">
@@ -1103,6 +1164,28 @@
       </div>
     </div>
   </div>
+
+  <!-- IMPACT STATS -->
+  <section class="impact">
+    <div class="impact-inner">
+      <div class="impact-label">The talent crisis in government</div>
+      <div class="impact-grid">
+        <div class="impact-stat">
+          <div class="impact-num">40–50%</div>
+          <div class="impact-desc">of local government workers are over 50</div>
+        </div>
+        <div class="impact-stat">
+          <div class="impact-num">30%</div>
+          <div class="impact-desc">of the federal workforce eligible for retirement by 2030</div>
+        </div>
+        <div class="impact-stat">
+          <div class="impact-num accent">2%</div>
+          <div class="impact-desc">of government workers are under 30</div>
+        </div>
+      </div>
+      <p class="impact-footer">The retirement wave is structural — and the pipeline to replace it doesn't exist. Yet.</p>
+    </div>
+  </section>
 
   <!-- PROBLEM -->
   <section class="section problem" id="problem">
@@ -1367,7 +1450,7 @@
   <!-- FOOTER -->
   <footer class="footer">
     <div class="footer-inner">
-      <div class="footer-brand">Public<span>Path</span></div>
+      <div class="footer-brand">PublicPath<span class="logo-arr">↗</span></div>
       <ul class="footer-links">
         <li><a href="jobs.html">Browse Jobs</a></li>
         <li><a href="resources.html">Resources</a></li>
