@@ -620,19 +620,130 @@
     .signup .section-subtitle { color: rgba(255,255,255,0.65); max-width: 560px; }
 
     .mailerlite-wrap {
-      max-width: 560px;
+      max-width: 620px;
       margin: 48px auto 0;
-      /* MailerLite injects its own form styles — this wrapper constrains width */
     }
 
-    /* Override MailerLite button to match brand */
-    .mailerlite-wrap .ml-form-embedSubmitLoad,
-    .mailerlite-wrap .ml-subscribe-form .ml-block-form .ml-field-group button,
-    .mailerlite-wrap button[type="submit"] {
-      background: var(--red) !important;
-      border-color: var(--red) !important;
-      font-family: var(--font-body) !important;
+    /* ── MailerLite brand overrides ── */
+    #mlb2-40343990.ml-form-embedContainer {
+      font-family: 'DM Sans', -apple-system, sans-serif !important;
+    }
+    #mlb2-40343990 .ml-form-embedWrapper {
+      background: rgba(255,255,255,0.05) !important;
+      border: 1px solid rgba(255,255,255,0.1) !important;
+      border-radius: 16px !important;
+      width: 100% !important;
+      max-width: 100% !important;
+    }
+    #mlb2-40343990 .ml-form-embedWrapper.embedForm { max-width: 100% !important; }
+    #mlb2-40343990 .ml-form-embedBody { padding: 36px !important; }
+
+    /* Heading & subtitle */
+    #mlb2-40343990 .ml-form-embedContent h4 {
+      font-family: 'Alfa Slab One', Georgia, serif !important;
+      font-weight: 400 !important;
+      font-size: 1.5rem !important;
+      color: #fff !important;
+      letter-spacing: -0.01em !important;
+    }
+    #mlb2-40343990 .ml-form-embedContent p {
+      color: rgba(255,255,255,0.6) !important;
+      font-family: 'DM Sans', sans-serif !important;
+      font-size: 0.9rem !important;
+    }
+
+    /* Field labels */
+    #mlb2-40343990 .ml-block-form .ml-field-group label {
+      color: rgba(255,255,255,0.75) !important;
+      font-family: 'DM Sans', sans-serif !important;
+      font-size: 0.82rem !important;
       font-weight: 600 !important;
+    }
+
+    /* Text inputs */
+    #mlb2-40343990 .ml-form-fieldRow input {
+      background-color: rgba(255,255,255,0.08) !important;
+      border-color: rgba(255,255,255,0.15) !important;
+      border-radius: 8px !important;
+      color: #fff !important;
+      font-family: 'DM Sans', sans-serif !important;
+      font-size: 0.9rem !important;
+      padding: 12px 14px !important;
+    }
+    #mlb2-40343990 .ml-form-fieldRow input::placeholder { color: rgba(255,255,255,0.3) !important; }
+    #mlb2-40343990 .ml-form-fieldRow input:focus {
+      border-color: rgba(240,59,47,0.55) !important;
+      background-color: rgba(255,255,255,0.12) !important;
+      box-shadow: none !important;
+      outline: none !important;
+    }
+
+    /* Submit button */
+    #mlb2-40343990 .ml-form-embedSubmit button.primary {
+      background-color: #F03B2F !important;
+      border-radius: 8px !important;
+      font-family: 'DM Sans', sans-serif !important;
+      font-size: 0.95rem !important;
+      font-weight: 600 !important;
+      padding: 13px !important;
+      transition: background 0.2s !important;
+    }
+    #mlb2-40343990 .ml-form-embedSubmit button.primary:hover {
+      background-color: #C93026 !important;
+    }
+
+    /* Interest group checkboxes */
+    #mlb2-40343990 .ml-form-interestGroupsRow .label-description {
+      color: rgba(255,255,255,0.85) !important;
+      font-family: 'DM Sans', sans-serif !important;
+      font-size: 0.88rem !important;
+      font-weight: 500 !important;
+    }
+    #mlb2-40343990 .ml-form-interestGroupsRow .description {
+      color: rgba(255,255,255,0.38) !important;
+      font-family: 'DM Sans', sans-serif !important;
+      font-size: 0.75rem !important;
+    }
+
+    /* Opt-in checkbox row */
+    #mlb2-40343990 .ml-form-checkboxRow .label-description,
+    #mlb2-40343990 .ml-form-checkboxRow p {
+      color: rgba(255,255,255,0.5) !important;
+      font-family: 'DM Sans', sans-serif !important;
+      font-size: 0.8rem !important;
+    }
+
+    /* Privacy / GDPR text */
+    #mlb2-40343990 .ml-form-embedPermissions .ml-form-embedPermissionsContent p,
+    #mlb2-40343990 .ml-form-embedPermissions .ml-form-embedMailerLite-GDPR p {
+      color: rgba(255,255,255,0.3) !important;
+      font-family: 'DM Sans', sans-serif !important;
+    }
+
+    /* Checkbox borders (unchecked) */
+    #mlb2-40343990 .custom-control-label::before,
+    #mlb2-40343990 .label-description::before {
+      border-color: rgba(255,255,255,0.2) !important;
+      background-color: rgba(255,255,255,0.06) !important;
+    }
+    /* Checkbox checked → red */
+    #mlb2-40343990 .ml-form-checkboxRow input[type=checkbox]:checked ~ .label-description::before,
+    #mlb2-40343990 .ml-form-interestGroupsRow input[type=checkbox]:checked ~ .label-description::before,
+    #mlb2-40343990 .custom-checkbox .custom-control-input:checked ~ .custom-control-label::before {
+      border-color: #F03B2F !important;
+      background-color: #F03B2F !important;
+    }
+
+    /* Success state */
+    #mlb2-40343990 .ml-form-successBody { background: rgba(255,255,255,0.05) !important; border-radius: 16px !important; }
+    #mlb2-40343990 .ml-form-successContent h4 {
+      color: #fff !important;
+      font-family: 'Alfa Slab One', Georgia, serif !important;
+      font-weight: 400 !important;
+    }
+    #mlb2-40343990 .ml-form-successContent p {
+      color: rgba(255,255,255,0.65) !important;
+      font-family: 'DM Sans', sans-serif !important;
     }
 
     .signup-perks {
