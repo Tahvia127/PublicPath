@@ -611,209 +611,47 @@
       width: 500px;
       height: 500px;
       border-radius: 50%;
-      background: radial-gradient(circle, rgba(8, 145, 178, 0.15) 0%, transparent 70%);
+      background: radial-gradient(circle, rgba(240,59,47,0.12) 0%, transparent 70%);
+      pointer-events: none;
     }
 
-    .signup .section-label {
-      color: var(--teal-light);
+    .signup .section-label { color: rgba(255,255,255,0.5); }
+    .signup .section-title { color: #fff; }
+    .signup .section-subtitle { color: rgba(255,255,255,0.65); max-width: 560px; }
+
+    .mailerlite-wrap {
+      max-width: 560px;
+      margin: 48px auto 0;
+      /* MailerLite injects its own form styles — this wrapper constrains width */
     }
 
-    .signup .section-title {
-      color: #fff;
+    /* Override MailerLite button to match brand */
+    .mailerlite-wrap .ml-form-embedSubmitLoad,
+    .mailerlite-wrap .ml-subscribe-form .ml-block-form .ml-field-group button,
+    .mailerlite-wrap button[type="submit"] {
+      background: var(--red) !important;
+      border-color: var(--red) !important;
+      font-family: var(--font-body) !important;
+      font-weight: 600 !important;
     }
 
-    .signup .section-subtitle {
-      color: rgba(255, 255, 255, 0.7);
-    }
-
-    .signup-layout {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 64px;
-      align-items: start;
-      margin-top: 48px;
-    }
-
-    .signup-benefits {
-      display: flex;
-      flex-direction: column;
-      gap: 24px;
-    }
-
-    .signup-benefit {
-      display: flex;
-      gap: 16px;
-      align-items: flex-start;
-    }
-
-    .signup-benefit-icon {
-      flex-shrink: 0;
-      width: 36px;
-      height: 36px;
-      border-radius: 8px;
-      background: rgba(232, 53, 39, 0.15);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .signup-benefit-icon svg {
-      width: 18px;
-      height: 18px;
-      stroke: #F06A5E;
-    }
-
-    .signup-benefit h4 {
-      font-size: 0.95rem;
-      font-weight: 600;
-      margin-bottom: 4px;
-    }
-
-    .signup-benefit p {
-      font-size: 0.88rem;
-      color: rgba(255, 255, 255, 0.65);
-      line-height: 1.55;
-    }
-
-    .signup-form-container {
-      background: rgba(255, 255, 255, 0.06);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 14px;
-      padding: 36px;
-      position: relative;
-      z-index: 1;
-    }
-
-    .signup-form-container h3 {
-      font-family: var(--font-display);
-      font-size: 1.15rem;
-      font-weight: 600;
-      margin-bottom: 24px;
-    }
-
-    .form-group {
-      margin-bottom: 18px;
-    }
-
-    .form-group label {
-      display: block;
-      font-size: 0.82rem;
-      font-weight: 600;
-      color: rgba(255, 255, 255, 0.8);
-      margin-bottom: 6px;
-      letter-spacing: 0.02em;
-    }
-
-    .form-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 14px;
-    }
-
-    .form-group input,
-    .form-group select {
-      width: 100%;
-      padding: 11px 14px;
-      background: rgba(255, 255, 255, 0.08);
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      border-radius: 8px;
-      color: #fff;
-      font-family: var(--font-body);
-      font-size: 0.9rem;
-      transition: border-color 0.2s, background 0.2s;
-      outline: none;
-    }
-
-    .form-group input::placeholder {
-      color: rgba(255, 255, 255, 0.35);
-    }
-
-    .form-group input:focus,
-    .form-group select:focus {
-      border-color: var(--teal);
-      background: rgba(255, 255, 255, 0.12);
-    }
-
-    .form-group select {
-      cursor: pointer;
-      appearance: none;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='rgba(255,255,255,0.5)' viewBox='0 0 16 16'%3E%3Cpath d='M4.5 6l3.5 3.5L11.5 6'/%3E%3C/svg%3E");
-      background-repeat: no-repeat;
-      background-position: right 12px center;
-      padding-right: 36px;
-    }
-
-    .form-group select option {
-      background: var(--navy-deep);
-      color: #fff;
-    }
-
-    .checkbox-group {
+    .signup-perks {
       display: flex;
       flex-wrap: wrap;
-      gap: 8px;
-      margin-top: 4px;
+      justify-content: center;
+      gap: 20px 40px;
+      margin-top: 40px;
     }
 
-    .checkbox-label {
-      display: inline-flex;
+    .signup-perk {
+      display: flex;
       align-items: center;
-      gap: 6px;
-      padding: 6px 12px;
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      border-radius: 6px;
-      font-size: 0.82rem;
-      color: rgba(255, 255, 255, 0.75);
-      cursor: pointer;
-      transition: all 0.15s;
-      user-select: none;
+      gap: 8px;
+      font-size: 0.88rem;
+      color: rgba(255,255,255,0.6);
     }
 
-    .checkbox-label:hover {
-      border-color: rgba(255, 255, 255, 0.3);
-      background: rgba(255, 255, 255, 0.05);
-    }
-
-    .checkbox-label input {
-      display: none;
-    }
-
-    .checkbox-label input:checked + .checkbox-text {
-      color: #fff;
-    }
-
-    .checkbox-label:has(input:checked) {
-      border-color: var(--teal);
-      background: rgba(8, 145, 178, 0.15);
-      color: #fff;
-    }
-
-    .btn-submit {
-      width: 100%;
-      padding: 14px;
-      margin-top: 8px;
-      background: var(--red);
-      color: #fff;
-      border: none;
-      border-radius: 8px;
-      font-family: var(--font-body);
-      font-size: 0.95rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: background 0.2s, transform 0.15s;
-    }
-
-    .btn-submit:hover {
-      background: var(--red-hover);
-      transform: translateY(-1px);
-    }
-
-    .form-note {
-      text-align: center;
-      font-size: 0.78rem;
-      color: rgba(255, 255, 255, 0.4);
-      margin-top: 12px;
-    }
+    .perk-icon { font-size: 1rem; }
 
     /* ── DIGEST PREVIEW ── */
     .digest {
@@ -1292,6 +1130,14 @@
     }
   </style>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <!-- MailerLite Universal — replace ACCOUNT_ID with your real number -->
+  <script>
+    (function(w,d,e,u,f,l,n){w[f]=w[f]||function(){(w[f].q=w[f].q||[])
+    .push(arguments);},l=d.createElement(e),l.async=1,l.src=u,
+    n=d.getElementsByTagName(e)[0],n.parentNode.insertBefore(l,n);})
+    (window,document,'script','https://assets.mailerlite.com/js/universal.js','ml');
+    ml('account', '2289691');
+  </script>
 </head>
 <body>
 
@@ -1531,120 +1377,34 @@
     </div>
   </section>
 
-  <!-- SIGNUP (hidden — form not yet active; re-enable when Beehiiv embed is ready) -->
-  <section class="section signup" id="signup" style="display:none">
+  <!-- SIGNUP — MailerLite embed -->
+  <section class="section signup" id="signup">
     <div class="section-inner">
-      <div class="section-label">Get Started</div>
-      <h2 class="section-title">Join the PublicPath pilot</h2>
-      <p class="section-subtitle">Sign up to receive our weekly digest of curated government opportunities — tailored to your interests.</p>
+      <div class="section-label reveal">Weekly Digest</div>
+      <h2 class="section-title reveal reveal-delay-1">Get curated public sector roles in your inbox</h2>
+      <p class="section-subtitle reveal reveal-delay-2">Every week we hand-pick 5–10 government opportunities — federal, state, and local — and deliver them straight to you. Free, always.</p>
 
-      <div class="signup-layout">
-        <div class="signup-benefits">
-          <div class="signup-benefit">
-            <div class="signup-benefit-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-            </div>
-            <div>
-              <h4>Weekly hand-picked roles</h4>
-              <p>5–10 curated opportunities from across all levels of government, delivered every Monday.</p>
-            </div>
-          </div>
-          <div class="signup-benefit">
-            <div class="signup-benefit-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
-            </div>
-            <div>
-              <h4>Insider-sourced opportunities</h4>
-              <p>Roles shared by government insiders and political operatives — not posted publicly.</p>
-            </div>
-          </div>
-          <div class="signup-benefit">
-            <div class="signup-benefit-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg>
-            </div>
-            <div>
-              <h4>Career guidance & resources</h4>
-              <p>Federal resume tips, hiring timelines, clearance basics, and application strategies.</p>
-            </div>
-          </div>
-          <div class="signup-benefit">
-            <div class="signup-benefit-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-            </div>
-            <div>
-              <h4>It's free</h4>
-              <p>PublicPath is free for all users during the pilot. Sign up and start exploring.</p>
-            </div>
-          </div>
+      <div class="mailerlite-wrap reveal reveal-delay-2">
+        <!-- MailerLite embedded form — replace FORM_ID with your real form ID -->
+        <div class="ml-embedded" data-form="185583501309904276"></div>
+      </div>
+
+      <div class="signup-perks reveal reveal-delay-3">
+        <div class="signup-perk">
+          <span class="perk-icon">📬</span>
+          <span>5–10 hand-picked roles every week</span>
         </div>
-
-        <div class="signup-form-container">
-          <h3>Sign up for the weekly digest</h3>
-
-          <form id="signupForm">
-            <div class="form-row">
-              <div class="form-group">
-                <label for="firstName">First name</label>
-                <input type="text" id="firstName" name="first_name" placeholder="Jane" required>
-              </div>
-              <div class="form-group">
-                <label for="lastName">Last name</label>
-                <input type="text" id="lastName" name="last_name" placeholder="Doe" required>
-              </div>
-            </div>
-            <div class="form-group">
-              <label for="email">Email</label>
-              <input type="email" id="email" name="email" placeholder="jane@university.edu" required>
-            </div>
-            <div class="form-group">
-              <label for="school">School / University</label>
-              <input type="text" id="school" name="school" placeholder="University of Chicago">
-            </div>
-            <div class="form-group">
-              <label>Government level (select all that interest you)</label>
-              <div class="checkbox-group">
-                <label class="checkbox-label"><input type="checkbox" name="govLevel" value="federal"><span class="checkbox-text">Federal</span></label>
-                <label class="checkbox-label"><input type="checkbox" name="govLevel" value="state"><span class="checkbox-text">State</span></label>
-                <label class="checkbox-label"><input type="checkbox" name="govLevel" value="local"><span class="checkbox-text">Local</span></label>
-                <label class="checkbox-label"><input type="checkbox" name="govLevel" value="fellowship"><span class="checkbox-text">Fellowship</span></label>
-              </div>
-            </div>
-            <div class="form-group">
-              <label>Function area (select all that interest you)</label>
-              <div class="checkbox-group">
-                <label class="checkbox-label"><input type="checkbox" name="funcArea" value="policy"><span class="checkbox-text">Policy</span></label>
-                <label class="checkbox-label"><input type="checkbox" name="funcArea" value="operations"><span class="checkbox-text">Operations</span></label>
-                <label class="checkbox-label"><input type="checkbox" name="funcArea" value="technology"><span class="checkbox-text">Technology</span></label>
-                <label class="checkbox-label"><input type="checkbox" name="funcArea" value="comms"><span class="checkbox-text">Communications</span></label>
-                <label class="checkbox-label"><input type="checkbox" name="funcArea" value="finance"><span class="checkbox-text">Finance</span></label>
-                <label class="checkbox-label"><input type="checkbox" name="funcArea" value="legal"><span class="checkbox-text">Legal</span></label>
-              </div>
-            </div>
-            <div class="form-group" style="margin-top:4px">
-              <label class="checkbox-label" style="font-size:.82rem;color:var(--text-muted);line-height:1.5">
-                <input type="checkbox" id="privacyConsent" required style="margin-top:2px">
-                <span class="checkbox-text">I agree to receive weekly emails from PublicPath. We will never share your information with third parties. Unsubscribe anytime.</span>
-              </label>
-            </div>
-            <button type="submit" class="btn-submit" id="signupBtn">Save preferences & subscribe →</button>
-            <p class="form-note">Free during the pilot. Unsubscribe anytime.</p>
-          </form>
-
-          <!-- Success state (hidden by default) -->
-          <div id="signupSuccess" style="display:none;padding:20px 0;">
-            <div style="text-align:center;margin-bottom:20px;">
-              <div style="display:inline-flex;align-items:center;justify-content:center;width:48px;height:48px;border-radius:50%;background:#ECFDF5;color:#059669;font-size:1.5rem;margin-bottom:12px;">&#10003;</div>
-              <h4 style="font-family:var(--font-display);color:var(--navy);margin-bottom:8px;">Preferences saved!</h4>
-              <p style="color:var(--text-muted);font-size:.9rem;">Now enter your email below to subscribe to the weekly digest:</p>
-            </div>
-            <iframe
-              id="beehiivEmbed"
-              src=""
-              frameborder="0"
-              scrolling="no"
-              style="width:100%;min-height:320px;border-radius:8px;background:transparent;">
-            </iframe>
-          </div>
+        <div class="signup-perk">
+          <span class="perk-icon">🏛️</span>
+          <span>Federal, state &amp; local opportunities</span>
+        </div>
+        <div class="signup-perk">
+          <span class="perk-icon">🎯</span>
+          <span>Insider-sourced leads not on any job board</span>
+        </div>
+        <div class="signup-perk">
+          <span class="perk-icon">✅</span>
+          <span>Free. Unsubscribe anytime.</span>
         </div>
       </div>
     </div>
