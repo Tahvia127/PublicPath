@@ -88,6 +88,135 @@ PUBLIC_SECTOR_TERMS = [
     "legislature", "legislative", "judicial", "city council", "county board",
 ]
 
+# ── SECTOR CLASSIFICATION ──────────────────────────────────────
+# Priority order matters: match on title (reliable); desc can be noisy.
+SECTOR_KEYWORDS = {
+    'politics':       ['campaign ', 'field organizer', 'canvass', 'voter registration',
+                       'political director', 'advance staff', 'gotv', 'get out the vote',
+                       'precinct captain', 'political operative', 'political organizing',
+                       'ballot initiative'],
+    'technology':     ['software engineer', 'software developer', 'web developer',
+                       'data scientist', 'data engineer', 'machine learning', 'cybersecurity',
+                       'information security', 'it specialist', 'systems administrator',
+                       'network admin', 'database admin', 'cloud engineer', 'devops',
+                       'ux designer', 'product manager', 'digital service', 'technology officer'],
+    'social_services':['social worker', 'case manager', 'caseworker', 'child welfare',
+                       'family services', 'benefits specialist', 'workforce development',
+                       'navigator', 'housing specialist', 'youth worker', 'human services',
+                       'community health worker', 'employment specialist'],
+    'public_health':  ['epidemiologist', 'public health', 'health educator', 'health inspector',
+                       'registered nurse', 'clinical nurse', 'nutritionist', 'mental health',
+                       'behavioral health', 'substance abuse', 'disease investigator',
+                       'medical officer', 'health analyst'],
+    'education':      ['teacher', 'librarian', 'curriculum', 'instruction specialist',
+                       'school counselor', 'academic advisor', 'education coordinator',
+                       'education specialist', 'training specialist', 'school psychologist',
+                       'early childhood', 'special education'],
+    'environment':    ['environmental', 'conservation', 'sustainability', 'natural resources',
+                       'wildlife', 'forestry', 'parks ranger', 'climate', 'clean energy',
+                       'water quality', 'urban planner', 'city planner', 'civil engineer',
+                       'transportation planner', 'land management'],
+    'legal':          ['attorney', 'paralegal', 'legal counsel', 'compliance officer',
+                       'inspector general', 'law clerk', 'judge', 'corrections officer',
+                       'probation officer', 'parole officer', 'police officer', 'detective',
+                       'deputy sheriff', 'border patrol', 'customs agent', 'us marshal',
+                       'special agent', 'criminal investigator'],
+    'finance':        ['accountant', 'financial analyst', 'budget analyst', 'fiscal analyst',
+                       'grants manager', 'procurement specialist', 'contracting officer',
+                       'economist', 'revenue analyst', 'tax examiner', 'auditor', 'treasury',
+                       'grants administrator'],
+    'communications': ['communications specialist', 'communications director', 'public affairs',
+                       'media relations', 'press secretary', 'content writer', 'editor',
+                       'graphic designer', 'social media', 'outreach coordinator',
+                       'public information officer', 'digital communications'],
+    'policy':         ['policy analyst', 'policy advisor', 'legislative assistant',
+                       'regulatory analyst', 'program analyst', 'research analyst',
+                       'policy associate', 'policy specialist', 'policy coordinator',
+                       'policy director', 'policy fellow', 'research associate',
+                       'government relations', 'legislative liaison'],
+    # 'government' is the catch-all — no keywords needed
+}
+
+ENTRY_LEVEL_TITLE_KW = [
+    'entry level', 'entry-level', 'junior ', 'associate ', 'trainee', 'intern',
+    'assistant ', 'coordinator', 'analyst i', 'specialist i', 'officer i',
+    'recent graduate', 'early career', ' fellow', 'fellowship', 'pathways',
+    'summer associate',
+]
+
+SENIOR_TITLE_KW = [
+    'senior ', 'sr. ', ' sr ', 'director', ' manager', 'chief ', 'vice president',
+    'executive director', 'principal ', 'lead ', 'head of', 'superintendent',
+    'commissioner', 'deputy director', 'managing director', 'president',
+    'deputy secretary',
+]
+
+
+def infer_sector(title, description=""):
+    """Classify a job into a sector based on title keywords."""
+    text = title.lower()
+    priority = [
+        'politics', 'technology', 'social_services', 'public_health',
+        'education', 'environment', 'legal', 'finance', 'communications', 'policy',
+    ]
+    for sector in priority:
+        if any(kw in text for kw in SECTOR_KEYWORDS[sector]):
+            return sector
+    return 'government'
+
+
+def infer_entry_level(title, pay_grade=None, salary_max=None, employment_type=None, description=""):
+    """Return True if entry-level, False if senior, None if unclear."""
+    t = title.lower()
+
+    # Internships are always entry level
+    if employment_type == 'internship' or 'intern' in t:
+        return True
+
+    # Clear senior signals
+    if any(kw in t for kw in SENIOR_TITLE_KW):
+        return False
+
+    # Federal GS grades
+    if pay_grade:
+        m = re.search(r'GS-(\d+)', str(pay_grade))
+        if m:
+            grade = int(m.group(1))
+            if grade <= 9:
+                return True
+            if grade >= 12:
+                return False
+
+    # Entry-level title keywords
+    if any(kw in t for kw in ENTRY_LEVEL_TITLE_KW):
+        return True
+
+    # Salary signal
+    if salary_max:
+        if salary_max < 70000:
+            return True
+        if salary_max > 120000:
+            return False
+
+    return None  # unknown; SQL classify_entry_levels() handles residuals
+
+
+def enrich_job(job):
+    """Add sector and is_entry_level to a normalized job dict in-place."""
+    title = job.get('title', '')
+    desc = job.get('description', '')
+    el = infer_entry_level(
+        title,
+        pay_grade=job.get('pay_grade'),
+        salary_max=job.get('salary_max'),
+        employment_type=job.get('employment_type'),
+        description=desc,
+    )
+    job.setdefault('sector', infer_sector(title, desc))
+    if el is not None:
+        job['is_entry_level'] = el
+    return job
+
 STATE_ABBREVS = {
     "AL": "Alabama", "AK": "Alaska", "AZ": "Arizona", "AR": "Arkansas",
     "CA": "California", "CO": "Colorado", "CT": "Connecticut", "DE": "Delaware",
@@ -412,11 +541,27 @@ def normalize_serpapi(raw):
         "is_active": True, "raw_data": json.dumps(raw),
     }
 
-def fetch_all_serpapi(max_queries=10):
+def fetch_all_serpapi(max_queries=14):
     all_jobs = {}
-    queries = ["government jobs entry level", "public policy jobs", "state government jobs",
-        "city government jobs", "federal government internship", "public health government",
-        "nonprofit policy jobs", "government analyst", "public administration jobs", "government fellowship"]
+    queries = [
+        # Entry-level focused
+        "entry level government jobs",
+        "junior analyst government entry level",
+        "recent graduate federal government jobs",
+        "government fellowship program entry level",
+        "public policy associate entry level",
+        # Sector-specific entry level
+        "entry level city government jobs",
+        "government technology jobs entry level",
+        "public health coordinator entry level",
+        "social services case manager entry level",
+        "political campaign field organizer",
+        # Broader pipeline
+        "state government jobs recent graduate",
+        "nonprofit policy jobs entry level",
+        "government internship paid",
+        "public administration entry level",
+    ]
     for i, q in enumerate(queries[:max_queries]):
         print(f"    [{i+1}/{min(len(queries), max_queries)}] '{q}'")
         try:
@@ -508,6 +653,71 @@ def fetch_all_jobicy():
         print(f"    Error fetching Jobicy: {e}"); return []
 
 
+# ── IDEALIST (nonprofit / civic sector RSS) ──────────────────
+
+def fetch_all_idealist():
+    """
+    Idealist.org has an unofficial RSS feed for nonprofit/civic jobs.
+    Pulls entry-level and professional roles from advocacy, policy, and
+    social-sector orgs — a major pipeline for public service careers.
+    """
+    IDEALIST_FEEDS = [
+        "https://www.idealist.org/en/api/jobs/search.rss?type=JOB&q=policy+analyst",
+        "https://www.idealist.org/en/api/jobs/search.rss?type=JOB&q=community+outreach",
+        "https://www.idealist.org/en/api/jobs/search.rss?type=JOB&q=social+services",
+        "https://www.idealist.org/en/api/jobs/search.rss?type=JOB&q=public+health",
+        "https://www.idealist.org/en/api/jobs/search.rss?type=INTERNSHIP&q=government",
+        "https://www.idealist.org/en/api/jobs/search.rss?type=JOB&q=government+affairs",
+        "https://www.idealist.org/en/api/jobs/search.rss?type=JOB&q=advocacy",
+    ]
+    normalized = []; seen_links = set()
+    for feed_url in IDEALIST_FEEDS:
+        try:
+            resp = requests.get(feed_url, timeout=15)
+            if resp.status_code != 200:
+                continue
+            root = ET.fromstring(resp.content)
+            for item in root.findall(".//item"):
+                title = item.findtext("title", "")
+                link  = item.findtext("link", "")
+                desc  = clean_html(item.findtext("description", ""))
+                org   = ""
+                # Some Idealist feeds embed org in title "Role | Org Name"
+                if " | " in title:
+                    parts = title.split(" | ")
+                    title = parts[0].strip()
+                    org   = parts[-1].strip()
+                if not link or link in seen_links:
+                    continue
+                if not is_public_sector(title, org, desc):
+                    continue
+                seen_links.add(link)
+                city, state = "", ""
+                loc_el = item.find("{http://www.idealist.org/ns/}location")
+                if loc_el is not None and loc_el.text:
+                    city, state = parse_location(loc_el.text)
+                normalized.append({
+                    "source": "idealist",
+                    "source_id": f"idealist_{hashlib.md5(link.encode()).hexdigest()}",
+                    "title": title, "organization": org,
+                    "organization_type": infer_org_type(f"{org} {title} {desc}"),
+                    "description": desc[:2000],
+                    "location_city": city, "location_state": state, "location_country": "US",
+                    "is_remote": "remote" in desc.lower() or "remote" in title.lower(),
+                    "employment_type": "internship" if "intern" in title.lower() else "full_time",
+                    "application_url": link,
+                    "posted_date": item.findtext("pubDate"),
+                    "fingerprint": job_fingerprint(title, org, state),
+                    "is_active": True,
+                    "raw_data": json.dumps({"title": title, "link": link, "org": org}),
+                })
+            time.sleep(0.5)
+        except Exception as e:
+            print(f"    Idealist feed error ({feed_url}): {e}")
+    print(f"    Total Idealist jobs (filtered): {len(normalized)}")
+    return normalized
+
+
 # ── CAREERJET (disabled from auto-sync) ──────────────────────
 
 def fetch_all_careerjet(max_pages=2):
@@ -561,6 +771,7 @@ def upsert_jobs(supabase, jobs, source_name, batch_size=50):
             blocked += 1
             continue
         seen.add(key)
+        job = enrich_job(job)
         cleaned.append({k: v for k, v in job.items() if v is not None})
     if blocked:
         print(f"  Blocked {blocked} jobs from blocklisted orgs")
@@ -636,7 +847,7 @@ def print_stats(supabase):
 def main():
     parser = argparse.ArgumentParser(description="PublicPath Job Sync Pipeline")
     parser.add_argument("--source",
-        choices=["usajobs", "jooble", "adzuna", "serpapi", "findwork", "jobicy", "careerjet", "all"],
+        choices=["usajobs", "jooble", "adzuna", "serpapi", "findwork", "jobicy", "idealist", "careerjet", "all"],
         default="all", help="Which source to sync (default: all)")
     parser.add_argument("--stats", action="store_true", help="Print database stats and exit")
     parser.add_argument("--expire", action="store_true", help="Deactivate expired jobs and exit")
@@ -650,13 +861,14 @@ def main():
 
     print(f"{'='*60}\nPublicPath Job Sync — {datetime.utcnow().strftime('%Y-%m-%d %H:%M UTC')}\n{'='*60}")
 
-    if args.source in ("usajobs", "all"): sync_source(supabase, "usajobs", fetch_all_usajobs)
-    if args.source in ("jooble", "all"): sync_source(supabase, "jooble", fetch_all_jooble, max_pages_per_query=args.jooble_pages)
-    if args.source in ("adzuna", "all"): sync_source(supabase, "adzuna", fetch_all_adzuna)
-    if args.source in ("serpapi", "all"): sync_source(supabase, "google_jobs", fetch_all_serpapi)
-    if args.source in ("findwork", "all"): sync_source(supabase, "findwork", fetch_all_findwork)
-    if args.source in ("jobicy", "all"): sync_source(supabase, "jobicy", fetch_all_jobicy)
-    if args.source == "careerjet": sync_source(supabase, "careerjet", fetch_all_careerjet)
+    if args.source in ("usajobs", "all"):   sync_source(supabase, "usajobs",    fetch_all_usajobs)
+    if args.source in ("jooble", "all"):    sync_source(supabase, "jooble",     fetch_all_jooble, max_pages_per_query=args.jooble_pages)
+    if args.source in ("adzuna", "all"):    sync_source(supabase, "adzuna",     fetch_all_adzuna)
+    if args.source in ("serpapi", "all"):   sync_source(supabase, "google_jobs",fetch_all_serpapi)
+    if args.source in ("findwork", "all"):  sync_source(supabase, "findwork",   fetch_all_findwork)
+    if args.source in ("jobicy", "all"):    sync_source(supabase, "jobicy",     fetch_all_jobicy)
+    if args.source in ("idealist", "all"):  sync_source(supabase, "idealist",   fetch_all_idealist)
+    if args.source == "careerjet":          sync_source(supabase, "careerjet",  fetch_all_careerjet)
 
     expire_old_jobs(supabase)
 
@@ -666,6 +878,8 @@ def main():
         ("normalize_employment_types", "Normalized employment types"),
         ("normalize_state_names", "Normalized state names"),
         ("reclassify_org_types", "Reclassified org types"),
+        ("classify_job_sectors",  "Classified job sectors"),
+        ("classify_entry_levels", "Classified entry-level flags"),
     ]:
         try: supabase.rpc(fn).execute(); print(f"  {label}")
         except Exception as e: print(f"  Error ({fn}): {e}")

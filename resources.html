@@ -3,55 +3,458 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PublicPath — Resources & Guides</title>
+  <title>Public Path — Resources & Guides</title>
   <meta name="description" content="Everything you need to know about applying to government jobs. Federal resume tips, hiring timelines, clearance basics, and more.">
+  <link rel="canonical" href="https://publicpath.com/resources">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300..700;1,9..40,300..700&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=DM+Sans:ital,opsz,wght@0,9..40,300..700;1,9..40,300..700&display=swap" rel="stylesheet">
   <style>
-    :root{--navy:#1B3A5C;--navy-deep:#122840;--teal:#0891B2;--teal-light:#22D3EE;--teal-muted:#0E7490;--warm-white:#FAFAF8;--cream:#F5F3EE;--sand:#EBE8E1;--text-primary:#1E293B;--text-secondary:#475569;--text-muted:#64748B;--border:#E2E0DB;--font-display:'Lora',Georgia,serif;--font-body:'DM Sans',-apple-system,sans-serif}
-    *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}html{scroll-behavior:smooth;font-size:16px}body{font-family:var(--font-body);color:var(--text-primary);background:var(--warm-white);line-height:1.65;-webkit-font-smoothing:antialiased}a{color:var(--teal);text-decoration:none}a:hover{color:var(--teal-muted)}
+    /* ── Brand tokens ── */
+    :root {
+      --navy: #2934A8;
+      --navy-dark: #111A6E;
+      --navy-bg: #0D1550;
+      --navy-deep: #080E38;
+      --red: #F03B2F;
+      --red-hover: #C93026;
+      --paper: #F5F2EA;
+      --cream: #EDE9DF;
+      --text-primary: #1E293B;
+      --text-secondary: #475569;
+      --text-muted: #64748B;
+      --border: #E2E0DB;
+      --font-display: 'Alfa Slab One', Georgia, serif;
+      --font-body: 'DM Sans', -apple-system, sans-serif;
+    }
 
-    .nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(250,250,248,0.92);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--border);transition:box-shadow .3s ease}.nav.scrolled{box-shadow:0 1px 12px rgba(27,58,92,.08)}.nav-inner{max-width:1120px;margin:0 auto;padding:0 24px;height:64px;display:flex;align-items:center;justify-content:space-between}.logo{font-family:var(--font-display);font-size:1.35rem;font-weight:700;color:var(--navy);text-decoration:none;letter-spacing:-.02em}.logo span{color:var(--text-muted);font-weight:400}.nav-links{display:flex;align-items:center;gap:32px;list-style:none}.nav-links a{font-size:.9rem;font-weight:500;color:var(--text-secondary);text-decoration:none;transition:color .2s}.nav-links a:hover{color:var(--navy)}.nav-links a.active{color:var(--teal-muted);font-weight:600}.nav-cta{display:inline-flex;align-items:center;padding:8px 20px;background:var(--navy);color:#fff!important;border-radius:6px;font-size:.875rem;font-weight:600;transition:background .2s,transform .15s}.nav-cta:hover{background:var(--navy-deep);transform:translateY(-1px)}.mobile-toggle{display:none;background:none;border:none;cursor:pointer;padding:4px}.mobile-toggle svg{width:24px;height:24px;stroke:var(--navy)}
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; font-size: 16px; }
+    body {
+      font-family: var(--font-body);
+      color: var(--text-primary);
+      background: var(--paper);
+      line-height: 1.65;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { color: var(--navy); text-decoration: none; }
+    a:hover { color: var(--navy-dark); }
 
-    .hero-sm{padding:120px 24px 60px;background:linear-gradient(168deg,var(--warm-white) 0%,var(--cream) 50%,#E8EEF4 100%);position:relative;overflow:hidden}.hero-sm::before{content:'';position:absolute;top:-200px;right:-200px;width:600px;height:600px;border-radius:50%;background:radial-gradient(circle,rgba(8,145,178,.06) 0%,transparent 70%);pointer-events:none}.hero-sm .label{font-size:.75rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--teal-muted);margin-bottom:12px}.hero-sm h1{font-family:var(--font-display);font-size:clamp(1.8rem,4vw,2.6rem);font-weight:700;color:var(--navy);letter-spacing:-.025em;margin-bottom:16px}.hero-sm p{font-size:1.05rem;color:var(--text-secondary);max-width:600px;line-height:1.7}
+    /* ── Scroll-reveal ── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(36px);
+      transition: opacity 0.65s ease, transform 0.65s ease;
+    }
+    .reveal.is-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .reveal-delay-1 { transition-delay: 0.1s; }
+    .reveal-delay-2 { transition-delay: 0.2s; }
+    .reveal-delay-3 { transition-delay: 0.3s; }
+    .reveal-delay-4 { transition-delay: 0.4s; }
+    .reveal-delay-5 { transition-delay: 0.5s; }
 
-    .content{max-width:860px;margin:0 auto;padding:60px 24px 80px}
+    /* ── Nav ── */
+    .nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      background: var(--navy-bg);
+      border-bottom: 1px solid rgba(255,255,255,.07);
+      transition: box-shadow .3s ease;
+    }
+    .nav.scrolled { box-shadow: 0 2px 20px rgba(0,0,0,.3); }
+    .nav-inner {
+      max-width: 1120px; margin: 0 auto; padding: 0 24px;
+      height: 64px; display: flex; align-items: center; justify-content: space-between;
+    }
+    .logo {
+      display: flex; align-items: center; gap: 10px;
+      text-decoration: none; flex-shrink: 0;
+    }
+    .logo-wordmark {
+      font-family: var(--font-display);
+      font-weight: 400;
+      font-size: 1.25rem;
+      color: #fff;
+      letter-spacing: -.01em;
+      line-height: 1;
+    }
+    .logo-icon svg { display: block; }
+    .nav-links {
+      display: flex; align-items: center; gap: 32px; list-style: none;
+    }
+    .nav-links a {
+      font-size: .875rem; font-weight: 500;
+      color: rgba(255,255,255,.65);
+      text-decoration: none; transition: color .2s;
+    }
+    .nav-links a:hover { color: #fff; }
+    .nav-links a.active { color: #fff; font-weight: 600; }
+    .nav-cta {
+      display: inline-flex; align-items: center;
+      padding: 8px 20px;
+      background: var(--red); color: #fff !important;
+      border-radius: 6px; font-size: .875rem; font-weight: 600;
+      transition: background .2s, transform .15s;
+    }
+    .nav-cta:hover { background: var(--red-hover) !important; transform: translateY(-1px); }
+    .mobile-toggle {
+      display: none; background: none; border: none; cursor: pointer; padding: 4px;
+    }
+    .mobile-toggle svg { width: 24px; height: 24px; stroke: #fff; }
 
-    .guide-section{margin-bottom:56px}
-    .guide-section h2{font-family:var(--font-display);font-size:1.5rem;font-weight:700;color:var(--navy);margin-bottom:8px;letter-spacing:-.02em}
-    .guide-section .subtitle{font-size:.95rem;color:var(--text-muted);margin-bottom:28px}
-    .guide-section p{font-size:.95rem;color:var(--text-secondary);line-height:1.75;margin-bottom:16px}
-    .guide-section h3{font-family:var(--font-display);font-size:1.15rem;font-weight:600;color:var(--navy);margin-top:32px;margin-bottom:12px}
+    /* ── Hero ── */
+    .hero-resources {
+      padding: 130px 24px 72px;
+      background: var(--navy-bg);
+      position: relative; overflow: hidden;
+    }
+    .hero-resources::before {
+      content: '';
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse 60% 60% at 80% 50%, rgba(41,52,168,.35) 0%, transparent 70%),
+        radial-gradient(ellipse 40% 50% at 10% 80%, rgba(240,59,47,.12) 0%, transparent 60%);
+      pointer-events: none;
+    }
+    /* Grid overlay matching index */
+    .hero-grid {
+      position: absolute; inset: 0; pointer-events: none;
+      background-image:
+        linear-gradient(rgba(255,255,255,.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.03) 1px, transparent 1px);
+      background-size: 60px 60px;
+    }
+    .hero-inner {
+      max-width: 860px; margin: 0 auto; position: relative; z-index: 1;
+    }
+    .hero-label {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(240,59,47,.15);
+      border: 1px solid rgba(240,59,47,.3);
+      border-radius: 100px;
+      padding: 5px 14px;
+      font-size: .72rem; font-weight: 700;
+      letter-spacing: .1em; text-transform: uppercase;
+      color: #FF8A80;
+      margin-bottom: 20px;
+    }
+    .hero-resources h1 {
+      font-family: var(--font-display);
+      font-weight: 400;
+      font-size: clamp(2rem, 5vw, 3rem);
+      color: #fff;
+      letter-spacing: -.01em;
+      line-height: 1.15;
+      margin-bottom: 20px;
+    }
+    .hero-resources h1 em {
+      font-style: normal;
+      color: var(--red);
+    }
+    .hero-resources p {
+      font-size: 1.05rem; color: rgba(255,255,255,.7);
+      max-width: 560px; line-height: 1.75;
+    }
 
-    .tip-card{background:#fff;border:1px solid var(--border);border-radius:12px;padding:24px 28px;margin-bottom:16px;transition:transform .2s,box-shadow .2s}.tip-card:hover{transform:translateY(-2px);box-shadow:0 4px 20px rgba(27,58,92,.06)}.tip-card h4{font-family:var(--font-display);font-size:1.02rem;font-weight:600;color:var(--navy);margin-bottom:8px}.tip-card p{font-size:.9rem;color:var(--text-secondary);line-height:1.65;margin-bottom:0}
-    .tip-number{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:50%;background:rgba(8,145,178,.08);color:var(--teal-muted);font-size:.75rem;font-weight:700;margin-bottom:12px}
+    /* ── Quick-nav pills ── */
+    .quick-nav {
+      background: #fff;
+      border-bottom: 1px solid var(--border);
+      position: sticky; top: 64px; z-index: 50;
+    }
+    .quick-nav-inner {
+      max-width: 1120px; margin: 0 auto; padding: 0 24px;
+      display: flex; gap: 0; overflow-x: auto; -webkit-overflow-scrolling: touch;
+    }
+    .quick-nav-inner::-webkit-scrollbar { display: none; }
+    .quick-nav-btn {
+      display: inline-flex; align-items: center;
+      padding: 14px 18px;
+      font-size: .8rem; font-weight: 600;
+      color: var(--text-muted);
+      white-space: nowrap;
+      background: none; border: none;
+      border-bottom: 2px solid transparent;
+      cursor: pointer; transition: color .2s, border-color .2s;
+      text-decoration: none;
+    }
+    .quick-nav-btn:hover { color: var(--navy); border-bottom-color: var(--navy); }
+    .quick-nav-btn.active { color: var(--red); border-bottom-color: var(--red); }
 
-    .timeline{display:flex;flex-direction:column;gap:0;margin:20px 0 28px;position:relative;padding-left:28px}.timeline::before{content:'';position:absolute;left:11px;top:8px;bottom:8px;width:2px;background:var(--sand)}.timeline-item{position:relative;padding:12px 0 12px 20px}.timeline-dot{position:absolute;left:-22px;top:16px;width:12px;height:12px;border-radius:50%;background:var(--teal);border:2px solid var(--warm-white);box-shadow:0 0 0 2px var(--teal)}.timeline-item h4{font-size:.9rem;font-weight:600;color:var(--navy);margin-bottom:2px}.timeline-item p{font-size:.85rem;color:var(--text-muted);margin:0}
+    /* ── Content layout ── */
+    .content {
+      max-width: 860px; margin: 0 auto; padding: 64px 24px 80px;
+    }
 
-    .link-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;margin-top:20px}
-    .link-card{background:#fff;border:1px solid var(--border);border-radius:10px;padding:20px;transition:all .2s;display:block;text-decoration:none}.link-card:hover{border-color:rgba(8,145,178,.35);box-shadow:0 4px 16px rgba(27,58,92,.06);transform:translateY(-1px)}.link-card h4{font-family:var(--font-display);font-size:.95rem;font-weight:600;color:var(--navy);margin-bottom:6px}.link-card p{font-size:.82rem;color:var(--text-muted);line-height:1.5;margin:0}.link-card .link-tag{display:inline-block;padding:2px 8px;border-radius:100px;font-size:.68rem;font-weight:600;margin-bottom:10px}
-    .tag-federal{background:#EFF6FF;color:#1D4ED8}.tag-guide{background:rgba(8,145,178,.07);color:var(--teal-muted)}.tag-state{background:#FFF7ED;color:#C2410C}.tag-tool{background:#ECFDF5;color:#047857}.tag-career{background:#F5F3FF;color:#6D28D9}
+    /* ── Section headers ── */
+    .guide-section {
+      margin-bottom: 72px; scroll-margin-top: 120px;
+    }
+    .section-tag {
+      display: inline-block;
+      padding: 3px 10px;
+      background: rgba(41,52,168,.08);
+      color: var(--navy);
+      border-radius: 100px;
+      font-size: .7rem; font-weight: 700;
+      letter-spacing: .09em; text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+    .guide-section h2 {
+      font-family: var(--font-display);
+      font-weight: 400;
+      font-size: clamp(1.4rem, 3vw, 1.9rem);
+      color: var(--navy-dark);
+      margin-bottom: 6px;
+      letter-spacing: -.01em;
+    }
+    .guide-section .subtitle {
+      font-size: .975rem; color: var(--text-muted);
+      margin-bottom: 28px; line-height: 1.65;
+    }
+    .guide-section p {
+      font-size: .975rem; color: var(--text-secondary);
+      line-height: 1.8; margin-bottom: 20px;
+    }
+    .divider {
+      height: 1px; background: var(--border); margin: 56px 0;
+    }
 
-    .cta-box{background:var(--navy);border-radius:14px;padding:40px;text-align:center;margin-top:60px}.cta-box h3{font-family:var(--font-display);font-size:1.3rem;color:#fff;margin-bottom:12px}.cta-box p{color:rgba(255,255,255,.7);font-size:.95rem;margin-bottom:24px}.cta-btn{display:inline-flex;align-items:center;gap:6px;padding:12px 28px;background:var(--teal);color:#fff;border-radius:8px;font-weight:600;font-size:.95rem;transition:background .2s}.cta-btn:hover{background:var(--teal-muted);color:#fff}
+    /* ── Tip cards ── */
+    .tip-card {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 24px 28px;
+      margin-bottom: 14px;
+      transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease;
+      position: relative;
+    }
+    .tip-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 28px rgba(41,52,168,.08);
+      border-color: rgba(41,52,168,.2);
+    }
+    .tip-number {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 30px; height: 30px; border-radius: 50%;
+      background: var(--red); color: #fff;
+      font-size: .75rem; font-weight: 700;
+      margin-bottom: 12px;
+      font-family: var(--font-body);
+    }
+    .tip-card h4 {
+      font-family: var(--font-display);
+      font-weight: 400;
+      font-size: 1rem;
+      color: var(--navy-dark);
+      margin-bottom: 8px;
+    }
+    .tip-card p {
+      font-size: .9rem; color: var(--text-secondary);
+      line-height: 1.7; margin-bottom: 0;
+    }
 
-    .footer{border-top:1px solid var(--border);padding:40px 24px;text-align:center}.footer-inner{max-width:1120px;margin:0 auto}.footer-brand{font-family:var(--font-display);font-size:1.2rem;font-weight:700;color:var(--navy);margin-bottom:16px}.footer-brand span{color:var(--text-muted);font-weight:400}.footer-links{display:flex;justify-content:center;gap:24px;list-style:none;margin-bottom:16px}.footer-links a{font-size:.875rem;color:var(--text-muted)}.footer-links a:hover{color:var(--navy)}.footer-copy{font-size:.8rem;color:var(--text-muted)}
+    /* ── Timeline ── */
+    .timeline {
+      display: flex; flex-direction: column; gap: 0;
+      margin: 24px 0 28px; position: relative; padding-left: 32px;
+    }
+    .timeline::before {
+      content: ''; position: absolute;
+      left: 10px; top: 8px; bottom: 8px; width: 2px;
+      background: linear-gradient(to bottom, var(--red), var(--navy));
+    }
+    .timeline-item {
+      position: relative; padding: 14px 0 14px 24px;
+    }
+    .timeline-dot {
+      position: absolute; left: -26px; top: 18px;
+      width: 14px; height: 14px; border-radius: 50%;
+      background: var(--red);
+      border: 2px solid var(--paper);
+      box-shadow: 0 0 0 2px var(--red);
+      transition: transform .3s ease, box-shadow .3s ease;
+    }
+    .timeline-item:hover .timeline-dot {
+      transform: scale(1.3);
+      box-shadow: 0 0 0 3px rgba(240,59,47,.3);
+    }
+    .timeline-item h4 {
+      font-size: .9rem; font-weight: 700;
+      color: var(--navy-dark); margin-bottom: 4px;
+    }
+    .timeline-item p {
+      font-size: .85rem; color: var(--text-muted);
+      margin: 0; line-height: 1.55;
+    }
+    .timeline-badge {
+      display: inline-block;
+      font-size: .68rem; font-weight: 700;
+      padding: 2px 8px; border-radius: 100px;
+      background: rgba(240,59,47,.1); color: var(--red);
+      margin-bottom: 4px;
+    }
 
-    @media(max-width:860px){.nav-links{display:none}.nav-links.open{display:flex;flex-direction:column;position:absolute;top:64px;left:0;right:0;background:var(--warm-white);border-bottom:1px solid var(--border);padding:16px 24px;gap:12px;box-shadow:0 8px 24px rgba(27,58,92,.08)}.mobile-toggle{display:block}.link-grid{grid-template-columns:1fr}}
+    /* ── Link grid ── */
+    .link-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+      gap: 14px; margin-top: 24px;
+    }
+    .link-card {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 12px; padding: 20px 22px;
+      transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease;
+      display: block; text-decoration: none;
+      position: relative; overflow: hidden;
+    }
+    .link-card::after {
+      content: '↗';
+      position: absolute; top: 16px; right: 18px;
+      font-size: 1rem; color: var(--navy);
+      opacity: 0; transform: translate(-4px, 4px);
+      transition: opacity .25s ease, transform .25s ease;
+    }
+    .link-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 28px rgba(41,52,168,.08);
+      border-color: rgba(41,52,168,.2);
+    }
+    .link-card:hover::after {
+      opacity: 1; transform: translate(0, 0);
+    }
+    .link-card h4 {
+      font-family: var(--font-display);
+      font-weight: 400; font-size: .92rem;
+      color: var(--navy-dark); margin-bottom: 6px;
+      padding-right: 20px;
+    }
+    .link-card p { font-size: .82rem; color: var(--text-muted); line-height: 1.55; margin: 0; }
+    .link-tag {
+      display: inline-block;
+      padding: 2px 9px; border-radius: 100px;
+      font-size: .68rem; font-weight: 700;
+      letter-spacing: .04em;
+      margin-bottom: 10px;
+    }
+    .tag-federal  { background: #EFF6FF; color: #1D4ED8; }
+    .tag-guide    { background: rgba(41,52,168,.08); color: var(--navy); }
+    .tag-state    { background: #FFF7ED; color: #C2410C; }
+    .tag-tool     { background: #ECFDF5; color: #047857; }
+    .tag-career   { background: #F5F3FF; color: #6D28D9; }
+
+    /* ── CTA box ── */
+    .cta-box {
+      background: var(--navy-bg);
+      border-radius: 18px;
+      padding: 56px 48px;
+      text-align: center;
+      margin-top: 64px;
+      position: relative; overflow: hidden;
+      border-top: 3px solid var(--red);
+    }
+    .cta-box::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(240,59,47,.12) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .cta-box h3 {
+      font-family: var(--font-display);
+      font-weight: 400; font-size: 1.8rem;
+      color: #fff; margin-bottom: 12px;
+      position: relative; z-index: 1;
+    }
+    .cta-box p {
+      color: rgba(255,255,255,.65);
+      font-size: 1rem; margin-bottom: 28px;
+      position: relative; z-index: 1;
+    }
+    .cta-btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 14px 36px;
+      background: var(--red); color: #fff;
+      border-radius: 8px; font-weight: 700; font-size: 1rem;
+      transition: background .2s, transform .15s;
+      position: relative; z-index: 1;
+    }
+    .cta-btn:hover { background: var(--red-hover); color: #fff; transform: translateY(-2px); }
+
+    /* ── Footer ── */
+    .footer {
+      background: var(--navy-bg);
+      border-top: 3px solid var(--red);
+      padding: 48px 24px 40px;
+    }
+    .footer-inner {
+      max-width: 1120px; margin: 0 auto;
+      display: flex; flex-direction: column; align-items: center; gap: 20px;
+    }
+    .footer-logo {
+      display: flex; align-items: center; gap: 10px; text-decoration: none;
+    }
+    .footer-logo .logo-wordmark { font-size: 1.1rem; }
+    .footer-links {
+      display: flex; justify-content: center;
+      gap: 24px; list-style: none;
+    }
+    .footer-links a {
+      font-size: .875rem;
+      color: rgba(255,255,255,.45);
+      transition: color .2s;
+    }
+    .footer-links a:hover { color: #fff; }
+    .footer-copy {
+      font-size: .8rem;
+      color: rgba(255,255,255,.3);
+    }
+
+    /* ── Mobile nav ── */
+    @media (max-width: 860px) {
+      .nav-links { display: none; }
+      .nav-links.open {
+        display: flex; flex-direction: column;
+        position: absolute; top: 64px; left: 0; right: 0;
+        background: var(--navy-bg);
+        border-bottom: 1px solid rgba(255,255,255,.07);
+        padding: 16px 24px; gap: 14px;
+        box-shadow: 0 12px 32px rgba(0,0,0,.3);
+      }
+      .mobile-toggle { display: block; }
+      .link-grid { grid-template-columns: 1fr; }
+      .cta-box { padding: 40px 24px; }
+      .quick-nav-inner { gap: 0; }
+    }
   </style>
 </head>
 <body>
 
+<!-- ── Nav ── -->
 <nav class="nav" id="nav">
   <div class="nav-inner">
-    <a href="index.html" class="logo">Public<span>Path</span></a>
+    <a href="index.html" class="logo">
+      <span class="logo-wordmark">Public Path</span>
+      <span class="logo-icon">
+        <svg width="26" height="26" viewBox="0 0 48 48" aria-hidden="true">
+          <rect width="48" height="48" fill="#F03B2F"/>
+          <g stroke="#fff" stroke-width="6.5" stroke-linecap="round" stroke-linejoin="round" fill="none">
+            <line x1="12" y1="36" x2="36" y2="12"/>
+            <polyline points="21,12 36,12 36,27"/>
+          </g>
+        </svg>
+      </span>
+    </a>
     <ul class="nav-links" id="navLinks">
       <li><a href="index.html">Home</a></li>
       <li><a href="jobs.html">Browse Jobs</a></li>
       <li><a href="resources.html" class="active">Resources</a></li>
       <li><a href="index.html#digest">Weekly Digest</a></li>
       <li><a href="index.html#founder">About</a></li>
-      <li><a href="index.html#signup" class="nav-cta">Sign Up</a></li>
+      <li><a href="jobs.html" class="nav-cta">Find Jobs</a></li>
     </ul>
     <button class="mobile-toggle" id="mobileToggle" aria-label="Toggle navigation">
       <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
@@ -59,311 +462,393 @@
   </div>
 </nav>
 
-<section class="hero-sm">
-  <div class="label">Resources</div>
-  <h1>Your guide to landing a government job</h1>
-  <p>Federal resumes, hiring timelines, clearance basics, and everything else you need to know about getting into public service.</p>
+<!-- ── Hero ── -->
+<section class="hero-resources">
+  <div class="hero-grid"></div>
+  <div class="hero-inner">
+    <div class="hero-label reveal">Resource Hub</div>
+    <h1 class="reveal reveal-delay-1">Your guide to landing a <em>government job</em></h1>
+    <p class="reveal reveal-delay-2">Federal resumes, hiring timelines, clearance basics, pay scales, and everything else you need to navigate public sector careers.</p>
+  </div>
 </section>
 
+<!-- ── Quick-nav ── -->
+<div class="quick-nav">
+  <div class="quick-nav-inner">
+    <a href="#resume" class="quick-nav-btn">Federal Resume</a>
+    <a href="#timeline" class="quick-nav-btn">Hiring Timeline</a>
+    <a href="#clearance" class="quick-nav-btn">Clearances</a>
+    <a href="#pay" class="quick-nav-btn">GS Pay Scale</a>
+    <a href="#paths" class="quick-nav-btn">Hiring Paths</a>
+    <a href="#links" class="quick-nav-btn">Tools & Links</a>
+    <a href="#resume-match" class="quick-nav-btn">Resume Match</a>
+  </div>
+</div>
+
+<!-- ── Main content ── -->
 <div class="content">
 
   <!-- SECTION 1: FEDERAL RESUME -->
-  <div class="guide-section">
-    <h2>Writing a federal resume</h2>
-    <p class="subtitle">Federal resumes are different from private sector resumes. Here's what you need to know.</p>
+  <div class="guide-section" id="resume">
+    <div class="section-tag reveal">Federal Resume</div>
+    <h2 class="reveal reveal-delay-1">Writing a federal resume</h2>
+    <p class="subtitle reveal reveal-delay-2">Federal resumes are different from private sector resumes — and most people don't know how different.</p>
 
-    <p>A federal resume is longer and more detailed than a standard resume. Most successful federal resumes are 3-5 pages. They need to include specific information that private sector resumes typically leave out, like your GS grade history, hours worked per week, supervisor contact info, and detailed descriptions of your accomplishments with measurable results.</p>
+    <p class="reveal reveal-delay-3">A federal resume is longer and more detailed than a standard resume. Most successful federal resumes are 3–5 pages. They need to include specific information that private sector resumes typically leave out: GS grade history, hours worked per week, supervisor contact info, and detailed descriptions of accomplishments with measurable results.</p>
 
-    <div class="tip-card">
+    <div class="tip-card reveal">
       <div class="tip-number">1</div>
       <h4>Match the job announcement language</h4>
       <p>Read the "Qualifications" and "Duties" sections of the job posting carefully. Use the same terminology in your resume. If they say "program management," don't write "project oversight." Federal HR specialists screen for specific keywords.</p>
     </div>
 
-    <div class="tip-card">
+    <div class="tip-card reveal reveal-delay-1">
       <div class="tip-number">2</div>
       <h4>Include hours per week and dates</h4>
       <p>For every position, list your start and end dates (month/year) and hours per week. This is required. Without it, HR may not be able to verify you meet the minimum qualifications, even if you clearly do.</p>
     </div>
 
-    <div class="tip-card">
+    <div class="tip-card reveal reveal-delay-2">
       <div class="tip-number">3</div>
       <h4>Quantify everything</h4>
       <p>Instead of "managed a team," write "managed a team of 12 staff across 3 divisions, overseeing a $2.4M annual budget." Numbers help HR specialists assess your level of responsibility against the GS grade requirements.</p>
     </div>
 
-    <div class="tip-card">
+    <div class="tip-card reveal reveal-delay-3">
       <div class="tip-number">4</div>
       <h4>Address every qualification</h4>
       <p>The "Specialized Experience" section of a job posting tells you exactly what they need. Address each requirement directly in your resume, even if it means being repetitive. Don't make the reviewer guess.</p>
     </div>
 
-    <div class="tip-card">
+    <div class="tip-card reveal reveal-delay-4">
       <div class="tip-number">5</div>
       <h4>Don't skip the questionnaire</h4>
       <p>Most federal applications include a self-assessment questionnaire. Rate yourself honestly but don't undersell. If the posting asks "Do you have experience with X?" and you do, select the highest applicable rating. Your resume must back up your answers.</p>
     </div>
   </div>
 
+  <div class="divider"></div>
+
   <!-- SECTION 2: HIRING TIMELINE -->
-  <div class="guide-section">
-    <h2>Federal hiring timeline</h2>
-    <p class="subtitle">Government hiring moves slower than the private sector. Here's what to expect so you're not left wondering.</p>
+  <div class="guide-section" id="timeline">
+    <div class="section-tag reveal">Timeline</div>
+    <h2 class="reveal reveal-delay-1">Federal hiring timeline</h2>
+    <p class="subtitle reveal reveal-delay-2">Government hiring moves slower than the private sector. Here's what to expect so you're not left wondering.</p>
 
-    <p>The average time to hire in the federal government is 80-120 days from when a job closes to when an offer is made. Some agencies are faster, some are slower. Don't panic if you don't hear back for weeks.</p>
+    <p class="reveal reveal-delay-3">The average time to hire in the federal government is 80–120 days from when a job closes to when an offer is made. Some agencies are faster, some are slower. Don't panic if you don't hear back for weeks.</p>
 
-    <div class="timeline">
+    <div class="timeline reveal reveal-delay-1">
       <div class="timeline-item">
         <div class="timeline-dot"></div>
-        <h4>Job posted (Day 0)</h4>
-        <p>The posting goes live on USAJobs. Most are open for 7-30 days. Apply early.</p>
+        <div class="timeline-badge">Day 0</div>
+        <h4>Job posted</h4>
+        <p>The posting goes live on USAJobs. Most are open for 7–30 days. Apply early.</p>
       </div>
       <div class="timeline-item">
         <div class="timeline-dot"></div>
-        <h4>Application closes (Day 7-30)</h4>
-        <p>No more applications accepted. HR begins reviewing.</p>
+        <div class="timeline-badge">Day 7–30</div>
+        <h4>Application closes</h4>
+        <p>No more applications accepted. HR begins reviewing submissions.</p>
       </div>
       <div class="timeline-item">
         <div class="timeline-dot"></div>
-        <h4>HR screening (Day 30-60)</h4>
+        <div class="timeline-badge">Day 30–60</div>
+        <h4>HR screening</h4>
         <p>HR reviews applications against minimum qualifications. Qualified applicants are referred to the hiring manager.</p>
       </div>
       <div class="timeline-item">
         <div class="timeline-dot"></div>
-        <h4>Interviews (Day 45-90)</h4>
-        <p>The hiring manager reviews referred candidates and schedules interviews. These can be phone, video, or in-person.</p>
+        <div class="timeline-badge">Day 45–90</div>
+        <h4>Interviews</h4>
+        <p>The hiring manager reviews referred candidates and schedules interviews — phone, video, or in-person.</p>
       </div>
       <div class="timeline-item">
         <div class="timeline-dot"></div>
-        <h4>Selection + background check (Day 60-120)</h4>
+        <div class="timeline-badge">Day 60–120</div>
+        <h4>Selection + background check</h4>
         <p>After selection, most positions require a background investigation. Timeline depends on the clearance level required.</p>
       </div>
       <div class="timeline-item">
         <div class="timeline-dot"></div>
-        <h4>Tentative offer (Day 80-150)</h4>
+        <div class="timeline-badge">Day 80–150</div>
+        <h4>Tentative offer</h4>
         <p>You receive a tentative offer pending background check completion. This is when salary negotiation happens.</p>
       </div>
       <div class="timeline-item">
         <div class="timeline-dot"></div>
-        <h4>Final offer + start date (Day 100-180)</h4>
-        <p>Once cleared, you get a firm offer with a start date. Some people start within 2 weeks of the final offer, others wait a month.</p>
+        <div class="timeline-badge">Day 100–180</div>
+        <h4>Final offer + start date</h4>
+        <p>Once cleared, you get a firm offer with a start date. Some people start within 2 weeks; others wait a month.</p>
       </div>
     </div>
 
-    <p>If your USAJobs application status says "Referred," that's good. It means your resume was forwarded to the hiring manager. "Not Referred" means you didn't meet the minimum qualifications for that posting.</p>
+    <p class="reveal">If your USAJobs application status says <strong>"Referred,"</strong> that's good — your resume was forwarded to the hiring manager. <strong>"Not Referred"</strong> means you didn't meet the minimum qualifications for that posting.</p>
   </div>
+
+  <div class="divider"></div>
 
   <!-- SECTION 3: CLEARANCES -->
-  <div class="guide-section">
-    <h2>Security clearance basics</h2>
-    <p class="subtitle">Many federal jobs require a security clearance. Here's what that means for you.</p>
+  <div class="guide-section" id="clearance">
+    <div class="section-tag reveal">Security</div>
+    <h2 class="reveal reveal-delay-1">Security clearance basics</h2>
+    <p class="subtitle reveal reveal-delay-2">Many federal jobs require a clearance. Here's what that actually means.</p>
 
-    <p>Not all government jobs require a clearance. Many entry-level positions only need a basic background check (called a "Public Trust" or "Suitability" determination). Actual security clearances (Confidential, Secret, Top Secret) are typically required for positions involving national security, intelligence, or defense.</p>
+    <p class="reveal reveal-delay-3">Not all government jobs require a clearance. Many entry-level positions only need a basic background check (called a "Public Trust" or "Suitability" determination). Actual security clearances — Confidential, Secret, Top Secret — are typically required for positions involving national security, intelligence, or defense.</p>
 
-    <div class="tip-card">
+    <div class="tip-card reveal">
       <h4>Public Trust / Suitability</h4>
-      <p>Most common for civilian agencies. Takes 2-8 weeks. Checks criminal history, credit, employment verification. You don't need to do anything special to prepare beyond being honest on the SF-85 form.</p>
+      <p>Most common for civilian agencies. Takes 2–8 weeks. Checks criminal history, credit, and employment verification. You don't need to do anything special to prepare beyond being honest on the SF-85 form.</p>
     </div>
 
-    <div class="tip-card">
+    <div class="tip-card reveal reveal-delay-1">
       <h4>Secret Clearance</h4>
-      <p>Required for many DoD, DHS, and State Department roles. Takes 3-6 months. Involves the SF-86 form (detailed personal history going back 7-10 years). Investigators may contact your references, former employers, and neighbors.</p>
+      <p>Required for many DoD, DHS, and State Department roles. Takes 3–6 months. Involves the SF-86 form — detailed personal history going back 7–10 years. Investigators may contact your references, former employers, and neighbors.</p>
     </div>
 
-    <div class="tip-card">
+    <div class="tip-card reveal reveal-delay-2">
       <h4>Top Secret / TS-SCI</h4>
-      <p>Required for intelligence community and sensitive national security positions. Takes 6-18 months. Involves a thorough Single Scope Background Investigation. Polygraph may be required for some agencies (CIA, NSA, FBI).</p>
+      <p>Required for intelligence community and sensitive national security positions. Takes 6–18 months. Involves a thorough Single Scope Background Investigation. Polygraph may be required for some agencies (CIA, NSA, FBI).</p>
     </div>
 
-    <p>The most important thing: be honest. Most clearance denials come from lying on the form, not from the underlying issue itself. Past marijuana use, foreign contacts, or financial issues don't automatically disqualify you. Lying about them does.</p>
+    <p class="reveal reveal-delay-3">The most important thing: <strong>be honest.</strong> Most clearance denials come from lying on the form, not from the underlying issue itself. Past marijuana use, foreign contacts, or financial issues don't automatically disqualify you. Lying about them does.</p>
   </div>
+
+  <div class="divider"></div>
 
   <!-- SECTION 4: GS PAY SCALE -->
-  <div class="guide-section">
-    <h2>Understanding the GS pay scale</h2>
-    <p class="subtitle">How federal salaries work and what to expect at different career stages.</p>
+  <div class="guide-section" id="pay">
+    <div class="section-tag reveal">Compensation</div>
+    <h2 class="reveal reveal-delay-1">Understanding the GS pay scale</h2>
+    <p class="subtitle reveal reveal-delay-2">How federal salaries work and what to expect at different career stages.</p>
 
-    <p>Most federal civilian jobs use the General Schedule (GS) pay system, which has 15 grade levels (GS-1 through GS-15) and 10 steps within each grade. Your grade determines your base pay, and locality adjustments increase it based on where you work (DC, NYC, SF, and Chicago all have significant locality bumps).</p>
+    <p class="reveal reveal-delay-3">Most federal civilian jobs use the General Schedule (GS) pay system, which has 15 grade levels (GS-1 through GS-15) and 10 steps within each grade. Your grade determines your base pay, and locality adjustments increase it based on where you work — DC, NYC, SF, and Chicago all have significant locality bumps.</p>
 
-    <div class="tip-card">
+    <div class="tip-card reveal">
       <h4>Entry level: GS-5 to GS-9</h4>
-      <p>Most recent graduates start here. GS-5 with a bachelor's, GS-7 with a master's or superior academic achievement, GS-9 with a master's plus relevant experience. Salary range: roughly $35,000-$70,000 depending on locality.</p>
+      <p>Most recent graduates start here. GS-5 with a bachelor's, GS-7 with a master's or superior academic achievement, GS-9 with a master's plus relevant experience. Salary range: roughly $35,000–$70,000 depending on locality.</p>
     </div>
 
-    <div class="tip-card">
+    <div class="tip-card reveal reveal-delay-1">
       <h4>Mid-career: GS-11 to GS-13</h4>
-      <p>Experienced professionals with specialized skills. Many positions have "career ladder" promotions (e.g., GS-7/9/11/12) where you advance annually without recompeting. Salary range: roughly $60,000-$120,000.</p>
+      <p>Experienced professionals with specialized skills. Many positions have "career ladder" promotions (e.g., GS-7/9/11/12) where you advance annually without recompeting. Salary range: roughly $60,000–$120,000.</p>
     </div>
 
-    <div class="tip-card">
+    <div class="tip-card reveal reveal-delay-2">
       <h4>Senior level: GS-14 to GS-15</h4>
-      <p>Management and senior specialist roles. Often require 5-10+ years of progressively responsible experience. Salary range: roughly $100,000-$180,000. Above GS-15 is the Senior Executive Service (SES), which is competitive and involves a different application process.</p>
+      <p>Management and senior specialist roles. Often require 5–10+ years of progressively responsible experience. Salary range: roughly $100,000–$180,000. Above GS-15 is the Senior Executive Service (SES), which involves a different application process.</p>
     </div>
   </div>
 
-  <!-- SECTION 5: HIRING PATHS -->
-  <div class="guide-section">
-    <h2>Special hiring paths for students and recent grads</h2>
-    <p class="subtitle">The federal government has programs specifically designed to recruit early-career talent.</p>
+  <div class="divider"></div>
 
-    <div class="tip-card">
+  <!-- SECTION 5: HIRING PATHS -->
+  <div class="guide-section" id="paths">
+    <div class="section-tag reveal">Early Career</div>
+    <h2 class="reveal reveal-delay-1">Special hiring paths for students &amp; recent grads</h2>
+    <p class="subtitle reveal reveal-delay-2">The federal government has programs specifically designed to recruit early-career talent.</p>
+
+    <div class="tip-card reveal">
       <h4>Pathways Internship Program</h4>
       <p>For current students. Provides paid internships with federal agencies that can convert to permanent positions upon graduation. You must be enrolled at least half-time in a qualifying educational institution.</p>
     </div>
 
-    <div class="tip-card">
+    <div class="tip-card reveal reveal-delay-1">
       <h4>Recent Graduates Program</h4>
       <p>For people who graduated within the last 2 years (6 years for veterans). One-year developmental program with a federal agency. Can convert to a permanent position without competing against the general public.</p>
     </div>
 
-    <div class="tip-card">
+    <div class="tip-card reveal reveal-delay-2">
       <h4>Presidential Management Fellows (PMF)</h4>
       <p>The most competitive federal fellowship for graduate students. Two-year paid fellowship with a federal agency, starting at GS-9. Application opens annually in the fall. Highly selective but a fast track into senior roles.</p>
     </div>
 
-    <div class="tip-card">
+    <div class="tip-card reveal reveal-delay-3">
       <h4>Schedule A (Disability)</h4>
       <p>If you have a documented disability, you may be eligible for non-competitive appointment through Schedule A. This can significantly streamline the hiring process. Contact the agency's Selective Placement Coordinator.</p>
     </div>
   </div>
 
+  <div class="divider"></div>
+
   <!-- SECTION 6: EXTERNAL RESOURCES -->
-  <div class="guide-section">
-    <h2>Helpful links and tools</h2>
-    <p class="subtitle">Curated resources from across the web to help you navigate public sector careers.</p>
+  <div class="guide-section" id="links">
+    <div class="section-tag reveal">Tools</div>
+    <h2 class="reveal reveal-delay-1">Helpful links and tools</h2>
+    <p class="subtitle reveal reveal-delay-2">Curated resources from across the web to help you navigate public sector careers.</p>
 
     <div class="link-grid">
-      <a href="https://help.usajobs.gov/working-in-government/unique-hiring-paths/students" target="_blank" class="link-card">
+      <a href="https://help.usajobs.gov/working-in-government/unique-hiring-paths/students" target="_blank" rel="noopener" class="link-card reveal">
         <span class="link-tag tag-federal">Federal</span>
         <h4>USAJobs: Student Hiring Paths</h4>
         <p>Official guide to federal hiring programs for students, including Pathways and internships.</p>
       </a>
 
-      <a href="https://help.usajobs.gov/working-in-government/benefits" target="_blank" class="link-card">
+      <a href="https://help.usajobs.gov/working-in-government/benefits" target="_blank" rel="noopener" class="link-card reveal reveal-delay-1">
         <span class="link-tag tag-federal">Federal</span>
         <h4>Federal Employee Benefits</h4>
         <p>Overview of health insurance, retirement, leave, and other benefits for federal employees.</p>
       </a>
 
-      <a href="https://www.dol.gov/general/jobs/students-and-recent-grads" target="_blank" class="link-card">
+      <a href="https://www.dol.gov/general/jobs/students-and-recent-grads" target="_blank" rel="noopener" class="link-card reveal reveal-delay-2">
         <span class="link-tag tag-federal">Federal</span>
         <h4>DOL: Students & Recent Grads</h4>
         <p>Department of Labor's guide to finding government jobs for students and new graduates.</p>
       </a>
 
-      <a href="https://joinhandshake.com/blog/students/looking-for-a-federal-government-job-heres-what-you-need-to-know/" target="_blank" class="link-card">
+      <a href="https://joinhandshake.com/blog/students/looking-for-a-federal-government-job-heres-what-you-need-to-know/" target="_blank" rel="noopener" class="link-card reveal">
         <span class="link-tag tag-guide">Guide</span>
         <h4>Handshake: Federal Job Guide</h4>
         <p>What you need to know about landing a federal government job, from Handshake's career blog.</p>
       </a>
 
-      <a href="https://presidentialtransition.org/appointee-resources/ready-to-serve-prospective-appointees/frequently-asked-questions-about-the-political-appointment-process/" target="_blank" class="link-card">
+      <a href="https://presidentialtransition.org/appointee-resources/ready-to-serve-prospective-appointees/frequently-asked-questions-about-the-political-appointment-process/" target="_blank" rel="noopener" class="link-card reveal reveal-delay-1">
         <span class="link-tag tag-career">Career</span>
         <h4>Political Appointment FAQ</h4>
         <p>Everything you need to know about the political appointment process from the Partnership for Public Service.</p>
       </a>
 
-      <a href="https://presidentialtransition.org/how-not-to-get-a-job/" target="_blank" class="link-card">
+      <a href="https://presidentialtransition.org/how-not-to-get-a-job/" target="_blank" rel="noopener" class="link-card reveal reveal-delay-2">
         <span class="link-tag tag-career">Career</span>
         <h4>How NOT to Get a Political Job</h4>
         <p>Common mistakes people make when seeking political appointments. Worth reading before you apply.</p>
       </a>
 
-      <a href="https://www.govforamerica.org/" target="_blank" class="link-card">
+      <a href="https://www.govforamerica.org/" target="_blank" rel="noopener" class="link-card reveal">
         <span class="link-tag tag-tool">Tool</span>
         <h4>Gov for America</h4>
         <p>Fellowship program that places emerging leaders in state and local government roles across the country.</p>
       </a>
 
-      <a href="https://www.careersingovernment.com/" target="_blank" class="link-card">
+      <a href="https://www.careersingovernment.com/" target="_blank" rel="noopener" class="link-card reveal reveal-delay-1">
         <span class="link-tag tag-state">State & Local</span>
         <h4>Careers in Government</h4>
         <p>Job board and resource center focused on state and local government careers.</p>
       </a>
 
-      <a href="https://cityjobs.nyc.gov/" target="_blank" class="link-card">
+      <a href="https://cityjobs.nyc.gov/" target="_blank" rel="noopener" class="link-card reveal reveal-delay-2">
         <span class="link-tag tag-state">State & Local</span>
         <h4>NYC City Jobs</h4>
         <p>New York City's official job portal. One of the largest local government employers in the country.</p>
       </a>
 
-      <a href="https://liftoffcampaigns.com/jobs/" target="_blank" class="link-card">
+      <a href="https://liftoffcampaigns.com/jobs/" target="_blank" rel="noopener" class="link-card reveal">
         <span class="link-tag tag-career">Career</span>
         <h4>Liftoff Campaigns</h4>
-        <p>Job board for political campaign and organizing roles. Good for building experience that leads to government positions.</p>
+        <p>Job board for political campaign and organizing roles — great for building experience that leads to government positions.</p>
       </a>
 
-      <a href="https://votefwd.org/" target="_blank" class="link-card">
+      <a href="https://votefwd.org/" target="_blank" rel="noopener" class="link-card reveal reveal-delay-1">
         <span class="link-tag tag-tool">Tool</span>
         <h4>Vote Forward</h4>
-        <p>Civic engagement platform. Great way to build experience and demonstrate commitment to public service on your resume.</p>
+        <p>Civic engagement platform. Demonstrates commitment to public service on your resume.</p>
       </a>
 
-      <a href="https://airtable.com/appzt8I4Di6V0QiJj/shrn8e0JdVfpz6niI" target="_blank" class="link-card">
+      <a href="https://airtable.com/appzt8I4Di6V0QiJj/shrn8e0JdVfpz6niI" target="_blank" rel="noopener" class="link-card reveal reveal-delay-2">
         <span class="link-tag tag-tool">Tool</span>
         <h4>Civic Match</h4>
         <p>For current federal workers interested in transitioning to state or local government roles.</p>
       </a>
-
-      <a href="https://www.smartrecruiters.com/" target="_blank" class="link-card">
-        <span class="link-tag tag-tool">Tool</span>
-        <h4>SmartRecruiters</h4>
-        <p>Recruiting platform used by many government agencies and nonprofits. See how the hiring side works.</p>
-      </a>
     </div>
   </div>
 
+  <div class="divider"></div>
+
   <!-- SECTION 7: RESUME MATCHING -->
-  <div class="guide-section">
-    <h2>How to check if your resume matches a job</h2>
-    <p class="subtitle">Before you apply, make sure your resume aligns with what the posting is looking for.</p>
+  <div class="guide-section" id="resume-match">
+    <div class="section-tag reveal">Strategy</div>
+    <h2 class="reveal reveal-delay-1">How to check if your resume matches a job</h2>
+    <p class="subtitle reveal reveal-delay-2">Before you apply, make sure your resume aligns with what the posting is looking for.</p>
 
-    <p>Federal HR specialists scan resumes for specific keywords and qualifications listed in the job announcement. If your resume doesn't match, it won't make it past the initial screening, even if you're qualified. Here are some ways to check your fit before applying.</p>
+    <p class="reveal reveal-delay-3">Federal HR specialists scan resumes for specific keywords and qualifications listed in the job announcement. If your resume doesn't match, it won't make it past the initial screening — even if you're qualified. Here are some ways to check your fit before applying.</p>
 
-    <div class="tip-card">
+    <div class="tip-card reveal">
       <h4>Read the "Specialized Experience" section first</h4>
       <p>Every federal job posting has a section that describes exactly what experience they need. Read it line by line and ask yourself: does my resume show that I've done each of these things? If not, adjust your resume to highlight relevant experience using the same language.</p>
     </div>
 
-    <div class="tip-card">
+    <div class="tip-card reveal reveal-delay-1">
       <h4>Use a resume scoring tool</h4>
-      <p>Tools like CV-Job Match API and similar resume scoring services can compare your resume against a job description and give you a match score. They highlight what's missing and what's strong. This is especially useful for federal applications where keyword matching matters.</p>
+      <p>Tools like CV-Job Match and similar resume scoring services can compare your resume against a job description and give you a match score. They highlight what's missing and what's strong. This is especially useful for federal applications where keyword matching matters.</p>
     </div>
 
-    <div class="tip-card">
+    <div class="tip-card reveal reveal-delay-2">
       <h4>Check your GS grade eligibility</h4>
-      <p>Each GS level requires a specific amount of "specialized experience." For example, GS-9 typically requires one year of experience at the GS-7 level or equivalent. If the posting says GS-11, make sure your resume shows at least one year of GS-9 equivalent work. If you're coming from the private sector, translate your experience into government terms.</p>
+      <p>Each GS level requires a specific amount of "specialized experience." For example, GS-9 typically requires one year of experience at the GS-7 level or equivalent. If you're coming from the private sector, translate your experience into government terms.</p>
     </div>
   </div>
 
   <!-- CTA -->
-  <div class="cta-box">
+  <div class="cta-box reveal">
     <h3>Ready to start your search?</h3>
-    <p>Browse 18,000+ public sector jobs with filters for experience level, location, and government type.</p>
-    <a href="jobs.html" class="cta-btn">Browse Jobs</a>
+    <p>Browse public sector jobs with filters for experience level, location, and government type.</p>
+    <a href="jobs.html" class="cta-btn">Browse Jobs →</a>
   </div>
 
 </div>
 
+<!-- ── Footer ── -->
 <footer class="footer">
   <div class="footer-inner">
-    <div class="footer-brand">Public<span>Path</span></div>
+    <a href="index.html" class="footer-logo logo">
+      <span class="logo-wordmark">Public Path</span>
+      <span class="logo-icon">
+        <svg width="24" height="24" viewBox="0 0 48 48" aria-hidden="true">
+          <rect width="48" height="48" fill="#F03B2F"/>
+          <g stroke="#fff" stroke-width="6.5" stroke-linecap="round" stroke-linejoin="round" fill="none">
+            <line x1="12" y1="36" x2="36" y2="12"/>
+            <polyline points="21,12 36,12 36,27"/>
+          </g>
+        </svg>
+      </span>
+    </a>
     <ul class="footer-links">
       <li><a href="index.html">Home</a></li>
       <li><a href="jobs.html">Browse Jobs</a></li>
       <li><a href="resources.html">Resources</a></li>
-      <li><a href="index.html#signup">Sign Up</a></li>
     </ul>
-    <div class="footer-copy">&copy; 2025 PublicPath. Expanding access to public sector careers.</div>
+    <div class="footer-copy">&copy; 2025 Public Path — Expanding access to public sector careers.</div>
   </div>
 </footer>
 
 <script>
-const nav=document.getElementById('nav');
-window.addEventListener('scroll',()=>nav.classList.toggle('scrolled',window.scrollY>10));
-const toggle=document.getElementById('mobileToggle'),links=document.getElementById('navLinks');
-toggle.addEventListener('click',()=>links.classList.toggle('open'));
-links.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>links.classList.remove('open')));
+  // ── Nav scroll state ──
+  const nav = document.getElementById('nav');
+  window.addEventListener('scroll', () => {
+    nav.classList.toggle('scrolled', window.scrollY > 10);
+  }, { passive: true });
+
+  // ── Mobile toggle ──
+  const toggle = document.getElementById('mobileToggle');
+  const links = document.getElementById('navLinks');
+  toggle.addEventListener('click', () => links.classList.toggle('open'));
+  links.querySelectorAll('a').forEach(a => a.addEventListener('click', () => links.classList.remove('open')));
+
+  // ── Scroll reveal (IntersectionObserver) ──
+  const revealObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('is-visible');
+        revealObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+  document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+  // ── Quick-nav active state on scroll ──
+  const sections = document.querySelectorAll('.guide-section[id]');
+  const qBtns = document.querySelectorAll('.quick-nav-btn');
+  const sectionObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const id = entry.target.id;
+        qBtns.forEach(btn => {
+          btn.classList.toggle('active', btn.getAttribute('href') === '#' + id);
+        });
+      }
+    });
+  }, { rootMargin: '-30% 0px -60% 0px' });
+  sections.forEach(s => sectionObserver.observe(s));
 </script>
 </body>
 </html>
