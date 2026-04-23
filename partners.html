@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Partners — PublicPath</title>
+  <meta name="description" content="Partner with PublicPath to connect students and early-career candidates to government careers. We work with universities, fellowship programs, and civic organizations.">
+  <link rel="canonical" href="https://publicpath.com/partners">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=DM+Sans:ital,opsz,wght@0,9..40,300..700;1,9..40,300..700&display=swap" rel="stylesheet">
+  <style>
+    /* ── Brand tokens ── */
+    :root {
+      --navy: #2934A8;
+      --navy-dark: #111A6E;
+      --navy-bg: #0D1550;
+      --navy-deep: #080E38;
+      --red: #F03B2F;
+      --red-hover: #C93026;
+      --paper: #F5F2EA;
+      --cream: #EDE9DF;
+      --text-primary: #1E293B;
+      --text-secondary: #475569;
+      --text-muted: #64748B;
+      --border: #E2E0DB;
+      --font-display: 'Alfa Slab One', Georgia, serif;
+      --font-body: 'DM Sans', -apple-system, sans-serif;
+    }
+
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; font-size: 16px; }
+    body {
+      font-family: var(--font-body);
+      color: var(--text-primary);
+      background: var(--paper);
+      line-height: 1.65;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { color: var(--navy); text-decoration: none; }
+    a:hover { color: var(--navy-dark); }
+
+    /* ── Scroll-reveal ── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(36px);
+      transition: opacity 0.65s ease, transform 0.65s ease;
+    }
+    .reveal.is-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .reveal-delay-1 { transition-delay: 0.1s; }
+    .reveal-delay-2 { transition-delay: 0.2s; }
+    .reveal-delay-3 { transition-delay: 0.3s; }
+    .reveal-delay-4 { transition-delay: 0.4s; }
+
+    /* ── Nav ── */
+    .nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      background: var(--navy-bg);
+      border-bottom: 1px solid rgba(255,255,255,.07);
+      transition: box-shadow .3s ease;
+    }
+    .nav.scrolled { box-shadow: 0 2px 20px rgba(0,0,0,.3); }
+    .nav-inner {
+      max-width: 1120px; margin: 0 auto; padding: 0 24px;
+      height: 64px; display: flex; align-items: center; justify-content: space-between;
+    }
+    .logo {
+      display: flex; align-items: center; gap: 10px;
+      text-decoration: none; flex-shrink: 0;
+    }
+    .logo-wordmark {
+      font-family: var(--font-display);
+      font-weight: 400;
+      font-size: 1.25rem;
+      color: #fff;
+      letter-spacing: -.01em;
+      line-height: 1;
+    }
+    .logo-icon svg { display: block; }
+    .nav-links {
+      display: flex; align-items: center; gap: 32px; list-style: none;
+    }
+    .nav-links a {
+      font-size: .875rem; font-weight: 500;
+      color: rgba(255,255,255,.65);
+      text-decoration: none; transition: color .2s;
+    }
+    .nav-links a:hover { color: #fff; }
+    .nav-links a.active { color: #fff; font-weight: 600; }
+    .nav-cta {
+      display: inline-flex; align-items: center;
+      padding: 8px 20px;
+      background: var(--red); color: #fff !important;
+      border-radius: 6px; font-size: .875rem; font-weight: 600;
+      transition: background .2s, transform .15s;
+    }
+    .nav-cta:hover { background: var(--red-hover) !important; transform: translateY(-1px); }
+    .mobile-toggle {
+      display: none; background: none; border: none; cursor: pointer; padding: 4px;
+    }
+    .mobile-toggle svg { width: 24px; height: 24px; stroke: #fff; }
+
+    /* ── Hero ── */
+    .hero-partners {
+      padding: 140px 24px 96px;
+      background: var(--navy-bg);
+      position: relative; overflow: hidden;
+    }
+    .hero-partners::before {
+      content: '';
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse 60% 60% at 80% 50%, rgba(41,52,168,.35) 0%, transparent 70%),
+        radial-gradient(ellipse 40% 50% at 10% 80%, rgba(240,59,47,.12) 0%, transparent 60%);
+      pointer-events: none;
+    }
+    .hero-grid {
+      position: absolute; inset: 0; pointer-events: none;
+      background-image:
+        linear-gradient(rgba(255,255,255,.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.03) 1px, transparent 1px);
+      background-size: 80px 80px;
+    }
+    .hero-inner {
+      max-width: 860px; margin: 0 auto; position: relative; z-index: 1;
+    }
+    .hero-label {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(240,59,47,.15);
+      border: 1px solid rgba(240,59,47,.3);
+      border-radius: 100px;
+      padding: 5px 14px;
+      font-size: .72rem; font-weight: 700;
+      letter-spacing: .1em; text-transform: uppercase;
+      color: #FF8A80;
+      margin-bottom: 20px;
+    }
+    .hero-partners h1 {
+      font-family: var(--font-display);
+      font-weight: 400;
+      font-size: clamp(2.2rem, 5vw, 3.4rem);
+      color: #fff;
+      letter-spacing: -.01em;
+      line-height: 1.12;
+      margin-bottom: 20px;
+    }
+    .hero-partners p {
+      font-size: 1.1rem; color: rgba(255,255,255,.7);
+      max-width: 600px; line-height: 1.75;
+      margin-bottom: 36px;
+    }
+    .hero-actions {
+      display: flex; gap: 16px; flex-wrap: wrap;
+    }
+
+    /* ── Buttons ── */
+    .btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 14px 28px; border-radius: 8px;
+      font-family: var(--font-body);
+      font-size: .95rem; font-weight: 600;
+      text-decoration: none;
+      transition: all .2s ease;
+      cursor: pointer; border: none;
+    }
+    .btn-primary {
+      background: var(--red); color: #fff;
+      box-shadow: 0 2px 8px rgba(232,53,39,.25), 0 6px 20px rgba(232,53,39,.15);
+    }
+    .btn-primary:hover {
+      background: var(--red-hover); color: #fff;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 16px rgba(232,53,39,.35), 0 8px 24px rgba(232,53,39,.2);
+    }
+    .btn-secondary {
+      background: transparent; color: rgba(255,255,255,.85);
+      border: 1.5px solid rgba(255,255,255,.25);
+    }
+    .btn-secondary:hover {
+      border-color: rgba(255,255,255,.6);
+      background: rgba(255,255,255,.07); color: #fff;
+    }
+
+    /* ── Section common ── */
+    .section-label {
+      font-size: .72rem; font-weight: 700;
+      letter-spacing: .14em; text-transform: uppercase;
+      color: var(--red); margin-bottom: 12px;
+    }
+
+    /* ── Partner sections ── */
+    .partner-section {
+      padding: 80px 24px;
+    }
+    .partner-section.white { background: #fff; }
+    .partner-section.paper { background: var(--paper); }
+
+    .partner-inner {
+      max-width: 1120px; margin: 0 auto;
+    }
+    .partner-inner h2 {
+      font-family: var(--font-display);
+      font-weight: 400;
+      font-size: clamp(1.6rem, 3.5vw, 2.2rem);
+      color: var(--navy-dark);
+      letter-spacing: -.01em;
+      line-height: 1.2;
+      margin-bottom: 48px;
+    }
+
+    /* Two-column layout */
+    .partner-2col {
+      display: grid;
+      grid-template-columns: 1fr 1.2fr;
+      gap: 64px;
+      align-items: start;
+    }
+    .partner-copy p {
+      font-size: .975rem;
+      color: var(--text-secondary);
+      line-height: 1.8;
+      margin-bottom: 20px;
+    }
+    .partner-copy p:last-child { margin-bottom: 0; }
+
+    /* Dark CTA card */
+    .partner-card {
+      background: var(--navy-bg);
+      border-radius: 16px;
+      padding: 40px;
+      border-top: 3px solid var(--red);
+    }
+    .partner-card h3 {
+      font-family: var(--font-display);
+      font-weight: 400;
+      font-size: 1.3rem;
+      color: #fff;
+      margin-bottom: 14px;
+    }
+    .partner-card p {
+      font-size: .95rem;
+      color: rgba(255,255,255,.65);
+      line-height: 1.7;
+      margin-bottom: 28px;
+    }
+    .form-note {
+      margin-top: 14px !important;
+      font-size: .8rem !important;
+      color: rgba(255,255,255,.35) !important;
+      font-style: italic;
+      margin-bottom: 0 !important;
+    }
+
+    /* ── Closing banner ── */
+    .closing-banner {
+      background: var(--navy);
+      padding: 80px 24px;
+      text-align: center;
+    }
+    .closing-banner p {
+      font-style: italic;
+      color: rgba(255,255,255,.65);
+      font-size: 1rem;
+      margin-bottom: 16px;
+    }
+    .closing-banner h2 {
+      font-family: var(--font-display);
+      font-weight: 400;
+      font-size: clamp(1.8rem, 4vw, 2.6rem);
+      color: #fff;
+      letter-spacing: -.01em;
+      margin-bottom: 32px;
+    }
+
+    /* ── Footer ── */
+    .footer {
+      background: var(--navy-bg);
+      border-top: 3px solid var(--red);
+      padding: 48px 24px 40px;
+    }
+    .footer-inner {
+      max-width: 1120px; margin: 0 auto;
+      display: flex; flex-direction: column; align-items: center; gap: 20px;
+    }
+    .footer-logo {
+      display: flex; align-items: center; gap: 10px; text-decoration: none;
+    }
+    .footer-logo .logo-wordmark { font-size: 1.1rem; }
+    .footer-links {
+      display: flex; justify-content: center;
+      gap: 24px; list-style: none;
+    }
+    .footer-links a {
+      font-size: .875rem;
+      color: rgba(255,255,255,.45);
+      transition: color .2s;
+    }
+    .footer-links a:hover { color: #fff; }
+    .footer-copy {
+      font-size: .8rem;
+      color: rgba(255,255,255,.3);
+    }
+
+    /* ── Mobile ── */
+    @media (max-width: 860px) {
+      .nav-links { display: none; }
+      .nav-links.open {
+        display: flex; flex-direction: column;
+        position: absolute; top: 64px; left: 0; right: 0;
+        background: var(--navy-bg);
+        border-bottom: 1px solid rgba(255,255,255,.07);
+        padding: 16px 24px; gap: 14px;
+        box-shadow: 0 12px 32px rgba(0,0,0,.3);
+      }
+      .mobile-toggle { display: block; }
+      .partner-2col { grid-template-columns: 1fr; gap: 40px; }
+      .hero-partners { padding: 110px 20px 72px; }
+      .partner-section { padding: 56px 20px; }
+      .closing-banner { padding: 56px 20px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── Nav ── -->
+<nav class="nav" id="nav">
+  <div class="nav-inner">
+    <a href="index.html" class="logo">
+      <span class="logo-wordmark">Public Path</span>
+      <span class="logo-icon">
+        <svg width="26" height="26" viewBox="0 0 48 48" aria-hidden="true">
+          <rect width="48" height="48" fill="#F03B2F"/>
+          <g stroke="#fff" stroke-width="6.5" stroke-linecap="round" stroke-linejoin="round" fill="none">
+            <line x1="12" y1="36" x2="36" y2="12"/>
+            <polyline points="21,12 36,12 36,27"/>
+          </g>
+        </svg>
+      </span>
+    </a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="jobs.html">Browse Jobs</a></li>
+      <li><a href="resources.html">Resources</a></li>
+      <li><a href="partners.html" class="active">Partners</a></li>
+      <li><a href="index.html#digest">Weekly Digest</a></li>
+      <li><a href="index.html#founder">About</a></li>
+      <li><a href="jobs.html" class="nav-cta">Find Jobs</a></li>
+    </ul>
+    <button class="mobile-toggle" id="mobileToggle" aria-label="Toggle navigation">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+  </div>
+</nav>
+
+<!-- ── Hero ── -->
+<section class="hero-partners">
+  <div class="hero-grid"></div>
+  <div class="hero-inner">
+    <div class="hero-label reveal">Early Partnerships</div>
+    <h1 class="reveal reveal-delay-1">Partner with PublicPath</h1>
+    <p class="reveal reveal-delay-2">We're building the pipeline that connects motivated students and early-career candidates to government careers. If you work with students, run a fellowship program, or support public sector workforce development — let's work together.</p>
+    <div class="hero-actions reveal reveal-delay-3">
+      <a href="mailto:hello@publicpath.com" class="btn btn-primary">Get in touch</a>
+      <a href="#universities" class="btn btn-secondary">Learn more ↓</a>
+    </div>
+  </div>
+</section>
+
+<!-- ── Section 1: Universities ── -->
+<section class="partner-section white" id="universities">
+  <div class="partner-inner">
+    <div class="section-label reveal">For Universities</div>
+    <h2 class="reveal reveal-delay-1">For universities and career services offices</h2>
+
+    <div class="partner-2col">
+      <div class="partner-copy reveal reveal-delay-2">
+        <p>Career services offices work hard to connect students to opportunities — but government careers are notoriously difficult to navigate, and most offices don't have the specialized knowledge to guide students through the process.</p>
+        <p>PublicPath is designed to fill that gap. We aggregate hard-to-find government roles, explain what they actually require, and give students a clear path from interest to application — without requiring insider knowledge or connections.</p>
+        <p>As a university partner, your students get early access to curated opportunities across federal, state, and local government — filtered for early-career candidates and accompanied by plain-English guidance on eligibility and next steps.</p>
+        <p>There's no cost to your students or your office. We're in early development and actively building our founding university partnerships. If you work with students who are interested in public service, we'd love to connect.</p>
+      </div>
+
+      <div class="partner-card reveal reveal-delay-3">
+        <h3>Interested in partnering?</h3>
+        <p>Connect your students to curated government opportunities and navigation support — at no cost.</p>
+        <a href="mailto:hello@publicpath.com" class="btn btn-primary">Get in touch</a>
+        <p class="form-note">Free for students and university partners.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Section 2: Fellowships ── -->
+<section class="partner-section paper" id="fellowships">
+  <div class="partner-inner">
+    <div class="section-label reveal">For Fellowships &amp; Civic Orgs</div>
+    <h2 class="reveal reveal-delay-1">For fellowship programs and civic organizations</h2>
+
+    <div class="partner-2col">
+      <div class="partner-copy reveal reveal-delay-2">
+        <p>Fellowship programs and civic organizations are some of the most important on-ramps into public service — but too many qualified candidates never find them. Awareness is a persistent challenge across the sector.</p>
+        <p>PublicPath surfaces fellowships and civic opportunities alongside traditional government roles, putting your program in front of motivated, early-career candidates who are actively looking for a way into public service.</p>
+        <p>We also help candidates understand what fellowships like yours actually involve — the application process, timeline expectations, and what a strong candidate looks like — so the people who reach you are better prepared and more likely to succeed.</p>
+        <p>Whether you run a paid fellowship, a leadership development program, or a civic engagement initiative, we'd like to understand what you're building and explore how we can help expand your reach to the candidates who need you most.</p>
+      </div>
+
+      <div class="partner-card reveal reveal-delay-3">
+        <h3>Interested in partnering?</h3>
+        <p>Reach motivated early-career candidates who are actively looking for pathways into public service.</p>
+        <a href="mailto:hello@publicpath.com" class="btn btn-primary">Get in touch</a>
+        <p class="form-note">Free for students and university partners.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Closing banner ── -->
+<div class="closing-banner">
+  <p class="reveal">PublicPath is in early development and actively seeking founding partners.</p>
+  <h2 class="reveal reveal-delay-1">Let's build this together.</h2>
+  <a href="mailto:hello@publicpath.com" class="btn btn-primary reveal reveal-delay-2">Get in touch &rarr;</a>
+</div>
+
+<!-- ── Footer ── -->
+<footer class="footer">
+  <div class="footer-inner">
+    <a href="index.html" class="footer-logo logo">
+      <span class="logo-wordmark">Public Path</span>
+      <span class="logo-icon">
+        <svg width="24" height="24" viewBox="0 0 48 48" aria-hidden="true">
+          <rect width="48" height="48" fill="#F03B2F"/>
+          <g stroke="#fff" stroke-width="6.5" stroke-linecap="round" stroke-linejoin="round" fill="none">
+            <line x1="12" y1="36" x2="36" y2="12"/>
+            <polyline points="21,12 36,12 36,27"/>
+          </g>
+        </svg>
+      </span>
+    </a>
+    <ul class="footer-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="jobs.html">Browse Jobs</a></li>
+      <li><a href="resources.html">Resources</a></li>
+      <li><a href="partners.html">Partners</a></li>
+      <li><a href="index.html#digest">Weekly Digest</a></li>
+      <li><a href="index.html#founder">About</a></li>
+    </ul>
+    <div class="footer-copy">&copy; 2026 PublicPath &mdash; Expanding access to public sector careers.</div>
+  </div>
+</footer>
+
+<script>
+  // ── Nav scroll state ──
+  const nav = document.getElementById('nav');
+  window.addEventListener('scroll', () => {
+    nav.classList.toggle('scrolled', window.scrollY > 10);
+  }, { passive: true });
+
+  // ── Mobile toggle ──
+  const toggle = document.getElementById('mobileToggle');
+  const links = document.getElementById('navLinks');
+  toggle.addEventListener('click', () => links.classList.toggle('open'));
+  links.querySelectorAll('a').forEach(a => a.addEventListener('click', () => links.classList.remove('open')));
+
+  // ── Scroll reveal (IntersectionObserver) ──
+  const revealObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('is-visible');
+        revealObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+  document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+</script>
+</body>
+</html>

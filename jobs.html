@@ -28,6 +28,91 @@
     .mob-filter-toggle{display:none;width:100%;padding:12px;background:#fff;border:1.5px solid var(--border);border-radius:10px;font-family:var(--font-body);font-size:.9rem;font-weight:600;color:var(--navy);cursor:pointer;text-align:center;margin-bottom:16px}.mob-filter-toggle:hover{border-color:var(--teal)}
     .footer{border-top:3px solid var(--red);background:var(--navy-bg,#0D1550);padding:40px 24px;text-align:center}.footer-inner{max-width:1120px;margin:0 auto}.footer-brand{margin-bottom:16px;display:flex;justify-content:center}.footer-links{display:flex;justify-content:center;gap:24px;list-style:none;margin-bottom:16px}.footer-links a{font-size:.875rem;color:rgba(255,255,255,.5);text-decoration:none}.footer-links a:hover{color:#fff}.footer-copy{font-size:.8rem;color:rgba(255,255,255,.3)}.footer-copy a{color:rgba(255,255,255,.3)}
     @media(max-width:860px){.main{grid-template-columns:1fr}.sidebar{position:static;order:2}.sidebar .filter-card{display:none}.sidebar .filter-card.show{display:block}.mob-filter-toggle{display:block}.guide-flow{display:none}.nav-links{display:none}.nav-links.open{display:flex;flex-direction:column;position:absolute;top:64px;left:0;right:0;background:var(--navy-dark,#0C1A48);border-bottom:1px solid rgba(255,255,255,.1);padding:16px 24px;gap:12px;box-shadow:0 12px 32px rgba(0,0,0,.3);z-index:50}.mobile-toggle{display:block}.jc-actions{flex-direction:column;gap:6px;align-items:stretch}.jc-actions .jc-apply,.jc-actions .jc-save,.jc-actions .jc-applied{justify-content:center;text-align:center}}@media(max-width:600px){.search-bar{flex-direction:column;border-radius:10px}.search-bar button{border-radius:0 0 8px 8px;justify-content:center}.search-hero{padding:100px 16px 40px}.search-hero h1{font-size:1.5rem}.main{padding:20px 16px 40px}}
+
+    /* ============================================================
+       CAREER EXPLORER CHAT WIDGET
+       ============================================================ */
+
+    /* Floating trigger button */
+    #ce-trigger{position:fixed;bottom:24px;right:24px;z-index:9000;display:flex;align-items:center;gap:8px;padding:13px 20px;background:var(--red);color:#fff;border:none;border-radius:32px;font-family:var(--font-body);font-size:.9rem;font-weight:700;cursor:pointer;box-shadow:0 4px 20px rgba(240,59,47,.45);transition:background .2s,transform .15s,box-shadow .2s}
+    #ce-trigger:hover{background:var(--red-hover);transform:translateY(-2px);box-shadow:0 6px 28px rgba(240,59,47,.55)}
+    #ce-trigger svg{width:18px;height:18px;flex-shrink:0}
+    #ce-trigger .ce-trigger-label{white-space:nowrap}
+
+    /* Panel */
+    #ce-panel{position:fixed;bottom:84px;right:24px;z-index:8999;width:380px;max-height:560px;background:var(--navy-bg,#0D1550);border-radius:16px;box-shadow:0 12px 48px rgba(0,0,0,.45),0 0 0 1px rgba(255,255,255,.07);display:flex;flex-direction:column;overflow:hidden;transform:translateY(24px);opacity:0;pointer-events:none;transition:transform .3s cubic-bezier(.34,1.36,.64,1),opacity .25s ease}
+    #ce-panel.open{transform:translateY(0);opacity:1;pointer-events:all}
+
+    /* Panel header */
+    .ce-header{display:flex;align-items:center;gap:10px;padding:14px 16px;background:rgba(0,0,0,.25);border-bottom:1px solid rgba(255,255,255,.08);flex-shrink:0}
+    .ce-header-logo{width:26px;height:26px;flex-shrink:0}
+    .ce-header-title{font-family:var(--font-display);font-size:1rem;font-weight:400;color:#fff;letter-spacing:-.01em;flex:1}
+    .ce-beta{display:inline-flex;align-items:center;padding:2px 8px;background:rgba(240,59,47,.22);border:1px solid rgba(240,59,47,.45);color:var(--red);border-radius:100px;font-size:.65rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;flex-shrink:0}
+    .ce-demo-btn{display:inline-flex;align-items:center;gap:4px;padding:5px 10px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);color:rgba(255,255,255,.75);border-radius:6px;font-family:var(--font-body);font-size:.72rem;font-weight:600;cursor:pointer;transition:all .2s;flex-shrink:0}
+    .ce-demo-btn:hover{background:rgba(255,255,255,.14);color:#fff}
+    .ce-demo-btn:disabled{opacity:.4;cursor:not-allowed}
+    .ce-close{background:none;border:none;color:rgba(255,255,255,.5);cursor:pointer;padding:4px;line-height:1;border-radius:4px;transition:color .2s;flex-shrink:0}
+    .ce-close:hover{color:#fff}
+    .ce-close svg{width:18px;height:18px}
+
+    /* Messages area */
+    .ce-messages{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:12px;scroll-behavior:smooth}
+    .ce-messages::-webkit-scrollbar{width:4px}
+    .ce-messages::-webkit-scrollbar-track{background:transparent}
+    .ce-messages::-webkit-scrollbar-thumb{background:rgba(255,255,255,.15);border-radius:2px}
+
+    /* Individual messages */
+    .ce-msg{display:flex;gap:8px;align-items:flex-start;animation:ceMsgIn .25s ease both}
+    @keyframes ceMsgIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+    .ce-msg.user{flex-direction:row-reverse}
+    .ce-avatar{width:26px;height:26px;border-radius:50%;overflow:hidden;flex-shrink:0;margin-top:2px}
+    .ce-avatar svg,.ce-avatar img{width:100%;height:100%}
+    .ce-bubble{max-width:82%;padding:10px 13px;border-radius:12px;font-size:.84rem;line-height:1.55;color:#fff}
+    .ce-msg.bot .ce-bubble{background:rgba(255,255,255,.09);border-radius:4px 12px 12px 12px}
+    .ce-msg.user .ce-bubble{background:var(--navy,#2934A8);border-radius:12px 4px 12px 12px}
+
+    /* Typing indicator */
+    .ce-typing{display:flex;gap:8px;align-items:flex-start}
+    .ce-typing .ce-bubble{display:flex;align-items:center;gap:4px;padding:12px 14px}
+    .ce-dot{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.4);animation:ceDot 1.2s ease-in-out infinite}
+    .ce-dot:nth-child(2){animation-delay:.2s}
+    .ce-dot:nth-child(3){animation-delay:.4s}
+    @keyframes ceDot{0%,80%,100%{transform:scale(.7);opacity:.4}40%{transform:scale(1);opacity:1}}
+
+    /* Option chips */
+    .ce-chips{display:flex;flex-wrap:wrap;gap:6px;padding:0 16px 12px}
+    .ce-chip{padding:7px 13px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.18);color:rgba(255,255,255,.9);border-radius:100px;font-family:var(--font-body);font-size:.78rem;font-weight:500;cursor:pointer;transition:all .18s;white-space:nowrap}
+    .ce-chip:hover{background:rgba(240,59,47,.2);border-color:rgba(240,59,47,.55);color:#fff}
+    .ce-chip:active{transform:scale(.96)}
+    .ce-chips.disabled .ce-chip{opacity:.4;pointer-events:none}
+
+    /* Job result cards inside chat */
+    .ce-job-cards{display:flex;flex-direction:column;gap:8px;margin-top:4px;width:100%}
+    .ce-job-card{background:#fff;border-radius:10px;padding:12px 14px;cursor:pointer;transition:transform .15s,box-shadow .15s}
+    .ce-job-card:hover{transform:translateY(-1px);box-shadow:0 4px 16px rgba(0,0,0,.2)}
+    .ce-jc-title{font-family:var(--font-display);font-size:.875rem;font-weight:400;color:var(--navy);margin-bottom:2px;line-height:1.3}
+    .ce-jc-org{font-size:.76rem;color:var(--text-secondary);margin-bottom:7px}
+    .ce-jc-tags{display:flex;flex-wrap:wrap;gap:4px}
+    .ce-jc-tag{display:inline-flex;align-items:center;padding:2px 8px;border-radius:100px;font-size:.68rem;font-weight:500}
+
+    /* Action buttons after results */
+    .ce-actions{display:flex;flex-direction:column;gap:7px;padding:4px 16px 12px}
+    .ce-action-btn{display:flex;align-items:center;justify-content:center;gap:6px;padding:10px 16px;border-radius:8px;font-family:var(--font-body);font-size:.82rem;font-weight:600;cursor:pointer;transition:all .2s;border:none}
+    .ce-action-btn.primary{background:var(--red);color:#fff}
+    .ce-action-btn.primary:hover{background:var(--red-hover)}
+    .ce-action-btn.secondary{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);color:rgba(255,255,255,.9)}
+    .ce-action-btn.secondary:hover{background:rgba(255,255,255,.14);color:#fff}
+
+    /* Input area */
+    .ce-input-area{display:flex;align-items:center;gap:8px;padding:12px 14px;background:rgba(0,0,0,.2);border-top:1px solid rgba(255,255,255,.07);flex-shrink:0}
+    .ce-input{flex:1;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);border-radius:8px;padding:9px 12px;font-family:var(--font-body);font-size:.84rem;color:#fff;outline:none;transition:border-color .2s}
+    .ce-input::placeholder{color:rgba(255,255,255,.35)}
+    .ce-input:focus{border-color:rgba(240,59,47,.55)}
+    .ce-send{width:36px;height:36px;background:var(--red);border:none;border-radius:8px;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .2s,transform .15s}
+    .ce-send:hover{background:var(--red-hover);transform:scale(1.05)}
+    .ce-send svg{width:16px;height:16px}
+
+    @media(max-width:440px){#ce-panel{width:calc(100vw - 32px);right:16px;bottom:76px}#ce-trigger{right:16px;bottom:16px}}
   </style>
 </head>
 <body>
@@ -221,6 +306,56 @@
     <div class="job-list" id="jobList"><div class="loading-state"><div class="spinner"></div><p>Loading jobs...</p></div></div>
     <div class="pagination" id="pagination"></div>
   </section>
+</div>
+
+<!-- ============================================================
+     CAREER EXPLORER CHAT WIDGET
+     ============================================================ -->
+
+<!-- Floating trigger button -->
+<button id="ce-trigger" onclick="ceToggle()" aria-label="Open Career Explorer">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>
+  </svg>
+  <span class="ce-trigger-label">Career Explorer</span>
+</button>
+
+<!-- Chat panel -->
+<div id="ce-panel" role="dialog" aria-label="Career Explorer chat">
+  <!-- Header -->
+  <div class="ce-header">
+    <svg class="ce-header-logo" viewBox="0 0 48 48" aria-hidden="true">
+      <rect width="48" height="48" fill="#F03B2F" rx="6"/>
+      <g stroke="#fff" stroke-width="6.5" stroke-linecap="round" stroke-linejoin="round" fill="none">
+        <line x1="12" y1="36" x2="36" y2="12"/>
+        <polyline points="21,12 36,12 36,27"/>
+      </g>
+    </svg>
+    <span class="ce-header-title">Career Explorer</span>
+    <span class="ce-beta">BETA</span>
+    <button class="ce-demo-btn" id="ce-demo-btn" onclick="ceRunDemo()" title="Run full demo automatically">&#9654; Demo</button>
+    <button class="ce-close" onclick="ceClose()" aria-label="Close">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+        <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+      </svg>
+    </button>
+  </div>
+
+  <!-- Messages -->
+  <div class="ce-messages" id="ce-messages"></div>
+
+  <!-- Chips (option buttons) -->
+  <div class="ce-chips" id="ce-chips"></div>
+
+  <!-- Input area -->
+  <div class="ce-input-area">
+    <input class="ce-input" id="ce-input" type="text" placeholder="Type a message or pick an option above..." autocomplete="off" onkeydown="if(event.key==='Enter')ceSendText()">
+    <button class="ce-send" onclick="ceSendText()" aria-label="Send">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/>
+      </svg>
+    </button>
+  </div>
 </div>
 
 <!-- Email prompt modal -->
@@ -608,7 +743,424 @@ document.addEventListener('DOMContentLoaded', function() {
   init();
 });
 
-// Guided "what role fits me" flow
+// ============================================================
+// CAREER EXPLORER — scripted chat state machine
+// ============================================================
+(function() {
+
+  // ── State ──────────────────────────────────────────────────
+  let ceOpen = false;
+  let ceStep = 0;          // current conversation step
+  let ceAnswers = {};      // collected answers
+  let ceTyping = false;
+  let demoRunning = false;
+
+  // ── DOM refs ───────────────────────────────────────────────
+  const panel    = () => document.getElementById('ce-panel');
+  const trigger  = () => document.getElementById('ce-trigger');
+  const messages = () => document.getElementById('ce-messages');
+  const chips    = () => document.getElementById('ce-chips');
+  const input    = () => document.getElementById('ce-input');
+  const demoBtn  = () => document.getElementById('ce-demo-btn');
+
+  // ── Toggle open/close ──────────────────────────────────────
+  window.ceToggle = function() {
+    if (ceOpen) { ceClose(); } else { ceOpen_(); }
+  };
+  window.ceClose = function() {
+    ceOpen = false;
+    panel().classList.remove('open');
+    trigger().querySelector('.ce-trigger-label').textContent = 'Career Explorer';
+    trigger().querySelector('svg').innerHTML = '<path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>';
+  };
+  function ceOpen_() {
+    ceOpen = true;
+    panel().classList.add('open');
+    trigger().querySelector('.ce-trigger-label').textContent = 'Close';
+    trigger().querySelector('svg').innerHTML = '<line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>';
+    // Start conversation if not yet started
+    if (ceStep === 0) {
+      ceStep = 1;
+      setTimeout(() => ceBotSay(STEPS[1].botMsg, STEPS[1].chips), 420);
+    }
+  }
+
+  // ── Conversation script ────────────────────────────────────
+  const STEPS = {
+    1: {
+      botMsg: "Hi! I'm PublicPath's Career Explorer. I'll ask you a few quick questions to find government roles that actually fit you. Ready?",
+      chips:  ["Let's go", "Sure", "Yes"],
+      next:   2
+    },
+    2: {
+      botMsg: "What's your background or field of study?",
+      chips:  ["Public policy / MPP", "Political science", "Social work", "Technology / CS", "Economics / Finance", "Law / Pre-law", "Other"],
+      next:   3,
+      key:    'background'
+    },
+    3: {
+      botMsg: null, // dynamic — see getStep3Msg()
+      chips:  null, // dynamic
+      next:   4,
+      key:    'interest'
+    },
+    4: {
+      botMsg: "Where are you looking to work?",
+      chips:  ["Chicago", "Washington DC", "New York", "California", "Open to remote", "Anywhere"],
+      next:   5,
+      key:    'location'
+    },
+    5: {
+      botMsg: "Are you looking for entry-level roles, internships, or fellowships?",
+      chips:  ["Entry-level full-time", "Internship", "Fellowship", "Any of the above"],
+      next:   6,
+      key:    'level'
+    },
+    6: {
+      botMsg: "Perfect. Based on what you told me, here are roles that match your profile:",
+      chips:  [],
+      next:   7,
+      key:    'results'
+    }
+  };
+
+  function getStep3Msg(bg) {
+    const bg_lc = (bg || '').toLowerCase();
+    if (bg_lc.includes('policy') || bg_lc.includes('mpp') || bg_lc.includes('political')) {
+      return {
+        msg: "Interesting! Are you drawn more to housing & urban development, healthcare policy, education, environmental policy, or something else?",
+        chips: ["Housing & urban policy", "Healthcare", "Education", "Environment", "Economic development", "Not sure yet"]
+      };
+    }
+    if (bg_lc.includes('social')) {
+      return {
+        msg: "Great background! Are you more interested in community programs, housing services, youth development, or health & human services?",
+        chips: ["Community programs", "Housing services", "Youth development", "Health & human services", "Not sure yet"]
+      };
+    }
+    if (bg_lc.includes('tech') || bg_lc.includes('cs')) {
+      return {
+        msg: "Nice! Are you more drawn to civic tech, data & analytics, IT infrastructure, or digital services?",
+        chips: ["Civic tech", "Data & analytics", "IT infrastructure", "Digital services", "Not sure yet"]
+      };
+    }
+    if (bg_lc.includes('econ') || bg_lc.includes('finance')) {
+      return {
+        msg: "What area interests you most — budget & fiscal policy, economic development, financial regulation, or something else?",
+        chips: ["Budget & fiscal policy", "Economic development", "Financial regulation", "Community investment", "Not sure yet"]
+      };
+    }
+    if (bg_lc.includes('law') || bg_lc.includes('legal') || bg_lc.includes('pre-law')) {
+      return {
+        msg: "Which legal area appeals to you — regulatory & compliance, civil rights, public interest litigation, or government counsel?",
+        chips: ["Regulatory & compliance", "Civil rights", "Public interest", "Government counsel", "Not sure yet"]
+      };
+    }
+    // Default / Other
+    return {
+      msg: "What area of public service interests you most?",
+      chips: ["Housing & urban policy", "Education", "Environment", "Healthcare", "Economic development", "Not sure yet"]
+    };
+  }
+
+  // ── Hardcoded job result cards ─────────────────────────────
+  const RESULT_CARDS = [
+    {
+      title: "Housing Policy Analyst",
+      org:   "City of Chicago, Department of Housing",
+      loc:   "Chicago, IL",
+      type:  "Full-time",
+      tags:  [
+        {label:"Housing",    cls:"t-local"},
+        {label:"Entry Level",cls:"t-guide"},
+        {label:"Chicago, IL",cls:"t-loc"}
+      ]
+    },
+    {
+      title: "MPP Fellow — Urban Development",
+      org:   "Metropolitan Planning Council",
+      loc:   "Chicago, IL",
+      type:  "Fellowship",
+      tags:  [
+        {label:"Policy",     cls:"t-guide"},
+        {label:"Fellowship", cls:"t-career"},
+        {label:"Chicago, IL",cls:"t-loc"}
+      ]
+    },
+    {
+      title: "Program Coordinator, Community Development",
+      org:   "LISC Chicago",
+      loc:   "Chicago, IL",
+      type:  "Full-time",
+      tags:  [
+        {label:"Social Services",cls:"t-local"},
+        {label:"Entry Level",    cls:"t-guide"},
+        {label:"Chicago, IL",    cls:"t-loc"}
+      ]
+    }
+  ];
+
+  // ── Render helpers ─────────────────────────────────────────
+  function ceBotAvatar() {
+    return `<div class="ce-avatar"><svg viewBox="0 0 48 48" aria-hidden="true"><rect width="48" height="48" fill="#F03B2F" rx="50"/><g stroke="#fff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" fill="none"><line x1="12" y1="36" x2="36" y2="12"/><polyline points="22,12 36,12 36,26"/></g></svg></div>`;
+  }
+
+  function ceShowTyping() {
+    const el = document.createElement('div');
+    el.className = 'ce-typing';
+    el.id = 'ce-typing-indicator';
+    el.innerHTML = `${ceBotAvatar()}<div class="ce-bubble"><span class="ce-dot"></span><span class="ce-dot"></span><span class="ce-dot"></span></div>`;
+    messages().appendChild(el);
+    ceScrollBottom();
+  }
+
+  function ceHideTyping() {
+    const el = document.getElementById('ce-typing-indicator');
+    if (el) el.remove();
+  }
+
+  function ceScrollBottom() {
+    const m = messages();
+    m.scrollTop = m.scrollHeight;
+  }
+
+  function ceBotSay(text, chipsArr, delay) {
+    return new Promise(resolve => {
+      const d = delay !== undefined ? delay : 700;
+      ceTyping = true;
+      clearChips();
+      ceShowTyping();
+      setTimeout(() => {
+        ceHideTyping();
+        // Add bot message
+        const msg = document.createElement('div');
+        msg.className = 'ce-msg bot';
+        msg.innerHTML = `${ceBotAvatar()}<div class="ce-bubble">${text}</div>`;
+        messages().appendChild(msg);
+        ceScrollBottom();
+        // Show chips if provided
+        if (chipsArr && chipsArr.length) {
+          showChips(chipsArr);
+        }
+        ceTyping = false;
+        resolve();
+      }, d);
+    });
+  }
+
+  function ceUserSay(text) {
+    clearChips();
+    const msg = document.createElement('div');
+    msg.className = 'ce-msg user';
+    msg.innerHTML = `<div class="ce-bubble">${escCE(text)}</div>`;
+    messages().appendChild(msg);
+    ceScrollBottom();
+  }
+
+  function showChips(arr) {
+    const el = chips();
+    el.innerHTML = arr.map(c =>
+      `<button class="ce-chip" onclick="ceChipClick(this,'${escCE(c)}')">${escCE(c)}</button>`
+    ).join('');
+    el.classList.remove('disabled');
+  }
+
+  function clearChips() {
+    chips().innerHTML = '';
+  }
+
+  function disableChips() {
+    chips().classList.add('disabled');
+  }
+
+  function escCE(s) {
+    return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  // ── Job cards render ───────────────────────────────────────
+  function ceRenderJobCards() {
+    const wrapper = document.createElement('div');
+    wrapper.className = 'ce-msg bot';
+    wrapper.style.flexDirection = 'column';
+    wrapper.style.alignItems = 'stretch';
+    const cardsHtml = RESULT_CARDS.map(card => `
+      <div class="ce-job-card">
+        <div class="ce-jc-title">${escCE(card.title)}</div>
+        <div class="ce-jc-org">${escCE(card.org)}</div>
+        <div class="ce-jc-tags">
+          ${card.tags.map(t => `<span class="ce-jc-tag jc-tag ${t.cls}">${escCE(t.label)}</span>`).join('')}
+          <span class="ce-jc-tag jc-tag t-sal">${escCE(card.type)}</span>
+        </div>
+      </div>
+    `).join('');
+    wrapper.innerHTML = `<div class="ce-job-cards">${cardsHtml}</div>`;
+    messages().appendChild(wrapper);
+    ceScrollBottom();
+  }
+
+  function ceRenderActionButtons() {
+    const existing = document.getElementById('ce-action-btns');
+    if (existing) existing.remove();
+    const el = document.createElement('div');
+    el.className = 'ce-actions';
+    el.id = 'ce-action-btns';
+    el.innerHTML = `
+      <button class="ce-action-btn primary" onclick="ceSearchJobBoard()">Search the job board &rarr;</button>
+      <button class="ce-action-btn secondary" onclick="ceGetDigest()">Get weekly digest</button>
+    `;
+    // Insert after chips area
+    chips().insertAdjacentElement('afterend', el);
+  }
+
+  // ── Chip / user input handling ─────────────────────────────
+  window.ceChipClick = function(btn, value) {
+    if (ceTyping) return;
+    disableChips();
+    ceHandleAnswer(value);
+  };
+
+  window.ceSendText = function() {
+    const val = input().value.trim();
+    if (!val || ceTyping) return;
+    input().value = '';
+    ceHandleAnswer(val);
+  };
+
+  function ceHandleAnswer(text) {
+    ceUserSay(text);
+    clearChips();
+
+    switch (ceStep) {
+      case 1:
+        ceStep = 2;
+        ceBotSay(STEPS[2].botMsg, STEPS[2].chips);
+        break;
+
+      case 2:
+        ceAnswers.background = text;
+        ceStep = 3;
+        const s3 = getStep3Msg(text);
+        ceBotSay(s3.msg, s3.chips);
+        break;
+
+      case 3:
+        ceAnswers.interest = text;
+        ceStep = 4;
+        ceBotSay(STEPS[4].botMsg, STEPS[4].chips);
+        break;
+
+      case 4:
+        ceAnswers.location = text;
+        ceStep = 5;
+        ceBotSay(STEPS[5].botMsg, STEPS[5].chips);
+        break;
+
+      case 5:
+        ceAnswers.level = text;
+        ceStep = 6;
+        ceBotSay(STEPS[6].botMsg, []).then(() => {
+          // Render job cards after a brief pause
+          setTimeout(() => {
+            ceRenderJobCards();
+            setTimeout(() => {
+              ceBotSay("Want me to search the full job board for more roles like these? Or sign up for a weekly digest of matching opportunities?", []).then(() => {
+                ceRenderActionButtons();
+                ceStep = 7;
+              });
+            }, 400);
+          }, 300);
+        });
+        break;
+
+      default:
+        // After results — just acknowledge
+        ceBotSay("Use the buttons above to explore more, or feel free to ask me anything!", []);
+        break;
+    }
+  }
+
+  // ── Action button handlers ─────────────────────────────────
+  window.ceSearchJobBoard = function() {
+    ceClose();
+    // Set filters for policy / Chicago
+    if (document.getElementById('searchInput')) {
+      document.getElementById('searchInput').value = 'policy';
+    }
+    if (document.getElementById('stateFilter')) {
+      document.getElementById('stateFilter').value = 'IL';
+    }
+    if (typeof applyFilters === 'function') {
+      currentPage = 1;
+      applyFilters();
+    }
+    // Smooth scroll to results
+    const results = document.querySelector('.results');
+    if (results) results.scrollIntoView({behavior:'smooth', block:'start'});
+  };
+
+  window.ceGetDigest = function() {
+    ceClose();
+    const signup = document.getElementById('signup') || document.querySelector('[id*="signup"]') || document.querySelector('.footer');
+    if (signup) signup.scrollIntoView({behavior:'smooth', block:'start'});
+    else window.location.href = 'index.html#signup';
+  };
+
+  // ── Demo mode ──────────────────────────────────────────────
+  window.ceRunDemo = function() {
+    if (demoRunning) return;
+    demoRunning = true;
+    demoBtn().disabled = true;
+
+    // Reset conversation
+    ceStep = 0;
+    ceAnswers = {};
+    messages().innerHTML = '';
+    clearChips();
+    const existingActions = document.getElementById('ce-action-btns');
+    if (existingActions) existingActions.remove();
+
+    // Open panel
+    if (!ceOpen) ceOpen_();
+    else {
+      ceStep = 0; // reset so ceOpen_ restarts
+    }
+
+    // The demo persona: MPP / housing policy / Chicago / Fellowship
+    const demoScript = [
+      { delay: 800,  userSays: "Let's go" },
+      { delay: 1600, userSays: "Public policy / MPP" },
+      { delay: 1600, userSays: "Housing & urban policy" },
+      { delay: 1600, userSays: "Chicago" },
+      { delay: 1600, userSays: "Fellowship" },
+    ];
+
+    // Step 1 is auto-triggered by ceOpen_; wait for it then run the script
+    let totalDelay = 1800; // wait for step 1 to appear
+    demoScript.forEach((item, i) => {
+      totalDelay += item.delay;
+      setTimeout(() => {
+        if (i < demoScript.length) {
+          ceHandleAnswer(item.userSays);
+        }
+      }, totalDelay);
+    });
+
+    // Re-enable demo button after sequence completes
+    const totalTime = totalDelay + 4000;
+    setTimeout(() => {
+      demoRunning = false;
+      demoBtn().disabled = false;
+    }, totalTime);
+  };
+
+  // ── Init: ensure panel starts closed ──────────────────────
+  document.addEventListener('DOMContentLoaded', function() {
+    panel().classList.remove('open');
+  });
+
+})();
+
+// ── Guided "what role fits me" flow ───────────────────────────
 const AREA_KEYWORDS = {
   'policy':         'policy analyst legislative regulatory',
   'operations':     'operations administrator logistics management',

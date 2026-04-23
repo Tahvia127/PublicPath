@@ -551,7 +551,7 @@
     /* ── SOLUTION ── */
     .solution-grid {
       display: grid;
-      grid-template-columns: repeat(2, 1fr);
+      grid-template-columns: repeat(3, 1fr);
       gap: 24px;
       margin-top: 48px;
     }
@@ -800,6 +800,14 @@
     }
 
     .perk-icon { font-size: 1rem; }
+
+    .signup-privacy {
+      margin-top: 12px;
+      font-size: 0.75rem;
+      color: rgba(255,255,255,0.28);
+      line-height: 1.55;
+      text-align: center;
+    }
 
     /* ── DIGEST PREVIEW ── */
     .digest {
@@ -1268,7 +1276,7 @@
       .drop-big { text-align: left; min-width: unset; }
 
       .problem-grid { grid-template-columns: 1fr; }
-      .solution-grid { grid-template-columns: 1fr; }
+      .solution-grid { grid-template-columns: 1fr; } /* stays 1 column on mobile */
 
       .signup-2col { grid-template-columns: 1fr; gap: 40px; }
       #mlb2-40343990 .ml-form-formContent { grid-template-columns: 1fr !important; }
@@ -1313,6 +1321,7 @@
         <li><a href="resources.html">Resources</a></li>
         <li><a href="#digest">Weekly Digest</a></li>
         <li><a href="#founder">About</a></li>
+        <li><a href="partners.html">Partners</a></li>
         <li><a href="jobs.html" class="nav-cta">Find Your Role</a></li>
       </ul>
       <button class="mobile-toggle" id="mobileToggle" aria-label="Toggle navigation">
@@ -1330,8 +1339,8 @@
     <div class="hero-grid"></div>
     <div class="hero-inner">
       <div class="hero-label">Now live &nbsp;·&nbsp; Chicago &nbsp;·&nbsp; DC &nbsp;·&nbsp; New York &nbsp;·&nbsp; California</div>
-      <h1>Getting the next generation of talent into <em>public service</em></h1>
-      <p>PublicPath centralizes government jobs from federal, state, and local agencies into one searchable place — with curated opportunities and the guidance to land them.</p>
+      <h1>Your path into <em>public service</em> starts here.</h1>
+      <p>PublicPath helps students and early-career candidates discover, navigate, and land roles in government — from city hall to Capitol Hill.</p>
       <div class="hero-actions">
         <a href="jobs.html" class="btn btn-primary">
           Browse open roles
@@ -1474,29 +1483,24 @@
   <section class="section" id="solution">
     <div class="section-inner">
       <div class="section-label reveal">How PublicPath Helps</div>
-      <h2 class="section-title reveal reveal-delay-1">One place. Every level. Real guidance.</h2>
-      <p class="section-subtitle reveal reveal-delay-2">We do the work of finding, filtering, and explaining government opportunities so you can focus on applying.</p>
+      <h2 class="section-title reveal reveal-delay-1">Built for candidates without a government network.</h2>
+      <p class="section-subtitle reveal reveal-delay-2">We curate hard-to-find government opportunities, explain what they actually require, and guide you through the process — so your path into public service is clear, not confusing.</p>
 
       <div class="solution-grid">
         <div class="solution-card reveal">
           <div class="solution-number">01</div>
-          <h3>Centralized Job Board</h3>
-          <p>Browse aggregated listings from federal agencies, state governments, city portals, and fellowship programs — all in one searchable interface with filters for location, function area, and government level.</p>
+          <h3>Curated public sector roles</h3>
+          <p>Discover local, state, and federal opportunities in one place — handpicked and filtered for early-career candidates.</p>
         </div>
         <div class="solution-card reveal reveal-delay-1">
           <div class="solution-number">02</div>
-          <h3>Weekly Curated Digest</h3>
-          <p>Every week, we hand-pick the best roles and deliver them to your inbox — including opportunities shared directly by people working in the field that you won't find on any job board.</p>
+          <h3>Plain-English guidance</h3>
+          <p>Understand eligibility, timelines, and next steps without the jargon. We make the process clear and actionable.</p>
         </div>
         <div class="solution-card reveal reveal-delay-2">
           <div class="solution-number">03</div>
-          <h3>Hiring Process Guidance</h3>
-          <p>Understand federal resumes, GS scales, hiring timelines, clearance processes, and what makes a strong public sector application — without needing insider connections to figure it out.</p>
-        </div>
-        <div class="solution-card reveal reveal-delay-3">
-          <div class="solution-number">04</div>
-          <h3>Network Access</h3>
-          <p>Get roles sourced from our founder's network of government insiders, political operatives, and public service leaders — the kind of leads that usually only circulate privately.</p>
+          <h3>No connections required</h3>
+          <p>Built for students and early-career professionals without a government network — so you can break in on your own terms.</p>
         </div>
       </div>
     </div>
@@ -1563,6 +1567,7 @@
         <!-- Right: form -->
         <div class="mailerlite-wrap reveal reveal-delay-1">
           <div class="ml-embedded" data-form="nVVuxi"></div>
+          <p class="signup-privacy">By subscribing you agree to receive weekly emails from PublicPath. We collect your name and email solely to deliver the digest. We never sell or share your data. Unsubscribe anytime.</p>
         </div>
 
       </div>
@@ -1572,40 +1577,28 @@
   <!-- FOUNDER -->
   <section class="section" id="founder">
     <div class="section-inner">
-      <div class="section-label reveal">About the Founder</div>
-      <h2 class="section-title reveal reveal-delay-1">Built by someone who's been on the inside</h2>
+      <div class="section-label reveal">About PublicPath</div>
+      <h2 class="section-title reveal reveal-delay-1">Why PublicPath exists.</h2>
 
-      <div class="founder-layout reveal reveal-delay-2">
-        <div class="founder-image">
-          <div class="founder-image-frame">
-            <img src="images/hira.jpg" alt="Hira Qureshi" style="width:100%;height:100%;object-fit:cover;"
-                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
-            <div class="founder-image-placeholder" style="display:none">HQ</div>
-          </div>
-        </div>
-        <div class="founder-bio">
-          <h3>Hira Qureshi</h3>
-          <div class="founder-title">Chicago Booth MBA '26 · 8+ years in government & politics</div>
-          <p>Hira built PublicPath because she experienced firsthand how confusing the path into government is — even as an insider with years of experience in political operations and federal hiring.</p>
+      <div style="max-width:720px;margin:0 auto">
+        <blockquote class="reveal reveal-delay-1" style="background:var(--navy-bg);border-left:4px solid var(--red);padding:20px 28px;border-radius:8px;margin-bottom:32px;font-family:var(--font-body);font-style:italic;font-size:1.05rem;color:rgba(255,255,255,0.9);line-height:1.7;">
+          "Breaking into government shouldn't depend on who you know. But too often, it does."
+        </blockquote>
 
-          <div class="founder-credentials">
-            <div class="founder-credential">
-              <div class="credential-marker"></div>
-              <div class="credential-text"><strong>Operations Director, Biden Campaign</strong> — oversaw hiring during the growth phase from primary to general election</div>
-            </div>
-            <div class="founder-credential">
-              <div class="credential-marker"></div>
-              <div class="credential-text"><strong>Biden Administration Appointee</strong> — hired hundreds of political appointees into critical roles at the White House and Treasury Department</div>
-            </div>
-            <div class="founder-credential">
-              <div class="credential-marker"></div>
-              <div class="credential-text"><strong>PublicPath Founder</strong> — building the centralized gateway to public sector careers that doesn't exist yet</div>
-            </div>
-          </div>
+        <p class="reveal reveal-delay-2" style="font-size:1rem;color:var(--text-secondary);line-height:1.75;margin-bottom:20px;">Every year, thousands of talented students want to work in government. Many of them never make it — not because they aren't qualified, but because the path isn't clear. Roles are hard to find, the process is difficult to navigate, and expectations aren't transparent.</p>
 
-          <div class="founder-quote">
-            "I built PublicPath because I experienced firsthand how confusing these pathways are — even as an insider. Fixing government hiring requires someone who's been on the inside."
-          </div>
+        <p class="reveal reveal-delay-2" style="font-size:1rem;color:var(--text-secondary);line-height:1.75;margin-bottom:20px;">PublicPath was founded to fix that.</p>
+
+        <p class="reveal reveal-delay-2" style="font-size:1rem;color:var(--text-secondary);line-height:1.75;margin-bottom:20px;">Our founder, Hira Qureshi, spent nearly a decade working in federal government, including roles at the U.S. Treasury Department and on the Biden-Harris campaign, where she built talent pipelines and placed people into public service careers. She got her own start with no formal network or inside connections.</p>
+
+        <p class="reveal reveal-delay-2" style="font-size:1rem;color:var(--text-secondary);line-height:1.75;margin-bottom:20px;">That experience, combined with years of seeing qualified candidates shut out by gaps in information and access, is what PublicPath is built to solve.</p>
+
+        <h3 class="reveal reveal-delay-3" style="font-family:var(--font-display);color:var(--navy);margin-top:48px;margin-bottom:16px;font-weight:400;font-size:1.4rem;">What we believe</h3>
+
+        <p class="reveal reveal-delay-3" style="font-size:1rem;color:var(--text-secondary);line-height:1.75;margin-bottom:20px;">Government works best when it reflects the people it serves. Talented, mission-driven candidates exist everywhere — in every school, every city. What's missing isn't talent. It's access.</p>
+
+        <div class="reveal reveal-delay-4" style="display:inline-flex;background:rgba(240,59,47,0.10);border:1px solid rgba(240,59,47,0.30);border-radius:8px;padding:16px 24px;margin-top:32px;max-width:fit-content;">
+          <p style="font-size:0.95rem;color:var(--navy-dark);font-style:italic;line-height:1.7;margin:0;">We're a nonprofit platform with a simple mission: to help the next generation of talent access public service careers, regardless of where they went to school or who they know.</p>
         </div>
       </div>
     </div>
@@ -1631,6 +1624,7 @@
       <ul class="footer-links">
         <li><a href="jobs.html">Browse Jobs</a></li>
         <li><a href="resources.html">Resources</a></li>
+        <li><a href="partners.html">Partners</a></li>
         <li><a href="#digest">Weekly Digest</a></li>
         <li><a href="#founder">About</a></li>
       </ul>
@@ -1658,47 +1652,6 @@
             el.textContent = n >= 1000 ? (n / 1000).toFixed(1).replace(/\.0$/, '') + 'K+' : n.toLocaleString();
           }
         });
-    }
-
-    var signupForm = document.getElementById('signupForm');
-    if (signupForm) {
-      signupForm.addEventListener('submit', async function(e) {
-        e.preventDefault();
-
-        var email = document.getElementById('email').value;
-        var firstName = document.getElementById('firstName').value;
-        var lastName = document.getElementById('lastName').value;
-        var school = document.getElementById('school').value;
-        var btn = document.getElementById('signupBtn');
-
-        // Collect preferences
-        var govLevels = [];
-        document.querySelectorAll('input[name="govLevel"]:checked').forEach(function(cb) { govLevels.push(cb.value); });
-        var funcAreas = [];
-        document.querySelectorAll('input[name="funcArea"]:checked').forEach(function(cb) { funcAreas.push(cb.value); });
-
-        // Disable button
-        btn.textContent = 'Saving...';
-        btn.disabled = true;
-
-        // Save preferences to Supabase
-        if (sbSignup) {
-          try {
-            await sbSignup.from('subscribers').upsert({
-              email: email, first_name: firstName, last_name: lastName,
-              school: school, gov_levels: govLevels, func_areas: funcAreas, source: 'website'
-            }, { onConflict: 'email' });
-            console.log('Saved to Supabase');
-          } catch (err) { console.log('Supabase error:', err); }
-        }
-
-        // Hide form, show Beehiiv embed for email subscription
-        signupForm.style.display = 'none';
-        var successDiv = document.getElementById('signupSuccess');
-        successDiv.style.display = 'block';
-        // Load Beehiiv iframe only after user submits (faster page load)
-        document.getElementById('beehiivEmbed').src = 'https://subscribe-forms.beehiiv.com/96297861-e4e8-4a45-ba67-7f0d66646f44';
-      });
     }
 
     // Live digest week label
