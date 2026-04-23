@@ -35,3 +35,6 @@ anaconda_projects/
 
 # Logs
 *.log
+.claude/
+PublicPath-main/
+*.pdf
