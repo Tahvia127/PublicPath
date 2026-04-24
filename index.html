@@ -619,10 +619,23 @@
     .signup .section-title { color: #fff; }
     .signup .section-subtitle { color: rgba(255,255,255,0.65); max-width: 560px; }
 
-    .mailerlite-wrap {
-      max-width: 620px;
-      margin: 48px auto 0;
+    .signup-2col {
+      display: grid;
+      grid-template-columns: 1fr 1.35fr;
+      gap: 72px;
+      align-items: start;
     }
+
+    .signup-left { padding-top: 8px; }
+
+    .signup-perks {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      margin-top: 36px;
+    }
+
+    .mailerlite-wrap { width: 100%; }
 
     /* ── MailerLite brand overrides ── */
     #mlb2-40343990.ml-form-embedContainer {
@@ -732,6 +745,30 @@
     #mlb2-40343990 .custom-checkbox .custom-control-input:checked ~ .custom-control-label::before {
       border-color: #F03B2F !important;
       background-color: #F03B2F !important;
+    }
+
+    /* Name fields side-by-side (email stays full width) */
+    #mlb2-40343990 .ml-form-formContent {
+      display: grid !important;
+      grid-template-columns: 1fr 1fr !important;
+      gap: 0 12px !important;
+    }
+    #mlb2-40343990 .ml-form-formContent .ml-form-fieldRow:first-child {
+      grid-column: 1 / -1 !important;
+    }
+
+    /* Interest group checkboxes: 2-column grid */
+    #mlb2-40343990 .ml-form-interestGroupsRow {
+      display: grid !important;
+      grid-template-columns: 1fr 1fr !important;
+      gap: 2px 16px !important;
+      margin-bottom: 16px !important;
+    }
+    #mlb2-40343990 .ml-form-interestGroupsRow .ml-form-interestGroupsRowCheckbox {
+      margin-bottom: 6px !important;
+    }
+    #mlb2-40343990 .ml-form-interestGroupsRow .description {
+      display: none !important; /* hide verbose descriptions to save space */
     }
 
     /* Success state */
@@ -1233,6 +1270,10 @@
       .problem-grid { grid-template-columns: 1fr; }
       .solution-grid { grid-template-columns: 1fr; }
 
+      .signup-2col { grid-template-columns: 1fr; gap: 40px; }
+      #mlb2-40343990 .ml-form-formContent { grid-template-columns: 1fr !important; }
+      #mlb2-40343990 .ml-form-interestGroupsRow { grid-template-columns: 1fr 1fr !important; }
+
       .founder-layout { grid-template-columns: 1fr; gap: 32px; }
       .founder-image-frame { max-width: 280px; }
 
@@ -1491,32 +1532,39 @@
   <!-- SIGNUP — MailerLite embed -->
   <section class="section signup" id="signup">
     <div class="section-inner">
-      <div class="section-label reveal">Weekly Digest</div>
-      <h2 class="section-title reveal reveal-delay-1">Get curated public sector roles in your inbox</h2>
-      <p class="section-subtitle reveal reveal-delay-2">Every week we hand-pick 5–10 government opportunities — federal, state, and local — and deliver them straight to you. Free, always.</p>
+      <div class="signup-2col">
 
-      <div class="mailerlite-wrap reveal reveal-delay-2">
-        <!-- MailerLite embedded form — replace FORM_ID with your real form ID -->
-        <div class="ml-embedded" data-form="nVVuxi"></div>
-      </div>
+        <!-- Left: pitch -->
+        <div class="signup-left reveal">
+          <div class="section-label">Weekly Digest</div>
+          <h2 class="section-title" style="color:#fff;margin-top:14px">Get curated public sector roles in your inbox</h2>
+          <p style="color:rgba(255,255,255,0.6);font-size:1rem;line-height:1.72;margin-top:16px;max-width:380px">Every week we hand-pick 5–10 government opportunities — federal, state, and local — and deliver them straight to you.</p>
 
-      <div class="signup-perks reveal reveal-delay-3">
-        <div class="signup-perk">
-          <span class="perk-icon">📬</span>
-          <span>5–10 hand-picked roles every week</span>
+          <div class="signup-perks">
+            <div class="signup-perk">
+              <span class="perk-icon">📬</span>
+              <span>5–10 hand-picked roles every week</span>
+            </div>
+            <div class="signup-perk">
+              <span class="perk-icon">🏛️</span>
+              <span>Federal, state &amp; local levels</span>
+            </div>
+            <div class="signup-perk">
+              <span class="perk-icon">🎯</span>
+              <span>Insider-sourced leads not on any job board</span>
+            </div>
+            <div class="signup-perk">
+              <span class="perk-icon">✅</span>
+              <span>Free. Unsubscribe anytime.</span>
+            </div>
+          </div>
         </div>
-        <div class="signup-perk">
-          <span class="perk-icon">🏛️</span>
-          <span>Federal, state &amp; local opportunities</span>
+
+        <!-- Right: form -->
+        <div class="mailerlite-wrap reveal reveal-delay-1">
+          <div class="ml-embedded" data-form="nVVuxi"></div>
         </div>
-        <div class="signup-perk">
-          <span class="perk-icon">🎯</span>
-          <span>Insider-sourced leads not on any job board</span>
-        </div>
-        <div class="signup-perk">
-          <span class="perk-icon">✅</span>
-          <span>Free. Unsubscribe anytime.</span>
-        </div>
+
       </div>
     </div>
   </section>
