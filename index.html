@@ -1258,6 +1258,362 @@
     /* Counter flash for live number */
     @keyframes countTick { 0% { opacity: 0.4; } 100% { opacity: 1; } }
 
+    /* ══════════════════════════════════════════
+       INTERACTIVE LAYER — P33 / GovForAmerica style
+       ══════════════════════════════════════════ */
+
+    /* Scroll progress bar */
+    #scroll-progress {
+      position: fixed;
+      top: 0; left: 0;
+      height: 3px;
+      width: 0%;
+      background: linear-gradient(90deg, var(--red) 0%, #FF6B5E 60%, #FFB347 100%);
+      z-index: 10001;
+      transition: width 0.06s linear;
+      border-radius: 0 2px 2px 0;
+    }
+
+    /* Cursor glow (desktop only) */
+    .cursor-glow {
+      position: fixed;
+      width: 600px; height: 600px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(41,52,168,0.06) 0%, transparent 65%);
+      pointer-events: none;
+      z-index: 0;
+      top: 0; left: 0;
+      transform: translate(-50%,-50%);
+      transition: top 0.25s ease, left 0.25s ease;
+      will-change: top, left;
+    }
+    @media (hover: none) { .cursor-glow { display: none; } }
+
+    /* ── Hero floating orbs ── */
+    .hero-orb {
+      position: absolute;
+      border-radius: 50%;
+      pointer-events: none;
+    }
+    .hero-orb-1 {
+      width: 340px; height: 340px;
+      top: -60px; right: 8%;
+      background: radial-gradient(circle, rgba(41,52,168,0.35) 0%, transparent 70%);
+      animation: orbFloat1 8s ease-in-out infinite;
+    }
+    .hero-orb-2 {
+      width: 200px; height: 200px;
+      bottom: 40px; right: 22%;
+      background: radial-gradient(circle, rgba(240,59,47,0.18) 0%, transparent 70%);
+      animation: orbFloat2 6s ease-in-out infinite;
+    }
+    .hero-orb-3 {
+      width: 160px; height: 160px;
+      top: 30%; left: 60%;
+      background: radial-gradient(circle, rgba(255,255,255,0.04) 0%, transparent 70%);
+      animation: orbFloat3 10s ease-in-out infinite;
+    }
+    @keyframes orbFloat1 {
+      0%,100% { transform: translateY(0) scale(1); }
+      50% { transform: translateY(-24px) scale(1.04); }
+    }
+    @keyframes orbFloat2 {
+      0%,100% { transform: translateY(0) translateX(0); }
+      33% { transform: translateY(-14px) translateX(8px); }
+      66% { transform: translateY(8px) translateX(-6px); }
+    }
+    @keyframes orbFloat3 {
+      0%,100% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-18px) rotate(5deg); }
+    }
+
+    /* Hero ticker/marquee strip */
+    .hero-ticker {
+      overflow: hidden;
+      margin-top: 48px;
+      padding: 12px 0;
+      border-top: 1px solid rgba(255,255,255,0.07);
+      mask-image: linear-gradient(90deg, transparent, black 8%, black 92%, transparent);
+      -webkit-mask-image: linear-gradient(90deg, transparent, black 8%, black 92%, transparent);
+    }
+    .hero-ticker-track {
+      display: flex;
+      gap: 0;
+      animation: tickerScroll 22s linear infinite;
+      width: max-content;
+    }
+    .hero-ticker-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 0 28px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.35);
+      white-space: nowrap;
+    }
+    .hero-ticker-item::before {
+      content: '';
+      width: 4px; height: 4px;
+      border-radius: 50%;
+      background: var(--red);
+      flex-shrink: 0;
+    }
+    @keyframes tickerScroll {
+      from { transform: translateX(0); }
+      to   { transform: translateX(-50%); }
+    }
+
+    /* ── Section numbering (P33 / GovForAmerica style) ── */
+    .section-num {
+      display: inline-block;
+      font-family: 'Alfa Slab One', Georgia, serif;
+      font-size: 0.65rem;
+      font-weight: 400;
+      letter-spacing: 0.18em;
+      color: rgba(41,52,168,0.25);
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+    .section-num-dark { color: rgba(255,255,255,0.2); }
+
+    /* ── Animated number counters ── */
+    [data-count] {
+      display: inline-block;
+    }
+    .counter-animating {
+      animation: counterPop 0.3s cubic-bezier(0.34,1.56,0.64,1) both;
+    }
+    @keyframes counterPop {
+      0% { transform: scale(0.92); opacity: 0.7; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    /* ── Enhanced reveal variants ── */
+    .reveal-left {
+      opacity: 0;
+      transform: translateX(-40px);
+      transition: opacity 0.7s ease, transform 0.7s cubic-bezier(0.25,0.46,0.45,0.94);
+    }
+    .reveal-right {
+      opacity: 0;
+      transform: translateX(40px);
+      transition: opacity 0.7s ease, transform 0.7s cubic-bezier(0.25,0.46,0.45,0.94);
+    }
+    .reveal-scale {
+      opacity: 0;
+      transform: scale(0.93);
+      transition: opacity 0.6s ease, transform 0.6s cubic-bezier(0.34,1.56,0.64,1);
+    }
+    .reveal-left.is-visible,
+    .reveal-right.is-visible,
+    .reveal-scale.is-visible {
+      opacity: 1;
+      transform: none;
+    }
+
+    /* ── Solution cards — 3D tilt ── */
+    .solution-card {
+      transform-style: preserve-3d;
+      will-change: transform;
+      position: relative;
+      overflow: hidden;
+    }
+    .solution-card::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at var(--mx,50%) var(--my,50%), rgba(41,52,168,0.06) 0%, transparent 60%);
+      opacity: 0;
+      transition: opacity 0.3s;
+      border-radius: inherit;
+      pointer-events: none;
+    }
+    .solution-card:hover::after { opacity: 1; }
+    .solution-card:hover {
+      border-color: var(--navy);
+      box-shadow: 0 16px 48px rgba(28,46,107,0.15);
+    }
+    .solution-number {
+      transition: opacity 0.3s, color 0.3s;
+    }
+    .solution-card:hover .solution-number {
+      opacity: 0.35;
+      color: var(--navy);
+    }
+
+    /* ── Drop cards — mouse spotlight ── */
+    .drop-card {
+      position: relative;
+      overflow: hidden;
+      cursor: default;
+    }
+    .drop-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle 180px at var(--mx,50%) var(--my,50%), rgba(255,255,255,0.08) 0%, transparent 100%);
+      opacity: 0;
+      transition: opacity 0.4s;
+      pointer-events: none;
+      border-radius: inherit;
+    }
+    .drop-card:hover::before { opacity: 1; }
+    .drop-card:hover { transform: translateX(8px) translateY(-2px) !important; }
+    .drop-card { transition: transform 0.25s cubic-bezier(0.25,0.46,0.45,0.94), box-shadow 0.25s; }
+    .drop-card:hover { box-shadow: 0 12px 40px rgba(0,0,0,0.14); }
+
+    /* ── Demand stats — progress rings ── */
+    .demand-ring-wrap {
+      position: relative;
+      display: inline-block;
+      margin-bottom: 16px;
+    }
+    .demand-ring {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%,-50%);
+      width: 110%; height: 110%;
+      pointer-events: none;
+    }
+    .demand-ring circle {
+      fill: none;
+      stroke-width: 3;
+      stroke-linecap: round;
+      transform-origin: center;
+      transform: rotate(-90deg);
+    }
+    .demand-ring .ring-bg {
+      stroke: rgba(41,52,168,0.08);
+    }
+    .demand-ring .ring-fill {
+      stroke: var(--navy);
+      stroke-dasharray: 0 1000;
+      transition: stroke-dasharray 1.4s cubic-bezier(0.25,0.46,0.45,0.94);
+    }
+    .demand-stat:nth-child(1) .ring-fill { stroke: var(--red); }
+    .demand-stat.is-counted .ring-fill {
+      stroke-dasharray: var(--dash) 1000;
+    }
+
+    /* ── Stats bar — count-up flash ── */
+    .stat-number.counting {
+      color: var(--red);
+      transition: color 0.2s;
+    }
+
+    /* ── Impact stat progress bars ── */
+    .impact-bar-wrap {
+      margin-top: 16px;
+      height: 3px;
+      background: rgba(255,255,255,0.08);
+      border-radius: 2px;
+      overflow: hidden;
+      max-width: 120px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .impact-bar {
+      height: 100%;
+      width: 0%;
+      background: var(--red);
+      border-radius: 2px;
+      transition: width 1.4s cubic-bezier(0.25,0.46,0.45,0.94);
+    }
+    .impact-stat.is-counted .impact-bar {
+      width: var(--bar-pct);
+    }
+
+    /* ── Quote block — animated quote marks ── */
+    .quote-block {
+      position: relative;
+    }
+    .quote-block::before {
+      content: '"';
+      position: absolute;
+      top: -20px; left: 24px;
+      font-family: 'Alfa Slab One', Georgia, serif;
+      font-size: 6rem;
+      color: rgba(240,59,47,0.15);
+      line-height: 1;
+      pointer-events: none;
+    }
+    .quote-block p { position: relative; z-index: 1; }
+
+    /* ── Magnetic buttons ── */
+    .btn-magnetic {
+      position: relative;
+      transition: transform 0.3s cubic-bezier(0.25,0.46,0.45,0.94), background 0.2s, box-shadow 0.2s !important;
+    }
+
+    /* ── Nav link underline hover ── */
+    .nav-links li a:not(.nav-cta) {
+      position: relative;
+    }
+    .nav-links li a:not(.nav-cta)::after {
+      content: '';
+      position: absolute;
+      bottom: -2px; left: 0;
+      width: 0%; height: 1.5px;
+      background: var(--red);
+      transition: width 0.25s ease;
+    }
+    .nav-links li a:not(.nav-cta):hover::after { width: 100%; }
+
+    /* ── Impact section — stagger directions ── */
+    .impact-stat:nth-child(1).reveal { transform: translateX(-30px) translateY(20px); }
+    .impact-stat:nth-child(2).reveal { transform: translateY(40px); }
+    .impact-stat:nth-child(3).reveal { transform: translateX(30px) translateY(20px); }
+    .impact-stat.is-visible { transform: none !important; }
+
+    /* ── Scroll-down indicator ── */
+    .hero-scroll-hint {
+      position: absolute;
+      bottom: 28px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      color: rgba(255,255,255,0.3);
+      font-size: 0.65rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      animation: hintBounce 2.4s ease infinite;
+    }
+    .hero-scroll-hint svg {
+      width: 18px; height: 18px;
+      stroke: rgba(255,255,255,0.3);
+    }
+    @keyframes hintBounce {
+      0%,60%,100% { transform: translateX(-50%) translateY(0); }
+      30% { transform: translateX(-50%) translateY(6px); }
+    }
+
+    /* ── Active section highlight in nav ── */
+    .nav-links a.nav-active:not(.nav-cta) { color: #fff; }
+    .nav-links a.nav-active:not(.nav-cta)::after { width: 100%; }
+
+    /* ── Perk icons — bounce in ── */
+    .signup-perk {
+      opacity: 0;
+      transform: translateX(-16px);
+      transition: opacity 0.5s ease, transform 0.5s ease;
+    }
+    .signup-perk.perk-visible {
+      opacity: 1;
+      transform: none;
+    }
+    .signup-perk:nth-child(1) { transition-delay: 0s; }
+    .signup-perk:nth-child(2) { transition-delay: 0.08s; }
+    .signup-perk:nth-child(3) { transition-delay: 0.16s; }
+    .signup-perk:nth-child(4) { transition-delay: 0.24s; }
+
+    /* ── ── */
+
     /* ── RESPONSIVE ── */
     @media (max-width: 768px) {
       .nav-links {
@@ -1328,6 +1684,9 @@
 </head>
 <body>
 
+  <div id="scroll-progress" aria-hidden="true"></div>
+  <div class="cursor-glow" id="cursorGlow" aria-hidden="true"></div>
+
   <a href="#main-content" class="skip-link">Skip to main content</a>
 
   <!-- NAV -->
@@ -1367,20 +1726,56 @@
   <!-- HERO -->
   <section class="hero">
     <div class="hero-grid"></div>
+    <div class="hero-orb hero-orb-1" aria-hidden="true"></div>
+    <div class="hero-orb hero-orb-2" aria-hidden="true"></div>
+    <div class="hero-orb hero-orb-3" aria-hidden="true"></div>
     <div class="hero-inner">
       <div class="hero-label">Now live &nbsp;·&nbsp; Chicago &nbsp;·&nbsp; DC &nbsp;·&nbsp; New York &nbsp;·&nbsp; California</div>
       <h1>Your path into <em>public service</em> starts here.</h1>
       <p>PublicPath helps students and early-career candidates discover, navigate, and land roles in government, from city hall to Capitol Hill.</p>
       <div class="hero-actions">
-        <a href="jobs.html" class="btn btn-primary">
+        <a href="jobs.html" class="btn btn-primary btn-magnetic">
           Browse open roles
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
         </a>
-        <a href="#digest" class="btn btn-secondary">
+        <a href="#digest" class="btn btn-secondary btn-magnetic">
           See this week's picks
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
         </a>
       </div>
+      <div class="hero-ticker" aria-hidden="true">
+        <div class="hero-ticker-track">
+          <span class="hero-ticker-item">Federal Government</span>
+          <span class="hero-ticker-item">State Agencies</span>
+          <span class="hero-ticker-item">City Hall</span>
+          <span class="hero-ticker-item">Policy &amp; Research</span>
+          <span class="hero-ticker-item">Public Health</span>
+          <span class="hero-ticker-item">Education</span>
+          <span class="hero-ticker-item">Economic Development</span>
+          <span class="hero-ticker-item">Civic Tech</span>
+          <span class="hero-ticker-item">Nonprofits</span>
+          <span class="hero-ticker-item">Urban Planning</span>
+          <span class="hero-ticker-item">Justice &amp; Legal</span>
+          <span class="hero-ticker-item">Environment</span>
+          <!-- duplicate for seamless loop -->
+          <span class="hero-ticker-item">Federal Government</span>
+          <span class="hero-ticker-item">State Agencies</span>
+          <span class="hero-ticker-item">City Hall</span>
+          <span class="hero-ticker-item">Policy &amp; Research</span>
+          <span class="hero-ticker-item">Public Health</span>
+          <span class="hero-ticker-item">Education</span>
+          <span class="hero-ticker-item">Economic Development</span>
+          <span class="hero-ticker-item">Civic Tech</span>
+          <span class="hero-ticker-item">Nonprofits</span>
+          <span class="hero-ticker-item">Urban Planning</span>
+          <span class="hero-ticker-item">Justice &amp; Legal</span>
+          <span class="hero-ticker-item">Environment</span>
+        </div>
+      </div>
+    </div>
+    <div class="hero-scroll-hint" aria-hidden="true">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+      Scroll
     </div>
   </section>
 
@@ -1417,18 +1812,21 @@
   <!-- IMPACT STATS -->
   <section class="impact">
     <div class="impact-inner">
-      <div class="impact-label reveal">The talent crisis in government</div>
+      <div class="impact-label reveal"><span class="section-num section-num-dark">01 &nbsp;/&nbsp;</span> The talent crisis in government</div>
       <div class="impact-grid">
         <div class="impact-stat reveal reveal-delay-1">
-          <div class="impact-num">40–50%</div>
+          <div class="impact-num"><span data-count="50" data-prefix="40–" data-suffix="%">40–50%</span></div>
+          <div class="impact-bar-wrap"><div class="impact-bar" style="--bar-pct:50%"></div></div>
           <div class="impact-desc">of local government workers are over 50</div>
         </div>
         <div class="impact-stat reveal reveal-delay-2">
-          <div class="impact-num">30%</div>
+          <div class="impact-num"><span data-count="30" data-suffix="%">30%</span></div>
+          <div class="impact-bar-wrap"><div class="impact-bar" style="--bar-pct:30%"></div></div>
           <div class="impact-desc">of the federal workforce eligible for retirement by 2030</div>
         </div>
         <div class="impact-stat reveal reveal-delay-3">
-          <div class="impact-num accent">2%</div>
+          <div class="impact-num accent"><span data-count="2" data-suffix="%">2%</span></div>
+          <div class="impact-bar-wrap"><div class="impact-bar" style="--bar-pct:2%; background:var(--red)"></div></div>
           <div class="impact-desc">of government workers are under 30</div>
         </div>
       </div>
@@ -1439,19 +1837,37 @@
   <!-- DEMAND STATS -->
   <section class="section demand" id="demand">
     <div class="section-inner">
-      <div class="section-label reveal">Why Now</div>
+      <div class="section-label reveal"><span class="section-num">02 &nbsp;/&nbsp;</span> Why Now</div>
       <h2 class="section-title reveal reveal-delay-1">Young people want to serve. The pathways are broken.</h2>
       <div class="demand-grid">
-        <div class="demand-stat reveal">
-          <div class="demand-num red">67%</div>
+        <div class="demand-stat reveal" style="--dash:209">
+          <div class="demand-ring-wrap">
+            <div class="demand-num red" data-count="67" data-suffix="%">67%</div>
+            <svg class="demand-ring" viewBox="0 0 100 100" aria-hidden="true">
+              <circle class="ring-bg" cx="50" cy="50" r="44"/>
+              <circle class="ring-fill" cx="50" cy="50" r="44" style="stroke-dashoffset:0"/>
+            </svg>
+          </div>
           <div class="demand-desc">of young people say they want to work in public service at some point in their career</div>
         </div>
-        <div class="demand-stat reveal reveal-delay-1">
-          <div class="demand-num">51%</div>
+        <div class="demand-stat reveal reveal-delay-1" style="--dash:160">
+          <div class="demand-ring-wrap">
+            <div class="demand-num" data-count="51" data-suffix="%">51%</div>
+            <svg class="demand-ring" viewBox="0 0 100 100" aria-hidden="true">
+              <circle class="ring-bg" cx="50" cy="50" r="44"/>
+              <circle class="ring-fill" cx="50" cy="50" r="44"/>
+            </svg>
+          </div>
           <div class="demand-desc">of Millennials &amp; Gen Z would consider a government career, if they knew how to get started</div>
         </div>
-        <div class="demand-stat reveal reveal-delay-2">
-          <div class="demand-num">7–10%</div>
+        <div class="demand-stat reveal reveal-delay-2" style="--dash:28">
+          <div class="demand-ring-wrap">
+            <div class="demand-num" data-count="10" data-prefix="7–" data-suffix="%">7–10%</div>
+            <svg class="demand-ring" viewBox="0 0 100 100" aria-hidden="true">
+              <circle class="ring-bg" cx="50" cy="50" r="44"/>
+              <circle class="ring-fill" cx="50" cy="50" r="44"/>
+            </svg>
+          </div>
           <div class="demand-desc">of those who express interest actually end up in a public sector role</div>
         </div>
       </div>
@@ -1462,12 +1878,12 @@
   <!-- PROBLEM -->
   <section class="section problem" id="problem">
     <div class="section-inner">
-      <div class="section-label reveal">The Problem</div>
+      <div class="section-label reveal"><span class="section-num">03 &nbsp;/&nbsp;</span> The Problem</div>
       <h2 class="section-title reveal reveal-delay-1">Breaking into public service is harder than it should be</h2>
       <p class="section-subtitle reveal reveal-delay-2">Despite millions of government roles, there's no single place to find them, and no clear playbook for how to get hired.</p>
 
       <div class="drop-list">
-        <div class="drop-card d1 reveal">
+        <div class="drop-card d1 reveal-left">
           <div class="drop-badge">Drop 1: Discovery</div>
           <div class="drop-body">
             <div class="drop-title">Fragmented across 50+ portals</div>
@@ -1478,7 +1894,7 @@
             <span class="drop-big-label">Portals</span>
           </div>
         </div>
-        <div class="drop-card d2 reveal reveal-delay-1">
+        <div class="drop-card d2 reveal-right reveal-delay-1">
           <div class="drop-badge">Drop 2: Application Friction</div>
           <div class="drop-body">
             <div class="drop-title">Half of applicants never finish</div>
@@ -1489,7 +1905,7 @@
             <span class="drop-big-label">Drop off</span>
           </div>
         </div>
-        <div class="drop-card d3 reveal reveal-delay-2">
+        <div class="drop-card d3 reveal-left reveal-delay-2">
           <div class="drop-badge">Drop 3: The Black Hole</div>
           <div class="drop-body">
             <div class="drop-title">101-day hiring timelines</div>
@@ -1512,22 +1928,22 @@
   <!-- SOLUTION -->
   <section class="section" id="solution">
     <div class="section-inner">
-      <div class="section-label reveal">How PublicPath Helps</div>
+      <div class="section-label reveal"><span class="section-num">04 &nbsp;/&nbsp;</span> How PublicPath Helps</div>
       <h2 class="section-title reveal reveal-delay-1">Built for candidates without a government network.</h2>
       <p class="section-subtitle reveal reveal-delay-2">We curate hard-to-find government opportunities, explain what they actually require, and guide you through the process so your path into public service is clear, not confusing.</p>
 
       <div class="solution-grid">
-        <div class="solution-card reveal">
+        <div class="solution-card reveal-scale">
           <div class="solution-number">01</div>
           <h3>Curated public sector roles</h3>
           <p>Discover local, state, and federal opportunities in one place, handpicked and filtered for early-career candidates.</p>
         </div>
-        <div class="solution-card reveal reveal-delay-1">
+        <div class="solution-card reveal-scale reveal-delay-1">
           <div class="solution-number">02</div>
           <h3>Plain-English guidance</h3>
           <p>Understand eligibility, timelines, and next steps without the jargon. We make the process clear and actionable.</p>
         </div>
-        <div class="solution-card reveal reveal-delay-2">
+        <div class="solution-card reveal-scale reveal-delay-2">
           <div class="solution-number">03</div>
           <h3>No connections required</h3>
           <p>Built for students and early-career professionals without a government network, so you can break in on your own terms.</p>
@@ -1539,7 +1955,7 @@
   <!-- DIGEST PREVIEW -->
   <section class="section digest" id="digest">
     <div class="section-inner">
-      <div class="section-label reveal">Weekly Digest</div>
+      <div class="section-label reveal"><span class="section-num">05 &nbsp;/&nbsp;</span> Weekly Digest</div>
       <h2 class="section-title reveal reveal-delay-1">What lands in your inbox</h2>
       <p class="section-subtitle reveal reveal-delay-2">Each week we hand-pick roles from across federal, state, and local government, plus opportunities shared directly by people working in the field.</p>
 
@@ -1570,7 +1986,7 @@
 
         <!-- Left: pitch -->
         <div class="signup-left reveal">
-          <div class="section-label">Weekly Digest</div>
+          <div class="section-label"><span class="section-num section-num-dark">06 &nbsp;/&nbsp;</span> Weekly Digest</div>
           <h2 class="section-title" style="color:#fff;margin-top:14px">Get curated public sector roles in your inbox</h2>
           <p style="color:rgba(255,255,255,0.6);font-size:1rem;line-height:1.72;margin-top:16px;max-width:380px">Every week we hand-pick 5–10 government opportunities (federal, state, and local) and deliver them straight to you.</p>
 
@@ -1607,7 +2023,7 @@
   <!-- FOUNDER -->
   <section class="section" id="founder">
     <div class="section-inner">
-      <div class="section-label reveal">About PublicPath</div>
+      <div class="section-label reveal"><span class="section-num">07 &nbsp;/&nbsp;</span> About PublicPath</div>
       <h2 class="section-title reveal reveal-delay-1">Why PublicPath exists.</h2>
 
       <div style="max-width:720px;margin:0 auto">
@@ -1665,39 +2081,36 @@
 
   <script>
   document.addEventListener('DOMContentLoaded', function() {
-    // Supabase client for saving preferences
+
+    /* ── Supabase ── */
     var sbSignup = null;
     if (window.supabase) {
       sbSignup = window.supabase.createClient(
         'https://muuumlbrgnfwhzkqumdu.supabase.co',
         'sb_publishable_HrizONucUX7mehQ7JCwWQQ_amHU1xO8'
       );
-
-      // Live job count in stats bar
       sbSignup.from('jobs').select('id', { count: 'exact', head: true })
         .eq('is_active', true)
         .then(function(res) {
           var el = document.getElementById('liveJobCount');
           if (el && res.count) {
             var n = res.count;
-            el.textContent = n >= 1000 ? (n / 1000).toFixed(1).replace(/\.0$/, '') + 'K+' : n.toLocaleString();
+            el.textContent = n >= 1000 ? (n/1000).toFixed(1).replace(/\.0$/,'')+'K+' : n.toLocaleString();
           }
         });
     }
 
-    // Live digest week label
+    /* ── Digest week label ── */
     (function() {
       var el = document.getElementById('digestWeekLabel');
       if (el) {
         var d = new Date();
-        var opts = { month: 'long', day: 'numeric', year: 'numeric' };
-        el.textContent = 'PublicPath Weekly: ' + d.toLocaleDateString('en-US', opts);
+        el.textContent = 'PublicPath Weekly: ' + d.toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'});
       }
     })();
 
-    // Populate live digest jobs from Supabase
+    /* ── Live digest jobs ── */
     if (sbSignup) {
-      var now = new Date().toISOString();
       sbSignup.from('jobs')
         .select('title,organization,location_city,location_state,closing_date,application_url,organization_type')
         .eq('is_active', true)
@@ -1710,57 +2123,175 @@
           if (!data || !data.length) return;
           var list = document.getElementById('digestLiveJobs');
           if (!list) return;
-          function esc(s) { return s ? s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;') : ''; }
+          function esc(s){return s?s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'):''}
           list.innerHTML = data.map(function(j) {
-            var st = (j.location_state||'').length > 2 ? j.location_state.substring(0,2).toUpperCase() : (j.location_state||'');
-            var loc = [j.location_city, st].filter(Boolean).join(', ') || 'Remote';
-            var closes = '';
-            if (j.closing_date) {
-              var days = Math.ceil((new Date(j.closing_date) - new Date()) / 86400000);
-              if (days >= 0 && days <= 7) closes = '<div class="digest-job-closes">Closes in ' + days + 'd</div>';
-              else if (days > 0) closes = '<div class="digest-job-closes">Closes ' + new Date(j.closing_date).toLocaleDateString('en-US',{month:'short',day:'numeric'}) + '</div>';
+            var st=(j.location_state||'').length>2?j.location_state.substring(0,2).toUpperCase():(j.location_state||'');
+            var loc=[j.location_city,st].filter(Boolean).join(', ')||'Remote';
+            var closes='';
+            if(j.closing_date){
+              var days=Math.ceil((new Date(j.closing_date)-new Date())/86400000);
+              if(days>=0&&days<=7)closes='<div class="digest-job-closes">Closes in '+days+'d</div>';
+              else if(days>0)closes='<div class="digest-job-closes">Closes '+new Date(j.closing_date).toLocaleDateString('en-US',{month:'short',day:'numeric'})+'</div>';
             }
-            var typeColor = j.organization_type === 'federal' ? 'color:#1D4ED8' : j.organization_type === 'local' ? 'color:#6D28D9' : 'color:#C2410C';
-            return '<div class="digest-job">' +
-              '<div><div class="digest-job-title">' + esc(j.title) + '</div>' +
-              '<div class="digest-job-agency">' + esc(j.organization||'') + '</div></div>' +
-              '<div class="digest-job-meta"><div class="digest-job-location">' + esc(loc) + '</div>' + closes + '</div>' +
+            return '<div class="digest-job">'+
+              '<div><div class="digest-job-title">'+esc(j.title)+'</div>'+
+              '<div class="digest-job-agency">'+esc(j.organization||'')+'</div></div>'+
+              '<div class="digest-job-meta"><div class="digest-job-location">'+esc(loc)+'</div>'+closes+'</div>'+
               '</div>';
           }).join('');
         });
     }
 
-    // ── Scroll reveal ──
-    (function() {
-      var revealEls = document.querySelectorAll('.reveal');
-      if (!revealEls.length) return;
-      var revealObs = new IntersectionObserver(function(entries) {
-        entries.forEach(function(entry) {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('is-visible');
-            revealObs.unobserve(entry.target);
-          }
-        });
-      }, { threshold: 0.08, rootMargin: '0px 0px -32px 0px' });
-      revealEls.forEach(function(el) { revealObs.observe(el); });
-    })();
+    /* ════════════════════════════════════════
+       SCROLL PROGRESS BAR
+    ════════════════════════════════════════ */
+    var progressBar = document.getElementById('scroll-progress');
+    if (progressBar) {
+      window.addEventListener('scroll', function() {
+        var scrolled = window.scrollY;
+        var total = document.documentElement.scrollHeight - window.innerHeight;
+        progressBar.style.width = (total > 0 ? (scrolled / total) * 100 : 0) + '%';
+      }, { passive: true });
+    }
 
-    // ── Stat bar stagger reveal ──
-    (function() {
-      var statEls = document.querySelectorAll('.stat-reveal');
-      if (!statEls.length) return;
-      var statObs = new IntersectionObserver(function(entries) {
-        entries.forEach(function(entry) {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('is-visible');
-            statObs.unobserve(entry.target);
-          }
-        });
-      }, { threshold: 0.2 });
-      statEls.forEach(function(el) { statObs.observe(el); });
-    })();
+    /* ════════════════════════════════════════
+       CURSOR GLOW (desktop only)
+    ════════════════════════════════════════ */
+    var glow = document.getElementById('cursorGlow');
+    if (glow && window.matchMedia('(hover: hover)').matches) {
+      document.addEventListener('mousemove', function(e) {
+        glow.style.left = e.clientX + 'px';
+        glow.style.top  = e.clientY + 'px';
+      }, { passive: true });
+    }
 
-    // Nav scroll shadow
+    /* ════════════════════════════════════════
+       MAGNETIC BUTTONS
+    ════════════════════════════════════════ */
+    if (window.matchMedia('(hover: hover)').matches) {
+      document.querySelectorAll('.btn-magnetic').forEach(function(btn) {
+        btn.addEventListener('mousemove', function(e) {
+          var r = btn.getBoundingClientRect();
+          var x = e.clientX - r.left - r.width/2;
+          var y = e.clientY - r.top  - r.height/2;
+          btn.style.transform = 'translate(' + x*0.18 + 'px, ' + y*0.28 + 'px)';
+        });
+        btn.addEventListener('mouseleave', function() {
+          btn.style.transform = '';
+        });
+      });
+    }
+
+    /* ════════════════════════════════════════
+       SCROLL REVEAL (all variants)
+    ════════════════════════════════════════ */
+    var revealSel = '.reveal, .reveal-left, .reveal-right, .reveal-scale';
+    var revealEls = document.querySelectorAll(revealSel);
+    var revealObs = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-visible');
+          revealObs.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.07, rootMargin: '0px 0px -28px 0px' });
+    revealEls.forEach(function(el) { revealObs.observe(el); });
+
+    /* ── Stat bar stagger reveal ── */
+    var statObs = new IntersectionObserver(function(entries) {
+      entries.forEach(function(e) {
+        if (e.isIntersecting) { e.target.classList.add('is-visible'); statObs.unobserve(e.target); }
+      });
+    }, { threshold: 0.2 });
+    document.querySelectorAll('.stat-reveal').forEach(function(el) { statObs.observe(el); });
+
+    /* ════════════════════════════════════════
+       ANIMATED NUMBER COUNTERS
+    ════════════════════════════════════════ */
+    function animateCounter(el) {
+      var target  = parseInt(el.getAttribute('data-count'), 10);
+      var prefix  = el.getAttribute('data-prefix') || '';
+      var suffix  = el.getAttribute('data-suffix') || '';
+      var duration = 1400;
+      var startTime = null;
+      function easeOut(t) { return 1 - Math.pow(1 - t, 3); }
+      function step(ts) {
+        if (!startTime) startTime = ts;
+        var progress = Math.min((ts - startTime) / duration, 1);
+        var value = Math.round(easeOut(progress) * target);
+        el.textContent = prefix + value + suffix;
+        if (progress < 1) requestAnimationFrame(step);
+        else el.textContent = prefix + target + suffix;
+      }
+      el.textContent = prefix + '0' + suffix;
+      requestAnimationFrame(step);
+    }
+
+    var counterObs = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        if (entry.isIntersecting) {
+          var el = entry.target;
+          /* also trigger bar/ring on parent */
+          var parent = el.closest('.impact-stat, .demand-stat');
+          if (parent) parent.classList.add('is-counted');
+          animateCounter(el);
+          counterObs.unobserve(el);
+        }
+      });
+    }, { threshold: 0.4 });
+    document.querySelectorAll('[data-count]').forEach(function(el) { counterObs.observe(el); });
+
+    /* ════════════════════════════════════════
+       SOLUTION CARDS — 3D TILT
+    ════════════════════════════════════════ */
+    if (window.matchMedia('(hover: hover)').matches) {
+      document.querySelectorAll('.solution-card').forEach(function(card) {
+        card.addEventListener('mousemove', function(e) {
+          var r = card.getBoundingClientRect();
+          var x = (e.clientX - r.left) / r.width  - 0.5;
+          var y = (e.clientY - r.top)  / r.height - 0.5;
+          card.style.transform = 'perspective(600px) rotateY(' + (x * 10) + 'deg) rotateX(' + (-y * 8) + 'deg) translateY(-4px)';
+          card.style.setProperty('--mx', ((e.clientX - r.left) / r.width * 100) + '%');
+          card.style.setProperty('--my', ((e.clientY - r.top)  / r.height * 100) + '%');
+        });
+        card.addEventListener('mouseleave', function() {
+          card.style.transform = '';
+        });
+      });
+    }
+
+    /* ════════════════════════════════════════
+       DROP CARDS — MOUSE SPOTLIGHT
+    ════════════════════════════════════════ */
+    if (window.matchMedia('(hover: hover)').matches) {
+      document.querySelectorAll('.drop-card').forEach(function(card) {
+        card.addEventListener('mousemove', function(e) {
+          var r = card.getBoundingClientRect();
+          card.style.setProperty('--mx', (e.clientX - r.left) + 'px');
+          card.style.setProperty('--my', (e.clientY - r.top)  + 'px');
+        });
+      });
+    }
+
+    /* ════════════════════════════════════════
+       SIGNUP PERKS — staggered entrance
+    ════════════════════════════════════════ */
+    var perkObs = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        if (entry.isIntersecting) {
+          entry.target.querySelectorAll('.signup-perk').forEach(function(p) {
+            p.classList.add('perk-visible');
+          });
+          perkObs.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.3 });
+    var perksWrap = document.querySelector('.signup-perks');
+    if (perksWrap) perkObs.observe(perksWrap);
+
+    /* ════════════════════════════════════════
+       NAV — scroll shadow + active section
+    ════════════════════════════════════════ */
     var nav = document.getElementById('nav');
     if (nav) {
       window.addEventListener('scroll', function() {
@@ -1768,19 +2299,25 @@
       }, { passive: true });
     }
 
-    // Mobile nav toggle
+    /* ════════════════════════════════════════
+       MOBILE NAV TOGGLE
+    ════════════════════════════════════════ */
     var toggle = document.getElementById('mobileToggle');
-    var links = document.getElementById('navLinks');
-    if (toggle && links) {
+    var navLinks = document.getElementById('navLinks');
+    if (toggle && navLinks) {
       toggle.addEventListener('click', function(e) {
-        e.preventDefault();
-        e.stopPropagation();
-        links.classList.toggle('open');
+        e.preventDefault(); e.stopPropagation();
+        var open = navLinks.classList.toggle('open');
+        toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
       });
-      links.querySelectorAll('a').forEach(function(a) {
-        a.addEventListener('click', function() { links.classList.remove('open'); });
+      navLinks.querySelectorAll('a').forEach(function(a) {
+        a.addEventListener('click', function() {
+          navLinks.classList.remove('open');
+          toggle.setAttribute('aria-expanded', 'false');
+        });
       });
     }
+
   });
   </script>
 </body>
