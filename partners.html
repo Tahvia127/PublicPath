@@ -347,9 +347,19 @@
       .partner-section { padding: 56px 20px; }
       .closing-banner { padding: 56px 20px; }
     }
+
+    /* ── Interactive enhancements ── */
+    #scroll-progress{position:fixed;top:0;left:0;height:3px;width:0%;background:linear-gradient(90deg,var(--red) 0%,#FF6B5E 60%,#FFB347 100%);z-index:10001;transition:width 0.06s linear}
+    .cursor-glow{position:fixed;width:600px;height:600px;border-radius:50%;background:radial-gradient(circle,rgba(41,52,168,0.06) 0%,transparent 65%);pointer-events:none;z-index:0;transform:translate(-50%,-50%);transition:top 0.25s ease,left 0.25s ease}
+    .reveal-left{opacity:0;transform:translateX(-40px);transition:opacity 0.7s cubic-bezier(0.25,0.46,0.45,0.94),transform 0.7s cubic-bezier(0.25,0.46,0.45,0.94)}
+    .reveal-right{opacity:0;transform:translateX(40px);transition:opacity 0.7s cubic-bezier(0.25,0.46,0.45,0.94),transform 0.7s cubic-bezier(0.25,0.46,0.45,0.94)}
+    .reveal-scale{opacity:0;transform:scale(0.93);transition:opacity 0.6s cubic-bezier(0.34,1.56,0.64,1),transform 0.6s cubic-bezier(0.34,1.56,0.64,1)}
+    .reveal-left.is-visible,.reveal-right.is-visible,.reveal-scale.is-visible{opacity:1;transform:none}
   </style>
 </head>
 <body>
+<div id="scroll-progress" aria-hidden="true"></div>
+<div class="cursor-glow" id="cursorGlow" aria-hidden="true"></div>
 
   <a href="#main-content" class="skip-link">Skip to main content</a>
 
@@ -404,14 +414,14 @@
     <h2 class="reveal reveal-delay-1">For universities and career services offices</h2>
 
     <div class="partner-2col">
-      <div class="partner-copy reveal reveal-delay-2">
+      <div class="partner-copy reveal-left reveal-delay-1">
         <p>Career services offices work hard to connect students to opportunities, but government careers are notoriously difficult to navigate, and most offices don't have the specialized knowledge to guide students through the process.</p>
         <p>PublicPath is designed to fill that gap. We aggregate hard-to-find government roles, explain what they actually require, and give students a clear path from interest to application, without requiring insider knowledge or connections.</p>
         <p>As a university partner, your students get early access to curated opportunities across federal, state, and local government, filtered for early-career candidates and accompanied by plain-English guidance on eligibility and next steps.</p>
         <p>There's no cost to your students or your office. We're in early development and actively building our founding university partnerships. If you work with students who are interested in public service, we'd love to connect.</p>
       </div>
 
-      <div class="partner-card reveal reveal-delay-3">
+      <div class="partner-card reveal-right reveal-delay-2">
         <h3>Interested in partnering?</h3>
         <p>Connect your students to curated government opportunities and navigation support, at no cost.</p>
         <a href="mailto:hello@publicpath.com" class="btn btn-primary">Get in touch</a>
@@ -428,14 +438,14 @@
     <h2 class="reveal reveal-delay-1">For fellowship programs and civic organizations</h2>
 
     <div class="partner-2col">
-      <div class="partner-copy reveal reveal-delay-2">
+      <div class="partner-copy reveal-left reveal-delay-1">
         <p>Fellowship programs and civic organizations are some of the most important on-ramps into public service, but too many qualified candidates never find them. Awareness is a persistent challenge across the sector.</p>
         <p>PublicPath surfaces fellowships and civic opportunities alongside traditional government roles, putting your program in front of motivated, early-career candidates who are actively looking for a way into public service.</p>
         <p>We also help candidates understand what fellowships like yours actually involve: the application process, timeline expectations, and what a strong candidate looks like. The people who reach you will be better prepared and more likely to succeed.</p>
         <p>Whether you run a paid fellowship, a leadership development program, or a civic engagement initiative, we'd like to understand what you're building and explore how we can help expand your reach to the candidates who need you most.</p>
       </div>
 
-      <div class="partner-card reveal reveal-delay-3">
+      <div class="partner-card reveal-right reveal-delay-2">
         <h3>Interested in partnering?</h3>
         <p>Reach motivated early-career candidates who are actively looking for pathways into public service.</p>
         <a href="mailto:hello@publicpath.com" class="btn btn-primary">Get in touch</a>
@@ -502,7 +512,27 @@
     });
   }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
 
-  document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+  document.querySelectorAll('.reveal,.reveal-left,.reveal-right,.reveal-scale').forEach(el => revealObserver.observe(el));
+
+  // Scroll progress bar
+  (function(){
+    var bar=document.getElementById('scroll-progress');
+    if(!bar)return;
+    window.addEventListener('scroll',function(){
+      var t=document.documentElement.scrollHeight-window.innerHeight;
+      bar.style.width=(t>0?(window.scrollY/t)*100:0)+'%';
+    },{passive:true});
+  })();
+
+  // Cursor glow
+  (function(){
+    var glow=document.getElementById('cursorGlow');
+    if(!glow)return;
+    document.addEventListener('mousemove',function(e){
+      glow.style.left=e.clientX+'px';
+      glow.style.top=e.clientY+'px';
+    },{passive:true});
+  })();
 </script>
 </body>
 </html>

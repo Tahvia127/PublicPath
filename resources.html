@@ -468,9 +468,19 @@
       .cta-box { padding: 40px 24px; }
       .quick-nav-inner { gap: 0; }
     }
+
+    /* ── Interactive enhancements ── */
+    #scroll-progress{position:fixed;top:0;left:0;height:3px;width:0%;background:linear-gradient(90deg,var(--red) 0%,#FF6B5E 60%,#FFB347 100%);z-index:10001;transition:width 0.06s linear}
+    .cursor-glow{position:fixed;width:600px;height:600px;border-radius:50%;background:radial-gradient(circle,rgba(41,52,168,0.06) 0%,transparent 65%);pointer-events:none;z-index:0;transform:translate(-50%,-50%);transition:top 0.25s ease,left 0.25s ease}
+    .reveal-left{opacity:0;transform:translateX(-40px);transition:opacity 0.7s cubic-bezier(0.25,0.46,0.45,0.94),transform 0.7s cubic-bezier(0.25,0.46,0.45,0.94)}
+    .reveal-right{opacity:0;transform:translateX(40px);transition:opacity 0.7s cubic-bezier(0.25,0.46,0.45,0.94),transform 0.7s cubic-bezier(0.25,0.46,0.45,0.94)}
+    .reveal-scale{opacity:0;transform:scale(0.93);transition:opacity 0.6s cubic-bezier(0.34,1.56,0.64,1),transform 0.6s cubic-bezier(0.34,1.56,0.64,1)}
+    .reveal-left.is-visible,.reveal-right.is-visible,.reveal-scale.is-visible{opacity:1;transform:none}
   </style>
 </head>
 <body>
+<div id="scroll-progress" aria-hidden="true"></div>
+<div class="cursor-glow" id="cursorGlow" aria-hidden="true"></div>
 
 <a href="#main-content" class="skip-link">Skip to main content</a>
 
@@ -538,31 +548,31 @@
 
     <p class="reveal reveal-delay-3">A federal resume is longer and more detailed than a standard resume. Most successful federal resumes are 3 to 5 pages. They need to include specific information that private sector resumes typically leave out: GS grade history, hours worked per week, supervisor contact info, and detailed descriptions of accomplishments with measurable results.</p>
 
-    <div class="tip-card reveal">
+    <div class="tip-card reveal-left">
       <div class="tip-number" aria-hidden="true">1</div>
       <h3>Match the job announcement language</h3>
       <p>Read the "Qualifications" and "Duties" sections of the job posting carefully. Use the same terminology in your resume. If they say "program management," don't write "project oversight." Federal HR specialists screen for specific keywords.</p>
     </div>
 
-    <div class="tip-card reveal reveal-delay-1">
+    <div class="tip-card reveal-right reveal-delay-1">
       <div class="tip-number" aria-hidden="true">2</div>
       <h3>Include hours per week and dates</h3>
       <p>For every position, list your start and end dates (month/year) and hours per week. This is required. Without it, HR may not be able to verify you meet the minimum qualifications, even if you clearly do.</p>
     </div>
 
-    <div class="tip-card reveal reveal-delay-2">
+    <div class="tip-card reveal-left reveal-delay-2">
       <div class="tip-number" aria-hidden="true">3</div>
       <h3>Quantify everything</h3>
       <p>Instead of "managed a team," write "managed a team of 12 staff across 3 divisions, overseeing a $2.4M annual budget." Numbers help HR specialists assess your level of responsibility against the GS grade requirements.</p>
     </div>
 
-    <div class="tip-card reveal reveal-delay-3">
+    <div class="tip-card reveal-right reveal-delay-3">
       <div class="tip-number" aria-hidden="true">4</div>
       <h3>Address every qualification</h3>
       <p>The "Specialized Experience" section of a job posting tells you exactly what they need. Address each requirement directly in your resume, even if it means being repetitive. Don't make the reviewer guess.</p>
     </div>
 
-    <div class="tip-card reveal reveal-delay-4">
+    <div class="tip-card reveal-left reveal-delay-4">
       <div class="tip-number" aria-hidden="true">5</div>
       <h3>Don't skip the questionnaire</h3>
       <p>Most federal applications include a self-assessment questionnaire. Rate yourself honestly but don't undersell. If the posting asks "Do you have experience with X?" and you do, select the highest applicable rating. Your resume must back up your answers.</p>
@@ -897,7 +907,27 @@
     });
   }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
 
-  document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+  document.querySelectorAll('.reveal,.reveal-left,.reveal-right,.reveal-scale').forEach(el => revealObserver.observe(el));
+
+  // Scroll progress bar
+  (function(){
+    var bar=document.getElementById('scroll-progress');
+    if(!bar)return;
+    window.addEventListener('scroll',function(){
+      var t=document.documentElement.scrollHeight-window.innerHeight;
+      bar.style.width=(t>0?(window.scrollY/t)*100:0)+'%';
+    },{passive:true});
+  })();
+
+  // Cursor glow
+  (function(){
+    var glow=document.getElementById('cursorGlow');
+    if(!glow)return;
+    document.addEventListener('mousemove',function(e){
+      glow.style.left=e.clientX+'px';
+      glow.style.top=e.clientY+'px';
+    },{passive:true});
+  })();
 
   // ── Quick-nav active state on scroll ──
   const sections = document.querySelectorAll('.guide-section[id]');

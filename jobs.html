@@ -146,9 +146,22 @@
     .ce-send svg{width:16px;height:16px}
 
     @media(max-width:440px){#ce-panel{width:calc(100vw - 32px);right:16px;bottom:76px}#ce-trigger{right:16px;bottom:16px}}
+
+    /* ── Interactive enhancements ── */
+    #scroll-progress{position:fixed;top:0;left:0;height:3px;width:0%;background:linear-gradient(90deg,var(--red) 0%,#FF6B5E 60%,#FFB347 100%);z-index:10001;transition:width 0.06s linear}
+    .cursor-glow{position:fixed;width:600px;height:600px;border-radius:50%;background:radial-gradient(circle,rgba(41,52,168,0.06) 0%,transparent 65%);pointer-events:none;z-index:0;transform:translate(-50%,-50%);transition:top 0.25s ease,left 0.25s ease}
+    .reveal{opacity:0;transform:translateY(28px);transition:opacity 0.65s cubic-bezier(0.25,0.46,0.45,0.94),transform 0.65s cubic-bezier(0.25,0.46,0.45,0.94)}
+    .reveal.is-visible{opacity:1;transform:none}
+    .reveal-left{opacity:0;transform:translateX(-40px);transition:opacity 0.7s cubic-bezier(0.25,0.46,0.45,0.94),transform 0.7s cubic-bezier(0.25,0.46,0.45,0.94)}
+    .reveal-right{opacity:0;transform:translateX(40px);transition:opacity 0.7s cubic-bezier(0.25,0.46,0.45,0.94),transform 0.7s cubic-bezier(0.25,0.46,0.45,0.94)}
+    .reveal-scale{opacity:0;transform:scale(0.93);transition:opacity 0.6s cubic-bezier(0.34,1.56,0.64,1),transform 0.6s cubic-bezier(0.34,1.56,0.64,1)}
+    .reveal-left.is-visible,.reveal-right.is-visible,.reveal-scale.is-visible{opacity:1;transform:none}
+    .reveal-delay-1{transition-delay:0.1s}.reveal-delay-2{transition-delay:0.2s}.reveal-delay-3{transition-delay:0.3s}
   </style>
 </head>
 <body>
+<div id="scroll-progress" aria-hidden="true"></div>
+<div class="cursor-glow" id="cursorGlow" aria-hidden="true"></div>
 
 <a href="#main-content" class="skip-link">Skip to main content</a>
 
@@ -1243,6 +1256,35 @@ function closeGuide() {
   document.getElementById('guideFlow').classList.add('hidden');
 }
 
+// Scroll progress bar
+(function(){
+  var bar=document.getElementById('scroll-progress');
+  if(!bar)return;
+  window.addEventListener('scroll',function(){
+    var t=document.documentElement.scrollHeight-window.innerHeight;
+    bar.style.width=(t>0?(window.scrollY/t)*100:0)+'%';
+  },{passive:true});
+})();
+
+// Cursor glow
+(function(){
+  var glow=document.getElementById('cursorGlow');
+  if(!glow)return;
+  document.addEventListener('mousemove',function(e){
+    glow.style.left=e.clientX+'px';
+    glow.style.top=e.clientY+'px';
+  },{passive:true});
+})();
+
+// Scroll reveal
+(function(){
+  var obs=new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(e.isIntersecting){e.target.classList.add('is-visible');obs.unobserve(e.target);}
+    });
+  },{threshold:0.1,rootMargin:'0px 0px -40px 0px'});
+  document.querySelectorAll('.reveal,.reveal-left,.reveal-right,.reveal-scale').forEach(function(el){obs.observe(el);});
+})();
 
 </script>
 </body>
