@@ -1414,10 +1414,8 @@
       transform: none;
     }
 
-    /* ── Solution cards — 3D tilt ── */
+    /* ── Solution cards — hover spotlight ── */
     .solution-card {
-      transform-style: preserve-3d;
-      will-change: transform;
       position: relative;
       overflow: hidden;
     }
@@ -1443,6 +1441,9 @@
       opacity: 0.35;
       color: var(--navy);
     }
+    .solution-card.is-visible {
+      transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+    }
 
     /* ── Drop cards — mouse spotlight ── */
     .drop-card {
@@ -1461,9 +1462,8 @@
       border-radius: inherit;
     }
     .drop-card:hover::before { opacity: 1; }
-    .drop-card:hover { transform: translateX(8px) translateY(-2px) !important; }
-    .drop-card { transition: transform 0.25s cubic-bezier(0.25,0.46,0.45,0.94), box-shadow 0.25s; }
-    .drop-card:hover { box-shadow: 0 12px 40px rgba(0,0,0,0.14); }
+    .drop-card:hover { transform: translateX(8px) translateY(-2px); box-shadow: 0 12px 40px rgba(0,0,0,0.14); }
+    .drop-card.is-visible { transition: transform 0.22s ease, box-shadow 0.22s ease; }
 
     /* ── Demand stats — progress rings ── */
     .demand-ring-wrap {
@@ -1670,6 +1670,18 @@
 
       .footer-inner { flex-direction: column; text-align: center; }
       .footer-links { flex-wrap: wrap; justify-content: center; }
+
+      /* Section padding reduced for mobile */
+      .section { padding: 64px 20px; }
+      .impact { padding: 56px 20px; }
+      .demand { padding: 64px 20px; }
+
+      /* Hero ticker: tighten margin */
+      .hero-ticker { margin-top: 32px; }
+
+      /* Impact stagger: revert to plain fadeUp on 1-column layout */
+      .impact-stat:nth-child(1).reveal,
+      .impact-stat:nth-child(3).reveal { transform: translateY(36px); }
     }
   </style>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
@@ -2240,25 +2252,6 @@
       });
     }, { threshold: 0.4 });
     document.querySelectorAll('[data-count]').forEach(function(el) { counterObs.observe(el); });
-
-    /* ════════════════════════════════════════
-       SOLUTION CARDS — 3D TILT
-    ════════════════════════════════════════ */
-    if (window.matchMedia('(hover: hover)').matches) {
-      document.querySelectorAll('.solution-card').forEach(function(card) {
-        card.addEventListener('mousemove', function(e) {
-          var r = card.getBoundingClientRect();
-          var x = (e.clientX - r.left) / r.width  - 0.5;
-          var y = (e.clientY - r.top)  / r.height - 0.5;
-          card.style.transform = 'perspective(600px) rotateY(' + (x * 10) + 'deg) rotateX(' + (-y * 8) + 'deg) translateY(-4px)';
-          card.style.setProperty('--mx', ((e.clientX - r.left) / r.width * 100) + '%');
-          card.style.setProperty('--my', ((e.clientY - r.top)  / r.height * 100) + '%');
-        });
-        card.addEventListener('mouseleave', function() {
-          card.style.transform = '';
-        });
-      });
-    }
 
     /* ════════════════════════════════════════
        DROP CARDS — MOUSE SPOTLIGHT
