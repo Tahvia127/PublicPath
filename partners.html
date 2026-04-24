@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Partners — PublicPath</title>
+  <title>Partners | PublicPath</title>
   <meta name="description" content="Partner with PublicPath to connect students and early-career candidates to government careers. We work with universities, fellowship programs, and civic organizations.">
   <link rel="canonical" href="https://publicpath.com/partners">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -20,10 +20,12 @@
       --red-hover: #C93026;
       --paper: #F5F2EA;
       --cream: #EDE9DF;
-      --text-primary: #1E293B;
-      --text-secondary: #475569;
-      --text-muted: #64748B;
-      --border: #E2E0DB;
+      --sand: #E2DDD3;
+      --warm-white: #F5F2EA;
+      --text-primary: #111827;
+      --text-secondary: #4A506A;
+      --text-muted: #6B7280;
+      --border: #E0DCD4;
       --font-display: 'Alfa Slab One', Georgia, serif;
       --font-body: 'DM Sans', -apple-system, sans-serif;
     }
@@ -39,6 +41,30 @@
     }
     a { color: var(--navy); text-decoration: none; }
     a:hover { color: var(--navy-dark); }
+
+    /* ── SKIP LINK ── */
+    .skip-link {
+      position: absolute;
+      top: -100%;
+      left: 0;
+      background: var(--red);
+      color: #fff;
+      padding: 10px 20px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      z-index: 9999;
+      border-radius: 0 0 6px 0;
+      transition: top 0.2s;
+    }
+    .skip-link:focus { top: 0; }
+
+    /* ── FOCUS VISIBLE ── */
+    :focus-visible {
+      outline: 3px solid var(--red);
+      outline-offset: 3px;
+      border-radius: 3px;
+    }
+    button:focus-visible, a:focus-visible { outline: 3px solid var(--red); outline-offset: 3px; }
 
     /* ── Scroll-reveal ── */
     .reveal {
@@ -325,8 +351,10 @@
 </head>
 <body>
 
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+
 <!-- ── Nav ── -->
-<nav class="nav" id="nav">
+<nav class="nav" id="nav" aria-label="Primary navigation">
   <div class="nav-inner">
     <a href="index.html" class="logo">
       <span class="logo-wordmark">Public Path</span>
@@ -341,19 +369,19 @@
       </span>
     </a>
     <ul class="nav-links" id="navLinks">
-      <li><a href="index.html">Home</a></li>
       <li><a href="jobs.html">Browse Jobs</a></li>
       <li><a href="resources.html">Resources</a></li>
       <li><a href="partners.html" class="active">Partners</a></li>
-      <li><a href="index.html#digest">Weekly Digest</a></li>
       <li><a href="index.html#founder">About</a></li>
-      <li><a href="jobs.html" class="nav-cta">Find Jobs</a></li>
+      <li><a href="jobs.html" class="nav-cta">Find Your Role</a></li>
     </ul>
     <button class="mobile-toggle" id="mobileToggle" aria-label="Toggle navigation">
-      <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" aria-hidden="true"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
     </button>
   </div>
 </nav>
+
+<main id="main-content">
 
 <!-- ── Hero ── -->
 <section class="hero-partners">
@@ -361,7 +389,7 @@
   <div class="hero-inner">
     <div class="hero-label reveal">Early Partnerships</div>
     <h1 class="reveal reveal-delay-1">Partner with PublicPath</h1>
-    <p class="reveal reveal-delay-2">We're building the pipeline that connects motivated students and early-career candidates to government careers. If you work with students, run a fellowship program, or support public sector workforce development — let's work together.</p>
+    <p class="reveal reveal-delay-2">We're building the pipeline that connects motivated students and early-career candidates to government careers. If you work with students, run a fellowship program, or support public sector workforce development, let's work together.</p>
     <div class="hero-actions reveal reveal-delay-3">
       <a href="mailto:hello@publicpath.com" class="btn btn-primary">Get in touch</a>
       <a href="#universities" class="btn btn-secondary">Learn more ↓</a>
@@ -377,15 +405,15 @@
 
     <div class="partner-2col">
       <div class="partner-copy reveal reveal-delay-2">
-        <p>Career services offices work hard to connect students to opportunities — but government careers are notoriously difficult to navigate, and most offices don't have the specialized knowledge to guide students through the process.</p>
-        <p>PublicPath is designed to fill that gap. We aggregate hard-to-find government roles, explain what they actually require, and give students a clear path from interest to application — without requiring insider knowledge or connections.</p>
-        <p>As a university partner, your students get early access to curated opportunities across federal, state, and local government — filtered for early-career candidates and accompanied by plain-English guidance on eligibility and next steps.</p>
+        <p>Career services offices work hard to connect students to opportunities, but government careers are notoriously difficult to navigate, and most offices don't have the specialized knowledge to guide students through the process.</p>
+        <p>PublicPath is designed to fill that gap. We aggregate hard-to-find government roles, explain what they actually require, and give students a clear path from interest to application, without requiring insider knowledge or connections.</p>
+        <p>As a university partner, your students get early access to curated opportunities across federal, state, and local government, filtered for early-career candidates and accompanied by plain-English guidance on eligibility and next steps.</p>
         <p>There's no cost to your students or your office. We're in early development and actively building our founding university partnerships. If you work with students who are interested in public service, we'd love to connect.</p>
       </div>
 
       <div class="partner-card reveal reveal-delay-3">
         <h3>Interested in partnering?</h3>
-        <p>Connect your students to curated government opportunities and navigation support — at no cost.</p>
+        <p>Connect your students to curated government opportunities and navigation support, at no cost.</p>
         <a href="mailto:hello@publicpath.com" class="btn btn-primary">Get in touch</a>
         <p class="form-note">Free for students and university partners.</p>
       </div>
@@ -401,9 +429,9 @@
 
     <div class="partner-2col">
       <div class="partner-copy reveal reveal-delay-2">
-        <p>Fellowship programs and civic organizations are some of the most important on-ramps into public service — but too many qualified candidates never find them. Awareness is a persistent challenge across the sector.</p>
+        <p>Fellowship programs and civic organizations are some of the most important on-ramps into public service, but too many qualified candidates never find them. Awareness is a persistent challenge across the sector.</p>
         <p>PublicPath surfaces fellowships and civic opportunities alongside traditional government roles, putting your program in front of motivated, early-career candidates who are actively looking for a way into public service.</p>
-        <p>We also help candidates understand what fellowships like yours actually involve — the application process, timeline expectations, and what a strong candidate looks like — so the people who reach you are better prepared and more likely to succeed.</p>
+        <p>We also help candidates understand what fellowships like yours actually involve: the application process, timeline expectations, and what a strong candidate looks like. The people who reach you will be better prepared and more likely to succeed.</p>
         <p>Whether you run a paid fellowship, a leadership development program, or a civic engagement initiative, we'd like to understand what you're building and explore how we can help expand your reach to the candidates who need you most.</p>
       </div>
 
@@ -424,6 +452,8 @@
   <a href="mailto:hello@publicpath.com" class="btn btn-primary reveal reveal-delay-2">Get in touch &rarr;</a>
 </div>
 
+</main>
+
 <!-- ── Footer ── -->
 <footer class="footer">
   <div class="footer-inner">
@@ -440,14 +470,12 @@
       </span>
     </a>
     <ul class="footer-links">
-      <li><a href="index.html">Home</a></li>
       <li><a href="jobs.html">Browse Jobs</a></li>
       <li><a href="resources.html">Resources</a></li>
       <li><a href="partners.html">Partners</a></li>
-      <li><a href="index.html#digest">Weekly Digest</a></li>
       <li><a href="index.html#founder">About</a></li>
     </ul>
-    <div class="footer-copy">&copy; 2026 PublicPath &mdash; Expanding access to public sector careers.</div>
+    <div class="footer-copy">&copy; 2026 PublicPath. Expanding access to public sector careers.</div>
   </div>
 </footer>
 

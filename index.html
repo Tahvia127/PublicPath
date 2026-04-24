@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PublicPath — Your Gateway to Public Sector Careers</title>
+  <title>PublicPath: Your Gateway to Public Sector Careers</title>
   <meta name="description" content="PublicPath centralizes government job listings across federal, state, and local levels and delivers curated opportunities to your inbox weekly.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -11,7 +11,7 @@
   <link rel="canonical" href="https://publicpath.com/">
   <style>
     :root {
-      /* Brand blue — matches the actual logo exactly */
+      /* Brand blue - matches the actual logo exactly */
       --navy: #2934A8;
       --navy-dark: #111A6E;
       --navy-bg: #0D1550;
@@ -48,6 +48,30 @@
       line-height: 1.65;
       -webkit-font-smoothing: antialiased;
     }
+
+    /* ── SKIP LINK ── */
+    .skip-link {
+      position: absolute;
+      top: -100%;
+      left: 0;
+      background: var(--red);
+      color: #fff;
+      padding: 10px 20px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      z-index: 9999;
+      border-radius: 0 0 6px 0;
+      transition: top 0.2s;
+    }
+    .skip-link:focus { top: 0; }
+
+    /* ── FOCUS VISIBLE ── */
+    :focus-visible {
+      outline: 3px solid var(--red);
+      outline-offset: 3px;
+      border-radius: 3px;
+    }
+    button:focus-visible, a:focus-visible { outline: 3px solid var(--red); outline-offset: 3px; }
 
     /* ── NAV ── */
     .nav {
@@ -596,6 +620,9 @@
     }
 
     /* ── SIGNUP ── */
+    /* NOTE: Old Beehiiv form CSS (.signup-layout, .signup-benefit, .signup-benefit-icon,
+       .form-group, .form-row, .checkbox-group, .checkbox-label, .btn-submit, .form-note)
+       removed — replaced by MailerLite embed. */
     .signup {
       background: var(--navy);
       color: #fff;
@@ -1301,8 +1328,10 @@
 </head>
 <body>
 
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+
   <!-- NAV -->
-  <nav class="nav" id="nav">
+  <nav class="nav" id="nav" aria-label="Primary navigation">
     <div class="nav-inner">
       <a href="index.html" class="logo">
         <span class="logo-wordmark">Public Path</span>
@@ -1319,13 +1348,12 @@
       <ul class="nav-links" id="navLinks">
         <li><a href="jobs.html">Browse Jobs</a></li>
         <li><a href="resources.html">Resources</a></li>
-        <li><a href="#digest">Weekly Digest</a></li>
-        <li><a href="#founder">About</a></li>
         <li><a href="partners.html">Partners</a></li>
+        <li><a href="#founder">About</a></li>
         <li><a href="jobs.html" class="nav-cta">Find Your Role</a></li>
       </ul>
       <button class="mobile-toggle" id="mobileToggle" aria-label="Toggle navigation">
-        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" aria-hidden="true">
           <line x1="3" y1="6" x2="21" y2="6"/>
           <line x1="3" y1="12" x2="21" y2="12"/>
           <line x1="3" y1="18" x2="21" y2="18"/>
@@ -1334,21 +1362,23 @@
     </div>
   </nav>
 
+  <main id="main-content">
+
   <!-- HERO -->
   <section class="hero">
     <div class="hero-grid"></div>
     <div class="hero-inner">
       <div class="hero-label">Now live &nbsp;·&nbsp; Chicago &nbsp;·&nbsp; DC &nbsp;·&nbsp; New York &nbsp;·&nbsp; California</div>
       <h1>Your path into <em>public service</em> starts here.</h1>
-      <p>PublicPath helps students and early-career candidates discover, navigate, and land roles in government — from city hall to Capitol Hill.</p>
+      <p>PublicPath helps students and early-career candidates discover, navigate, and land roles in government, from city hall to Capitol Hill.</p>
       <div class="hero-actions">
         <a href="jobs.html" class="btn btn-primary">
           Browse open roles
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
         </a>
         <a href="#digest" class="btn btn-secondary">
-          This week's picks
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+          See this week's picks
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
         </a>
       </div>
     </div>
@@ -1371,14 +1401,14 @@
       </div>
       <div class="stat">
         <div class="stat-reveal">
-          <div class="stat-number live" id="liveJobCount">—</div>
+          <div class="stat-number live" id="liveJobCount">...</div>
           <div class="stat-label">Active listings in PublicPath</div>
         </div>
       </div>
       <div class="stat">
         <div class="stat-reveal">
           <div class="stat-number">0</div>
-          <div class="stat-label">Centralized gateways — until now</div>
+          <div class="stat-label">Centralized gateways: until now</div>
         </div>
       </div>
     </div>
@@ -1402,7 +1432,7 @@
           <div class="impact-desc">of government workers are under 30</div>
         </div>
       </div>
-      <p class="impact-footer reveal">The retirement wave is structural — and the pipeline to replace it doesn't exist. Yet.</p>
+      <p class="impact-footer reveal">The retirement wave is structural, and the pipeline to replace it doesn't exist. Yet.</p>
     </div>
   </section>
 
@@ -1418,7 +1448,7 @@
         </div>
         <div class="demand-stat reveal reveal-delay-1">
           <div class="demand-num">51%</div>
-          <div class="demand-desc">of Millennials &amp; Gen Z would consider a government career — if they knew how to get started</div>
+          <div class="demand-desc">of Millennials &amp; Gen Z would consider a government career, if they knew how to get started</div>
         </div>
         <div class="demand-stat reveal reveal-delay-2">
           <div class="demand-num">7–10%</div>
@@ -1434,14 +1464,14 @@
     <div class="section-inner">
       <div class="section-label reveal">The Problem</div>
       <h2 class="section-title reveal reveal-delay-1">Breaking into public service is harder than it should be</h2>
-      <p class="section-subtitle reveal reveal-delay-2">Despite millions of government roles, there's no single place to find them — and no clear playbook for how to get hired.</p>
+      <p class="section-subtitle reveal reveal-delay-2">Despite millions of government roles, there's no single place to find them, and no clear playbook for how to get hired.</p>
 
       <div class="drop-list">
         <div class="drop-card d1 reveal">
-          <div class="drop-badge">Drop 1 &mdash; Discovery</div>
+          <div class="drop-badge">Drop 1: Discovery</div>
           <div class="drop-body">
             <div class="drop-title">Fragmented across 50+ portals</div>
-            <div class="drop-desc">Roles are scattered across USAJobs, state portals, city sites, and individual agency pages — with no unified search that covers them all.</div>
+            <div class="drop-desc">Roles are scattered across USAJobs, state portals, city sites, and individual agency pages. There is no unified search that covers them all.</div>
           </div>
           <div class="drop-big">
             <span class="drop-big-num">50+</span>
@@ -1449,7 +1479,7 @@
           </div>
         </div>
         <div class="drop-card d2 reveal reveal-delay-1">
-          <div class="drop-badge">Drop 2 &mdash; Application Friction</div>
+          <div class="drop-badge">Drop 2: Application Friction</div>
           <div class="drop-body">
             <div class="drop-title">Half of applicants never finish</div>
             <div class="drop-desc">50% of job seekers who start a government application don't complete it. The process is too complex, opaque, and time-consuming.</div>
@@ -1460,10 +1490,10 @@
           </div>
         </div>
         <div class="drop-card d3 reveal reveal-delay-2">
-          <div class="drop-badge">Drop 3 &mdash; The Black Hole</div>
+          <div class="drop-badge">Drop 3: The Black Hole</div>
           <div class="drop-body">
             <div class="drop-title">101-day hiring timelines</div>
-            <div class="drop-desc">The average time-to-hire in government is 101 days — more than twice the private sector. Candidates hear nothing for months and quietly give up.</div>
+            <div class="drop-desc">The average time-to-hire in government is 101 days, more than twice the private sector average. Candidates hear nothing for months and quietly give up.</div>
           </div>
           <div class="drop-big">
             <span class="drop-big-num">101</span>
@@ -1474,7 +1504,7 @@
 
       <div class="quote-block reveal">
         <p>"Government hiring is a black box. I want to work in government, but I don't even know where to start."</p>
-        <cite>— Grad student, public policy program</cite>
+        <cite>Grad student, public policy program</cite>
       </div>
     </div>
   </section>
@@ -1484,13 +1514,13 @@
     <div class="section-inner">
       <div class="section-label reveal">How PublicPath Helps</div>
       <h2 class="section-title reveal reveal-delay-1">Built for candidates without a government network.</h2>
-      <p class="section-subtitle reveal reveal-delay-2">We curate hard-to-find government opportunities, explain what they actually require, and guide you through the process, so your path into public service is clear, not confusing.</p>
+      <p class="section-subtitle reveal reveal-delay-2">We curate hard-to-find government opportunities, explain what they actually require, and guide you through the process so your path into public service is clear, not confusing.</p>
 
       <div class="solution-grid">
         <div class="solution-card reveal">
           <div class="solution-number">01</div>
           <h3>Curated public sector roles</h3>
-          <p>Discover local, state, and federal opportunities in one place — handpicked and filtered for early-career candidates.</p>
+          <p>Discover local, state, and federal opportunities in one place, handpicked and filtered for early-career candidates.</p>
         </div>
         <div class="solution-card reveal reveal-delay-1">
           <div class="solution-number">02</div>
@@ -1511,7 +1541,7 @@
     <div class="section-inner">
       <div class="section-label reveal">Weekly Digest</div>
       <h2 class="section-title reveal reveal-delay-1">What lands in your inbox</h2>
-      <p class="section-subtitle reveal reveal-delay-2">Each week we hand-pick roles from across federal, state, and local government — plus opportunities shared directly by people working in the field.</p>
+      <p class="section-subtitle reveal reveal-delay-2">Each week we hand-pick roles from across federal, state, and local government, plus opportunities shared directly by people working in the field.</p>
 
       <div class="digest-preview reveal reveal-delay-2">
         <div class="digest-header">
@@ -1542,7 +1572,7 @@
         <div class="signup-left reveal">
           <div class="section-label">Weekly Digest</div>
           <h2 class="section-title" style="color:#fff;margin-top:14px">Get curated public sector roles in your inbox</h2>
-          <p style="color:rgba(255,255,255,0.6);font-size:1rem;line-height:1.72;margin-top:16px;max-width:380px">Every week we hand-pick 5–10 government opportunities — federal, state, and local — and deliver them straight to you.</p>
+          <p style="color:rgba(255,255,255,0.6);font-size:1rem;line-height:1.72;margin-top:16px;max-width:380px">Every week we hand-pick 5–10 government opportunities (federal, state, and local) and deliver them straight to you.</p>
 
           <div class="signup-perks">
             <div class="signup-perk">
@@ -1585,7 +1615,7 @@
           "Breaking into government shouldn't depend on who you know. But too often, it does."
         </blockquote>
 
-        <p class="reveal reveal-delay-2" style="font-size:1rem;color:var(--text-secondary);line-height:1.75;margin-bottom:20px;">Every year, thousands of talented students want to work in government. Many of them never make it — not because they aren't qualified, but because the path isn't clear. Roles are hard to find, the process is difficult to navigate, and expectations aren't transparent.</p>
+        <p class="reveal reveal-delay-2" style="font-size:1rem;color:var(--text-secondary);line-height:1.75;margin-bottom:20px;">Every year, thousands of talented students want to work in government. Many of them never make it. Not because they aren't qualified, but because the path isn't clear. Roles are hard to find, the process is difficult to navigate, and expectations aren't transparent.</p>
 
         <p class="reveal reveal-delay-2" style="font-size:1rem;color:var(--text-secondary);line-height:1.75;margin-bottom:20px;">PublicPath was founded to fix that.</p>
 
@@ -1595,7 +1625,7 @@
 
         <h3 class="reveal reveal-delay-3" style="font-family:var(--font-display);color:var(--navy);margin-top:48px;margin-bottom:16px;font-weight:400;font-size:1.4rem;">What we believe</h3>
 
-        <p class="reveal reveal-delay-3" style="font-size:1rem;color:var(--text-secondary);line-height:1.75;margin-bottom:20px;">Government works best when it reflects the people it serves. Talented, mission-driven candidates exist everywhere — in every school, every city. What's missing isn't talent. It's access.</p>
+        <p class="reveal reveal-delay-3" style="font-size:1rem;color:var(--text-secondary);line-height:1.75;margin-bottom:20px;">Government works best when it reflects the people it serves. Talented, mission-driven candidates exist everywhere: in every school, every city. What's missing isn't talent. It's access.</p>
 
         <div class="reveal reveal-delay-4" style="display:inline-flex;background:rgba(240,59,47,0.10);border:1px solid rgba(240,59,47,0.30);border-radius:8px;padding:16px 24px;margin-top:32px;max-width:fit-content;">
           <p style="font-size:0.95rem;color:var(--navy-dark);font-style:italic;line-height:1.7;margin:0;">We're a nonprofit platform with a simple mission: to help the next generation of talent access public service careers, regardless of where they went to school or who they know.</p>
@@ -1603,6 +1633,8 @@
       </div>
     </div>
   </section>
+
+  </main>
 
   <!-- FOOTER -->
   <footer class="footer">
@@ -1625,10 +1657,9 @@
         <li><a href="jobs.html">Browse Jobs</a></li>
         <li><a href="resources.html">Resources</a></li>
         <li><a href="partners.html">Partners</a></li>
-        <li><a href="#digest">Weekly Digest</a></li>
         <li><a href="#founder">About</a></li>
       </ul>
-      <div class="footer-copy">&copy; 2026 PublicPath &mdash; <a href="https://publicpath.com" style="color:inherit">publicpath.com</a>. Expanding access to public sector careers.</div>
+      <div class="footer-copy">&copy; 2026 PublicPath. <a href="https://publicpath.com" style="color:inherit">publicpath.com</a>. Expanding access to public sector careers.</div>
     </div>
   </footer>
 
@@ -1660,7 +1691,7 @@
       if (el) {
         var d = new Date();
         var opts = { month: 'long', day: 'numeric', year: 'numeric' };
-        el.textContent = 'PublicPath Weekly — ' + d.toLocaleDateString('en-US', opts);
+        el.textContent = 'PublicPath Weekly: ' + d.toLocaleDateString('en-US', opts);
       }
     })();
 
