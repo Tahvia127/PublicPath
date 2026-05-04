@@ -262,7 +262,7 @@
           <label class="cb-item"><input type="checkbox" value="federal" checked onchange="debouncedApplyFilters()"> Federal</label>
           <label class="cb-item"><input type="checkbox" value="state" checked onchange="debouncedApplyFilters()"> State</label>
           <label class="cb-item"><input type="checkbox" value="local" checked onchange="debouncedApplyFilters()"> Local</label>
-          <label class="cb-item"><input type="checkbox" value="nonprofit" checked onchange="debouncedApplyFilters()"> Nonprofit</label>
+          <label class="cb-item"><input type="checkbox" value="fellowship" checked onchange="debouncedApplyFilters()"> Fellowship</label>
         </div>
       </div>
       <div class="filter-group">
@@ -419,7 +419,8 @@
 
 <!-- Email prompt modal -->
 <div class="email-modal" id="emailModal" role="dialog" aria-modal="true" aria-labelledby="emailModalTitle">
-  <div class="email-modal-box">
+  <div class="email-modal-box" style="position:relative;">
+    <button onclick="document.getElementById('emailModal').classList.remove('show')" aria-label="Close" style="position:absolute;top:14px;right:16px;background:none;border:none;font-size:1.4rem;line-height:1;color:var(--text-muted);cursor:pointer;padding:4px 8px;border-radius:4px;" onmouseenter="this.style.color='var(--navy)'" onmouseleave="this.style.color='var(--text-muted)'">&times;</button>
     <h2 id="emailModalTitle" style="font-family:var(--font-display);color:var(--navy);font-size:1.1rem;margin-bottom:8px">Save jobs to your account</h2>
     <p>Enter your email to save and track jobs across visits.</p>
     <label for="userEmailInput" class="sr-only">Email address</label>
@@ -642,12 +643,29 @@ async function applyFilters() {
 
     if (remoteOnly) q = q.is('is_remote', true);
 
-    if (orgTypes.length > 0 && orgTypes.length < 4) {
-      const withUnknown = [...orgTypes, 'unknown'];
-      q = q.in('organization_type', withUnknown);
-    }
+    // Fellowship is a keyword-based filter (title match), not an org_type value
+    const hasFellowship = orgTypes.includes('fellowship');
+    const baseTypes = orgTypes.filter(t => t !== 'fellowship'); // federal, state, local
+    const FELLOWSHIP_KW = 'title.ilike.%fellow%,title.ilike.%fellowship%,title.ilike.%pathways%,title.ilike.%PMF%,title.ilike.%civic tech%';
+
     if (orgTypes.length === 0) {
+      // Nothing selected — show nothing
       q = q.in('organization_type', ['__none__']);
+    } else if (hasFellowship && baseTypes.length === 3) {
+      // All four checked — no filter needed, show everything
+    } else if (!hasFellowship && baseTypes.length < 3 && baseTypes.length > 0) {
+      // Some subset of federal/state/local only
+      q = q.in('organization_type', [...baseTypes, 'unknown']);
+    } else if (hasFellowship && baseTypes.length === 0) {
+      // Only fellowship selected — keyword-match only
+      q = q.or(FELLOWSHIP_KW);
+    } else if (hasFellowship && baseTypes.length > 0) {
+      // Some base types + fellowship — combine org_type OR fellowship keywords
+      const orgParts = [...baseTypes, 'unknown'].map(t => `organization_type.eq.${t}`).join(',');
+      q = q.or(`${orgParts},${FELLOWSHIP_KW}`);
+    } else if (!hasFellowship && baseTypes.length === 3) {
+      // All base types but no fellowship — show all org types, exclude fellowship titles
+      // (most fellowship roles are also tagged federal/state/local, so we skip title exclusion for now)
     }
 
     if (closingSoon) {
@@ -691,8 +709,8 @@ function renderJobs(jobs) {
     const isSaved = savedJobs.has(j.id);
     const isApplied = appliedJobs.has(j.id);
     const delay = (Math.min(idx, 9) * 0.05).toFixed(2);
-    const title = esc(j.title);
-    const org = esc(j.organization||'Organization not listed');
+    const title = esc(toTitleCase(j.title));
+    const org = esc(toTitleCase(j.organization||'Organization not listed'));
     return `<div class="job-card" style="animation-delay:${delay}s">
       <div class="jc-title">${title}</div>
       <div class="jc-org">${org}</div>
@@ -781,6 +799,20 @@ function goTo(p) { currentPage = p; applyFilters(); window.scrollTo({top:200,beh
 function esc(s) { return s?s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'):''; }
 function fmtDate(d) { try{return new Date(d).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});}catch{return '';} }
 function fmtSal(n) { return n>=1000?'$'+Math.round(n/1000)+'k':'$'+n.toLocaleString(); }
+
+// Convert ALL-CAPS titles to Title Case
+function toTitleCase(s) {
+  if (!s) return s;
+  const words = s.trim().split(/\s+/);
+  const upper = words.filter(w => /[A-Z]/.test(w) && w === w.toUpperCase() && w.length > 1).length;
+  if (upper / words.length < 0.5) return s; // already mixed-case, leave alone
+  const LOWER_WORDS = new Set(['a','an','the','and','but','or','for','nor','of','in','on','at','to','by','with','as','from','into','per']);
+  return words.map((w,i) => {
+    const lw = w.toLowerCase();
+    if (i > 0 && LOWER_WORDS.has(lw)) return lw;
+    return lw.charAt(0).toUpperCase() + lw.slice(1);
+  }).join(' ');
+}
 
 document.addEventListener('DOMContentLoaded', function() {
   // Nav scroll shadow
