@@ -29,7 +29,7 @@
     }
 
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-    html { scroll-behavior: smooth; font-size: 17px; }
+    html { scroll-behavior: smooth; font-size: 18px; }
     body {
       font-family: var(--font-body);
       color: var(--text-primary);
@@ -175,7 +175,7 @@
     .hero-resources h1 {
       font-family: var(--font-display);
       font-weight: 400;
-      font-size: clamp(2rem, 5vw, 3rem);
+      font-size: clamp(2.4rem, 5.5vw, 3.8rem);
       color: #fff;
       letter-spacing: -.01em;
       line-height: 1.15;
@@ -237,7 +237,7 @@
     .guide-section h2 {
       font-family: var(--font-display);
       font-weight: 400;
-      font-size: clamp(1.75rem, 3.5vw, 2.4rem);
+      font-size: clamp(2rem, 4vw, 2.8rem);
       color: var(--navy-dark);
       margin-bottom: 6px;
       letter-spacing: -.01em;
@@ -476,6 +476,177 @@
     .reveal-right{opacity:0;transform:translateX(40px);transition:opacity 0.7s cubic-bezier(0.25,0.46,0.45,0.94),transform 0.7s cubic-bezier(0.25,0.46,0.45,0.94)}
     .reveal-scale{opacity:0;transform:scale(0.93);transition:opacity 0.6s cubic-bezier(0.34,1.56,0.64,1),transform 0.6s cubic-bezier(0.34,1.56,0.64,1)}
     .reveal-left.is-visible,.reveal-right.is-visible,.reveal-scale.is-visible{opacity:1;transform:none}
+
+    /* ── FEATURED GUIDES row ── */
+    .feat-guides {
+      background: #fff;
+      border-bottom: 1px solid var(--border);
+      padding: 56px 24px 64px;
+    }
+    .feat-guides-inner {
+      max-width: 1120px;
+      margin: 0 auto;
+    }
+    .feat-guides-label {
+      font-size: .72rem; font-weight: 700;
+      letter-spacing: .12em; text-transform: uppercase;
+      color: var(--red); margin-bottom: 16px;
+    }
+    .feat-guides h2 {
+      font-family: var(--font-display);
+      font-size: clamp(2rem, 4vw, 2.8rem);
+      font-weight: 400;
+      color: var(--navy-dark);
+      margin-bottom: 36px;
+    }
+    .feat-guides-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+    .fg-card {
+      border-radius: 14px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      background: var(--paper);
+      transition: transform .25s, box-shadow .25s;
+      text-decoration: none;
+      display: block;
+    }
+    .fg-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 10px 32px rgba(41,52,168,.1);
+    }
+    .fg-card-top {
+      height: 120px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 3rem;
+    }
+    .fg-card-body {
+      padding: 20px 22px 24px;
+    }
+    .fg-card-tag {
+      display: inline-block;
+      padding: 2px 9px; border-radius: 100px;
+      font-size: .68rem; font-weight: 700;
+      letter-spacing: .05em; text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+    .fg-card-body h3 {
+      font-family: var(--font-display);
+      font-weight: 400;
+      font-size: 1.1rem;
+      color: var(--navy-dark);
+      margin-bottom: 8px;
+    }
+    .fg-card-body p {
+      font-size: .9rem;
+      color: var(--text-secondary);
+      line-height: 1.6;
+      margin: 0;
+    }
+
+    /* ── PULL-QUOTE BANNER ── */
+    .pull-banner {
+      background: var(--navy-bg);
+      padding: 72px 24px;
+      text-align: center;
+      border-top: 3px solid var(--red);
+      position: relative;
+      overflow: hidden;
+    }
+    .pull-banner::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(240,59,47,.1) 0%, transparent 65%);
+      pointer-events: none;
+    }
+    .pull-banner blockquote {
+      font-family: var(--font-display);
+      font-size: clamp(1.7rem, 4vw, 2.6rem);
+      font-weight: 400;
+      color: #fff;
+      line-height: 1.3;
+      max-width: 760px;
+      margin: 0 auto 20px;
+      position: relative; z-index: 1;
+    }
+    .pull-banner blockquote em {
+      font-style: normal;
+      color: var(--red);
+    }
+    .pull-banner cite {
+      font-size: .9rem;
+      color: rgba(255,255,255,.45);
+      font-style: normal;
+      position: relative; z-index: 1;
+    }
+
+    /* ── FOOTER SUBSCRIBE ── */
+    .footer-subscribe {
+      background: var(--paper);
+      border-top: 1px solid var(--border);
+      padding: 40px 24px;
+    }
+    .footer-subscribe-inner {
+      max-width: 1120px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 32px;
+      flex-wrap: wrap;
+    }
+    .footer-subscribe h3 {
+      font-family: var(--font-display);
+      font-size: 1.4rem;
+      font-weight: 400;
+      color: var(--navy-dark);
+      margin-bottom: 4px;
+    }
+    .footer-subscribe p {
+      font-size: .9rem;
+      color: var(--text-muted);
+    }
+    .footer-sub-form {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .footer-sub-form input {
+      padding: 11px 16px;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      font-family: var(--font-body);
+      font-size: .9rem;
+      min-width: 220px;
+      outline: none;
+      background: #fff;
+    }
+    .footer-sub-form input:focus { border-color: var(--navy); }
+    .footer-sub-form button {
+      padding: 11px 22px;
+      background: var(--red);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-family: var(--font-body);
+      font-size: .9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background .2s;
+    }
+    .footer-sub-form button:hover { background: var(--red-hover); }
+
+    @media (max-width: 860px) {
+      .feat-guides-grid { grid-template-columns: 1fr; }
+      .footer-subscribe-inner { flex-direction: column; align-items: flex-start; }
+    }
+    @media (max-width: 600px) {
+      .feat-guides-grid { grid-template-columns: 1fr; }
+    }
   </style>
 </head>
 <body>
@@ -521,6 +692,40 @@
     <div class="hero-label reveal">Resource Hub</div>
     <h1 class="reveal reveal-delay-1">Your guide to landing a <em>government job</em></h1>
     <p class="reveal reveal-delay-2">Federal resumes, hiring timelines, clearance basics, pay scales, and everything else you need to navigate public sector careers.</p>
+  </div>
+</section>
+
+<!-- ── Featured Guides ── -->
+<section class="feat-guides">
+  <div class="feat-guides-inner">
+    <div class="feat-guides-label reveal">Start here</div>
+    <h2 class="reveal reveal-delay-1">Most helpful for first-timers</h2>
+    <div class="feat-guides-grid">
+      <a href="#resume" class="fg-card reveal-scale">
+        <div class="fg-card-top" style="background:linear-gradient(135deg,#EFF6FF,#DBEAFE);">&#128196;</div>
+        <div class="fg-card-body">
+          <span class="fg-card-tag" style="background:#EFF6FF;color:#1D4ED8;">Federal</span>
+          <h3>Writing a Federal Resume</h3>
+          <p>Federal resumes are 3–5 pages, not one. Learn the format, keywords, and structure that actually get you referred.</p>
+        </div>
+      </a>
+      <a href="#timeline" class="fg-card reveal-scale reveal-delay-1">
+        <div class="fg-card-top" style="background:linear-gradient(135deg,#FFF7ED,#FFEDD5);">&#128337;</div>
+        <div class="fg-card-body">
+          <span class="fg-card-tag" style="background:#FFF7ED;color:#C2410C;">Timeline</span>
+          <h3>Federal Hiring Timeline</h3>
+          <p>80–120 days is normal. Here's exactly what happens at each stage so you're not left wondering.</p>
+        </div>
+      </a>
+      <a href="#paths" class="fg-card reveal-scale reveal-delay-2">
+        <div class="fg-card-top" style="background:linear-gradient(135deg,#F5F3FF,#EDE9FE);">&#127941;</div>
+        <div class="fg-card-body">
+          <span class="fg-card-tag" style="background:#F5F3FF;color:#6D28D9;">Early Career</span>
+          <h3>Special Hiring Paths</h3>
+          <p>Pathways, PMF, Recent Graduates — programs specifically designed to recruit early-career talent into government.</p>
+        </div>
+      </a>
+    </div>
   </div>
 </section>
 
@@ -692,7 +897,15 @@
   </section>
 
   <div class="divider" role="separator"></div>
+</div><!-- end .content -->
 
+<!-- ── Pull-quote banner ── -->
+<div class="pull-banner">
+  <blockquote class="reveal">"Government hiring is a black box — but it doesn't have to be. <em>That's why we built this.</em>"</blockquote>
+  <cite class="reveal reveal-delay-1">— PublicPath</cite>
+</div>
+
+<div class="content" style="padding-top:64px;">
   <!-- SECTION 5: HIRING PATHS -->
   <section class="guide-section" id="paths">
     <div class="section-tag reveal">Early Career</div>
@@ -859,20 +1072,25 @@
 
 </main>
 
-<!-- ── Footer ── -->
+<!-- FOOTER SUBSCRIBE -->
+<div class="footer-subscribe">
+  <div class="footer-subscribe-inner">
+    <div>
+      <h3>Stay in touch</h3>
+      <p>Get curated public sector roles delivered every week.</p>
+    </div>
+    <form class="footer-sub-form" onsubmit="return false;">
+      <input type="email" placeholder="Enter your email" aria-label="Email address">
+      <button type="submit">Subscribe</button>
+    </form>
+  </div>
+</div>
+
 <footer class="footer">
   <div class="footer-inner">
-    <a href="index.html" class="footer-logo logo">
-      <span class="logo-wordmark">Public Path</span>
-      <span class="logo-icon">
-        <svg width="24" height="24" viewBox="0 0 48 48" aria-hidden="true">
-          <rect width="48" height="48" fill="#F03B2F"/>
-          <g stroke="#fff" stroke-width="6.5" stroke-linecap="round" stroke-linejoin="round" fill="none">
-            <line x1="12" y1="36" x2="36" y2="12"/>
-            <polyline points="21,12 36,12 36,27"/>
-          </g>
-        </svg>
-      </span>
+    <a href="index.html" style="display:inline-flex;align-items:center;gap:10px;text-decoration:none;margin-bottom:4px;">
+      <span style="font-family:'Alfa Slab One',Georgia,serif;font-size:1.2rem;font-weight:400;color:#fff;letter-spacing:-.01em;">PublicPath</span>
+      <svg width="22" height="22" viewBox="0 0 48 48" aria-hidden="true"><rect width="48" height="48" fill="#F03B2F"/><g stroke="#fff" stroke-width="6.5" stroke-linecap="round" stroke-linejoin="round" fill="none"><line x1="12" y1="36" x2="36" y2="12"/><polyline points="21,12 36,12 36,27"/></g></svg>
     </a>
     <ul class="footer-links">
       <li><a href="index.html">Home</a></li>
@@ -881,7 +1099,11 @@
       <li><a href="partners.html">Partners</a></li>
       <li><a href="index.html#founder">About</a></li>
     </ul>
-    <div class="footer-copy">&copy; 2026 Public Path. Expanding access to public sector careers.</div>
+    <div style="display:flex;gap:14px;margin-bottom:8px;">
+      <a href="https://twitter.com/publicpath" aria-label="Twitter" style="color:rgba(255,255,255,0.4);transition:color .2s;" onmouseenter="this.style.color='#fff'" onmouseleave="this.style.color='rgba(255,255,255,0.4)'"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M22.46 6c-.77.35-1.6.58-2.46.69.88-.53 1.56-1.37 1.88-2.38-.83.5-1.75.85-2.72 1.05C18.37 4.5 17.26 4 16 4c-2.35 0-4.27 1.92-4.27 4.29 0 .34.04.67.11.98C8.28 9.09 5.11 7.38 3 4.79c-.37.63-.58 1.37-.58 2.15 0 1.49.75 2.81 1.91 3.56-.71 0-1.37-.2-1.95-.5v.03c0 2.08 1.48 3.82 3.44 4.21a4.22 4.22 0 0 1-1.93.07 4.28 4.28 0 0 0 4 2.98 8.521 8.521 0 0 1-5.33 1.84c-.34 0-.68-.02-1.02-.06C3.44 20.29 5.7 21 8.12 21 16 21 20.33 14.46 20.33 8.79c0-.19 0-.37-.01-.56.84-.6 1.56-1.36 2.14-2.23z"/></svg></a>
+      <a href="https://linkedin.com/company/publicpath" aria-label="LinkedIn" style="color:rgba(255,255,255,0.4);transition:color .2s;" onmouseenter="this.style.color='#fff'" onmouseleave="this.style.color='rgba(255,255,255,0.4)'"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6zM2 9h4v12H2z"/><circle cx="4" cy="4" r="2"/></svg></a>
+    </div>
+    <div class="footer-copy">&copy; 2026 PublicPath. Expanding access to public sector careers.</div>
   </div>
 </footer>
 
