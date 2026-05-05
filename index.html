@@ -771,7 +771,7 @@
     /* Opt-in checkbox row */
     #mlb2-40343990 .ml-form-checkboxRow .label-description,
     #mlb2-40343990 .ml-form-checkboxRow p {
-      color: rgba(255,255,255,0.5) !important;
+      color: #fff !important;
       font-family: 'DM Sans', sans-serif !important;
       font-size: 0.8rem !important;
     }
@@ -1076,6 +1076,109 @@
       font-size: 0.95rem;
       line-height: 1.6;
       color: var(--text-primary);
+    }
+
+    /* ── TEAM SECTION ── */
+    .team-section {
+      margin-top: 80px;
+      padding-top: 56px;
+      border-top: 1px solid var(--border);
+    }
+    .team-heading {
+      font-family: var(--font-display);
+      font-size: 1.4rem;
+      font-weight: 400;
+      color: var(--navy);
+      margin-bottom: 32px;
+    }
+    .team-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+    }
+    .team-card {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      overflow: hidden;
+      transition: transform 0.22s ease, box-shadow 0.22s ease;
+    }
+    .team-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 32px rgba(41,52,168,0.10);
+    }
+    .team-avatar {
+      height: 160px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .team-avatar-initials {
+      font-family: var(--font-display);
+      font-size: 1.8rem;
+      font-weight: 400;
+      color: #fff;
+      opacity: 0.9;
+    }
+    .team-card-body {
+      padding: 16px 18px 20px;
+    }
+    .team-card-name {
+      font-family: var(--font-display);
+      font-size: 1rem;
+      font-weight: 400;
+      color: var(--navy-dark);
+      margin-bottom: 3px;
+    }
+    .team-card-title {
+      font-size: 0.8rem;
+      color: var(--red);
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+    .team-card-bio {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      line-height: 1.55;
+    }
+    .team-card-open {
+      border: 2px dashed var(--border);
+      background: var(--paper);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 32px 20px;
+      text-align: center;
+      text-decoration: none;
+      gap: 10px;
+    }
+    .team-card-open:hover {
+      border-color: var(--navy);
+      background: var(--cream);
+      transform: translateY(-3px);
+      box-shadow: 0 10px 32px rgba(41,52,168,0.06);
+    }
+    .team-card-open svg {
+      width: 28px; height: 28px;
+      stroke: var(--navy);
+      opacity: 0.5;
+    }
+    .team-card-open span {
+      font-family: var(--font-display);
+      font-size: 0.9rem;
+      font-weight: 400;
+      color: var(--navy);
+    }
+    .team-card-open small {
+      font-size: 0.76rem;
+      color: var(--text-muted);
+    }
+    @media (max-width: 900px) {
+      .team-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 560px) {
+      .team-grid { grid-template-columns: 1fr; }
     }
 
     /* ── FOOTER ── */
@@ -1517,38 +1620,7 @@
     .drop-card:hover { transform: translateX(8px) translateY(-2px); box-shadow: 0 12px 40px rgba(0,0,0,0.14); }
     .drop-card.is-visible { transition: transform 0.22s ease, box-shadow 0.22s ease; }
 
-    /* ── Demand stats — progress rings ── */
-    .demand-ring-wrap {
-      position: relative;
-      display: inline-block;
-      margin-bottom: 16px;
-    }
-    .demand-ring {
-      position: absolute;
-      top: 50%; left: 50%;
-      transform: translate(-50%,-50%);
-      width: 110%; height: 110%;
-      pointer-events: none;
-    }
-    .demand-ring circle {
-      fill: none;
-      stroke-width: 3;
-      stroke-linecap: round;
-      transform-origin: center;
-      transform: rotate(-90deg);
-    }
-    .demand-ring .ring-bg {
-      stroke: rgba(41,52,168,0.08);
-    }
-    .demand-ring .ring-fill {
-      stroke: var(--navy);
-      stroke-dasharray: 0 1000;
-      transition: stroke-dasharray 1.4s cubic-bezier(0.25,0.46,0.45,0.94);
-    }
-    .demand-stat:nth-child(1) .ring-fill { stroke: var(--red); }
-    .demand-stat.is-counted .ring-fill {
-      stroke-dasharray: var(--dash) 1000;
-    }
+    /* ── Demand stats — numbers ── */
 
     /* ── Stats bar — count-up flash ── */
     .stat-number.counting {
@@ -2268,34 +2340,16 @@
       <div class="section-label reveal"><span class="section-num">02 &nbsp;/&nbsp;</span> Why Now</div>
       <h2 class="section-title reveal reveal-delay-1">Young people want to serve. The pathways are broken.</h2>
       <div class="demand-grid">
-        <div class="demand-stat reveal" style="--dash:209">
-          <div class="demand-ring-wrap">
-            <div class="demand-num red" data-count="67" data-suffix="%">67%</div>
-            <svg class="demand-ring" viewBox="0 0 100 100" aria-hidden="true">
-              <circle class="ring-bg" cx="50" cy="50" r="44"/>
-              <circle class="ring-fill" cx="50" cy="50" r="44" style="stroke-dashoffset:0"/>
-            </svg>
-          </div>
+        <div class="demand-stat reveal">
+          <div class="demand-num red" data-count="67" data-suffix="%">67%</div>
           <div class="demand-desc">of young people say they want to work in public service at some point in their career</div>
         </div>
-        <div class="demand-stat reveal reveal-delay-1" style="--dash:160">
-          <div class="demand-ring-wrap">
-            <div class="demand-num" data-count="51" data-suffix="%">51%</div>
-            <svg class="demand-ring" viewBox="0 0 100 100" aria-hidden="true">
-              <circle class="ring-bg" cx="50" cy="50" r="44"/>
-              <circle class="ring-fill" cx="50" cy="50" r="44"/>
-            </svg>
-          </div>
+        <div class="demand-stat reveal reveal-delay-1">
+          <div class="demand-num" data-count="51" data-suffix="%">51%</div>
           <div class="demand-desc">of Millennials &amp; Gen Z would consider a government career, if they knew how to get started</div>
         </div>
-        <div class="demand-stat reveal reveal-delay-2" style="--dash:28">
-          <div class="demand-ring-wrap">
-            <div class="demand-num" data-count="10" data-prefix="7–" data-suffix="%">7–10%</div>
-            <svg class="demand-ring" viewBox="0 0 100 100" aria-hidden="true">
-              <circle class="ring-bg" cx="50" cy="50" r="44"/>
-              <circle class="ring-fill" cx="50" cy="50" r="44"/>
-            </svg>
-          </div>
+        <div class="demand-stat reveal reveal-delay-2">
+          <div class="demand-num" data-count="10" data-prefix="7–" data-suffix="%">7–10%</div>
           <div class="demand-desc">of those who express interest actually end up in a public sector role</div>
         </div>
       </div>
@@ -2549,33 +2603,100 @@
     </div>
   </section>
 
-  <!-- FOUNDER -->
+  <!-- FOUNDER & TEAM -->
   <section class="section" id="founder">
     <div class="section-inner">
       <div class="section-label reveal"><span class="section-num">07 &nbsp;/&nbsp;</span> About PublicPath</div>
-      <h2 class="section-title reveal reveal-delay-1">Why PublicPath exists.</h2>
+      <h2 class="section-title reveal reveal-delay-1">The people behind PublicPath.</h2>
 
-      <div style="max-width:720px;margin:0 auto">
-        <blockquote class="reveal reveal-delay-1" style="background:var(--navy-bg);border-left:4px solid var(--red);padding:20px 28px;border-radius:8px;margin-bottom:32px;font-family:var(--font-body);font-style:italic;font-size:1.05rem;color:rgba(255,255,255,0.9);line-height:1.7;">
-          "Breaking into government shouldn't depend on who you know. But too often, it does."
-        </blockquote>
+      <blockquote class="reveal reveal-delay-1" style="background:var(--navy-bg);border-left:4px solid var(--red);padding:20px 28px;border-radius:8px;margin-bottom:48px;font-family:var(--font-body);font-style:italic;font-size:1.05rem;color:rgba(255,255,255,0.9);line-height:1.7;max-width:720px;margin-left:auto;margin-right:auto;">
+        "Breaking into government shouldn't depend on who you know. But too often, it does."
+      </blockquote>
 
-        <p class="reveal reveal-delay-2" style="font-size:1rem;color:var(--text-secondary);line-height:1.75;margin-bottom:20px;">Every year, thousands of talented students want to work in government. Many of them never make it. Not because they aren't qualified, but because the path isn't clear. Roles are hard to find, the process is difficult to navigate, and expectations aren't transparent.</p>
-
-        <p class="reveal reveal-delay-2" style="font-size:1rem;color:var(--text-secondary);line-height:1.75;margin-bottom:20px;">PublicPath was founded to fix that.</p>
-
-        <p class="reveal reveal-delay-2" style="font-size:1rem;color:var(--text-secondary);line-height:1.75;margin-bottom:20px;">Our founder, Hira Qureshi, spent nearly a decade working in federal government, including roles at the U.S. Treasury Department and on the Biden-Harris campaign, where she built talent pipelines and placed people into public service careers. She got her own start with no formal network or inside connections.</p>
-
-        <p class="reveal reveal-delay-2" style="font-size:1rem;color:var(--text-secondary);line-height:1.75;margin-bottom:20px;">That experience, combined with years of seeing qualified candidates shut out by gaps in information and access, is what PublicPath is built to solve.</p>
-
-        <h3 class="reveal reveal-delay-3" style="font-family:var(--font-display);color:var(--navy);margin-top:48px;margin-bottom:16px;font-weight:400;font-size:1.4rem;">What we believe</h3>
-
-        <p class="reveal reveal-delay-3" style="font-size:1rem;color:var(--text-secondary);line-height:1.75;margin-bottom:20px;">Government works best when it reflects the people it serves. Talented, mission-driven candidates exist everywhere: in every school, every city. What's missing isn't talent. It's access.</p>
-
-        <div class="reveal reveal-delay-4" style="display:inline-flex;background:rgba(240,59,47,0.10);border:1px solid rgba(240,59,47,0.30);border-radius:8px;padding:16px 24px;margin-top:32px;max-width:fit-content;">
-          <p style="font-size:0.95rem;color:var(--navy-dark);font-style:italic;line-height:1.7;margin:0;">We're a nonprofit platform with a simple mission: to help the next generation of talent access public service careers, regardless of where they went to school or who they know.</p>
+      <!-- Founder -->
+      <div class="founder-layout reveal reveal-delay-2">
+        <div class="founder-image">
+          <div class="founder-image-frame">
+            <span class="founder-image-placeholder">HQ</span>
+          </div>
+        </div>
+        <div class="founder-bio">
+          <h3>Hira Qureshi</h3>
+          <div class="founder-title">Founder &amp; Executive Director</div>
+          <p>Every year, thousands of talented students want to work in government. Many of them never make it — not because they aren't qualified, but because the path isn't clear. Roles are hard to find, the process is opaque, and without a network, it's nearly impossible to break in.</p>
+          <p>Hira spent nearly a decade in federal government, building talent pipelines and placing people into public service careers. She started with no formal network or inside connections — and that experience is exactly what PublicPath is built to fix.</p>
+          <div class="founder-credentials">
+            <div class="founder-credential">
+              <div class="credential-marker"></div>
+              <div class="credential-text"><strong>U.S. Treasury Department</strong> — Talent &amp; Hiring Strategy</div>
+            </div>
+            <div class="founder-credential">
+              <div class="credential-marker"></div>
+              <div class="credential-text"><strong>Biden-Harris Campaign</strong> — Public Sector Talent Pipeline</div>
+            </div>
+            <div class="founder-credential">
+              <div class="credential-marker"></div>
+              <div class="credential-text"><strong>Nearly a decade</strong> in federal government roles</div>
+            </div>
+          </div>
+          <div class="founder-quote reveal reveal-delay-3">
+            Government works best when it reflects the people it serves. Talented, mission-driven candidates exist in every school, every city. What's missing isn't talent — it's access.
+          </div>
         </div>
       </div>
+
+      <!-- Team -->
+      <div class="team-section">
+        <h3 class="team-heading reveal">The team</h3>
+        <div class="team-grid">
+
+          <div class="team-card reveal-scale">
+            <div class="team-avatar" style="background:linear-gradient(135deg,#2934A8,#111A6E);">
+              <span class="team-avatar-initials">AJ</span>
+            </div>
+            <div class="team-card-body">
+              <div class="team-card-name">Amara Johnson</div>
+              <div class="team-card-title">Head of Partnerships</div>
+              <p class="team-card-bio">Former government affairs lead. Connects PublicPath with universities, fellowships, and agency partners.</p>
+            </div>
+          </div>
+
+          <div class="team-card reveal-scale reveal-delay-1">
+            <div class="team-avatar" style="background:linear-gradient(135deg,#0D1550,#2934A8);">
+              <span class="team-avatar-initials">MR</span>
+            </div>
+            <div class="team-card-body">
+              <div class="team-card-name">Marcus Rivera</div>
+              <div class="team-card-title">Content &amp; Research Lead</div>
+              <p class="team-card-bio">Federal hiring process expert. Authors the guides, GS-pay breakdowns, and resource library.</p>
+            </div>
+          </div>
+
+          <div class="team-card reveal-scale reveal-delay-2">
+            <div class="team-avatar" style="background:linear-gradient(135deg,#111A6E,#0D1550);">
+              <span class="team-avatar-initials">SP</span>
+            </div>
+            <div class="team-card-body">
+              <div class="team-card-name">Sofia Park</div>
+              <div class="team-card-title">Product &amp; Design</div>
+              <p class="team-card-bio">Brings the platform together. Focused on making the job search and digest experience as clear as possible.</p>
+            </div>
+          </div>
+
+          <a href="mailto:hello@publicpath.com" class="team-card team-card-open reveal-scale reveal-delay-3">
+            <svg fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+            <span>Join the team</span>
+            <small>We're growing. hello@publicpath.com</small>
+          </a>
+
+        </div>
+      </div>
+
+      <!-- Mission box -->
+      <div class="reveal reveal-delay-4" style="display:flex;background:rgba(240,59,47,0.08);border:1px solid rgba(240,59,47,0.25);border-radius:10px;padding:20px 28px;margin-top:56px;">
+        <p style="font-size:0.95rem;color:var(--navy-dark);font-style:italic;line-height:1.75;margin:0;">We're a nonprofit platform with a simple mission: to help the next generation of public servants access government careers, regardless of where they went to school or who they know.</p>
+      </div>
+
     </div>
   </section>
 
