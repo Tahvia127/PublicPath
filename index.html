@@ -1009,115 +1009,157 @@
       font-family: 'DM Sans', sans-serif !important;
     }
 
-    /* ── FOUNDER ── */
-    .founder-layout {
-      display: grid;
-      grid-template-columns: 1fr 1.4fr;
-      gap: 48px;
-      align-items: center;
-      margin-top: 48px;
+    /* ── FOUNDER CARD ── */
+    .about-header {
+      text-align: center;
+      margin-bottom: 56px;
+    }
+    .about-header .section-subtitle {
+      margin: 14px auto 0;
+      text-align: center;
     }
 
-    .founder-image-frame {
-      border-radius: 14px;
+    .founder-card {
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      border-radius: 20px;
       overflow: hidden;
-      background: var(--sand);
-      aspect-ratio: 4 / 5;
+      border: 1px solid var(--border);
+      background: #fff;
+      box-shadow: 0 4px 24px rgba(41,52,168,0.07);
+    }
+    .founder-card-panel {
+      background: linear-gradient(160deg, var(--navy-bg) 0%, var(--navy-dark) 100%);
+      padding: 48px 28px;
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
+      gap: 18px;
+      text-align: center;
+      position: relative;
     }
-
-    .founder-image-placeholder {
+    .founder-card-panel::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 80% 60% at 50% 30%, rgba(240,59,47,0.1) 0%, transparent 65%);
+      pointer-events: none;
+    }
+    .founder-avatar {
+      width: 92px; height: 92px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.08);
+      border: 2px solid rgba(255,255,255,0.14);
+      display: flex; align-items: center; justify-content: center;
       font-family: var(--font-display);
-      font-size: 4rem;
-      font-weight: 700;
-      color: var(--navy);
-      opacity: 0.15;
+      font-size: 2rem; font-weight: 400;
+      color: #fff;
+      position: relative; z-index: 1;
     }
-
-    .founder-bio h3 {
-      font-family: 'Alfa Slab One', Georgia, serif;
-      font-size: 1.6rem;
-      font-weight: 400;
-      color: var(--navy);
-      margin-bottom: 6px;
+    .founder-panel-name {
+      font-family: var(--font-display);
+      font-size: 1.2rem; font-weight: 400;
+      color: #fff;
+      margin-bottom: 2px;
+      position: relative; z-index: 1;
     }
-    .founder-bio .founder-title {
-      font-size: 0.92rem;
+    .founder-panel-role {
+      font-size: 0.72rem; font-weight: 700;
+      letter-spacing: 0.12em; text-transform: uppercase;
       color: var(--red);
-      font-weight: 600;
-      margin-bottom: 20px;
+      position: relative; z-index: 1;
     }
-    .founder-bio p {
+    .founder-card-body {
+      padding: clamp(28px, 4vw, 48px) clamp(24px, 4vw, 52px);
+    }
+    .founder-card-body p {
       font-size: 0.95rem;
       color: var(--text-secondary);
-      line-height: 1.7;
+      line-height: 1.75;
       margin-bottom: 16px;
     }
     .founder-credentials {
-      margin-top: 24px;
+      margin-top: 22px;
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: 10px;
     }
     .founder-credential { display: flex; gap: 12px; align-items: flex-start; }
     .credential-marker {
       flex-shrink: 0;
-      width: 10px; height: 10px;
+      width: 8px; height: 8px;
       border-radius: 2px;
       background: var(--red);
-      margin-top: 6px;
+      margin-top: 7px;
     }
-    .credential-text { font-size: 0.9rem; color: var(--text-secondary); }
+    .credential-text { font-size: 0.88rem; color: var(--text-secondary); line-height: 1.5; }
     .credential-text strong { color: var(--text-primary); }
-
-    .founder-quote {
-      margin-top: 28px;
-      padding: 20px 24px;
-      background: var(--cream);
-      border-radius: 10px;
-      font-family: var(--font-display);
+    .founder-pullquote {
+      margin-top: 24px;
+      padding: 16px 22px;
+      background: var(--paper);
+      border-left: 3px solid var(--red);
+      border-radius: 0 8px 8px 0;
+      font-size: 0.92rem;
       font-style: italic;
-      font-size: 0.95rem;
-      line-height: 1.6;
-      color: var(--text-primary);
+      color: var(--navy-dark);
+      line-height: 1.65;
     }
 
     /* ── TEAM ── */
     .team-section {
-      margin-top: 80px;
+      margin-top: 72px;
       padding-top: 56px;
       border-top: 1px solid var(--border);
     }
+    .team-section-header {
+      text-align: center;
+      margin-bottom: 36px;
+    }
+    .team-eyebrow {
+      display: inline-block;
+      font-size: 0.68rem; font-weight: 700;
+      letter-spacing: 0.14em; text-transform: uppercase;
+      color: var(--red);
+      margin-bottom: 10px;
+    }
     .team-heading {
       font-family: var(--font-display);
-      font-size: 1.4rem;
+      font-size: clamp(1.6rem, 3vw, 2rem);
       font-weight: 400;
-      color: var(--navy);
-      margin-bottom: 32px;
+      color: var(--navy-dark);
+      margin-bottom: 0;
     }
     .team-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
-      gap: 24px;
+      gap: 20px;
     }
     .team-card {
       background: #fff;
       border: 1px solid var(--border);
-      border-radius: 12px;
+      border-radius: 14px;
       overflow: hidden;
       transition: transform 0.22s ease, box-shadow 0.22s ease;
     }
     .team-card:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 10px 32px rgba(41,52,168,0.10);
+      transform: translateY(-4px);
+      box-shadow: 0 12px 36px rgba(41,52,168,0.12);
     }
     .team-avatar {
-      height: 160px;
+      height: 140px;
       display: flex;
       align-items: center;
       justify-content: center;
+      position: relative;
+    }
+    .team-avatar::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 40px;
+      background: linear-gradient(to top, rgba(0,0,0,0.18), transparent);
     }
     .team-avatar-initials {
       font-family: var(--font-display);
@@ -1126,7 +1168,7 @@
       color: #fff;
       opacity: 0.9;
     }
-    .team-card-body { padding: 16px 18px 20px; }
+    .team-card-body { padding: 18px 20px 22px; }
     .team-card-name {
       font-family: var(--font-display);
       font-size: 1rem;
@@ -1135,12 +1177,40 @@
       margin-bottom: 3px;
     }
     .team-card-title {
-      font-size: 0.8rem;
+      font-size: 0.78rem;
       color: var(--red);
-      font-weight: 600;
-      margin-bottom: 8px;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+      margin-bottom: 10px;
     }
-    .team-card-bio { font-size: 0.82rem; color: var(--text-muted); line-height: 1.55; }
+    .team-card-bio { font-size: 0.82rem; color: var(--text-muted); line-height: 1.6; }
+
+    /* ── ABOUT MISSION BAR ── */
+    .about-mission {
+      margin-top: 64px;
+      background: var(--navy-bg);
+      border-radius: 20px;
+      padding: clamp(28px, 4vw, 52px) clamp(28px, 5vw, 72px);
+      text-align: center;
+      border-top: 3px solid var(--red);
+      position: relative;
+      overflow: hidden;
+    }
+    .about-mission::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse 80% 50% at 50% 0%, rgba(240,59,47,0.08) 0%, transparent 65%);
+      pointer-events: none;
+    }
+    .about-mission p {
+      font-size: 1rem;
+      color: rgba(255,255,255,0.72);
+      font-style: italic;
+      line-height: 1.8;
+      max-width: 640px;
+      margin: 0 auto;
+      position: relative; z-index: 1;
+    }
 
     /* ── FOOTER SUBSCRIBE STRIP ── */
     .footer-subscribe {
@@ -1322,8 +1392,7 @@
       .solution-grid { grid-template-columns: repeat(2, 1fr); }
       .team-grid     { grid-template-columns: repeat(2, 1fr); }
       .demand-grid   { grid-template-columns: repeat(2, 1fr); }
-      .founder-layout { grid-template-columns: 1fr; gap: 32px; }
-      .founder-image-frame { max-width: 320px; }
+      .founder-card  { grid-template-columns: 220px 1fr; }
       .signup-2col   { grid-template-columns: 1fr; gap: 40px; }
     }
 
@@ -1367,6 +1436,8 @@
       .drop-card:hover { transform: none; }
       .drop-big { text-align: left; min-width: unset; }
 
+      .founder-card  { grid-template-columns: 1fr; }
+      .founder-card-panel { padding: 36px 24px; flex-direction: row; justify-content: flex-start; gap: 20px; text-align: left; }
       .solution-grid { grid-template-columns: 1fr; }
       .team-grid     { grid-template-columns: repeat(2, 1fr); }
 
@@ -1686,23 +1757,24 @@
   <!-- 06. ABOUT — FOUNDER + TEAM -->
   <section class="section" id="founder">
     <div class="section-inner">
-      <div class="section-label reveal"><span class="section-num">06 &nbsp;/&nbsp;</span> About PublicPath</div>
-      <h2 class="section-title reveal reveal-delay-1">The people behind PublicPath.</h2>
 
-      <blockquote class="reveal reveal-delay-1" style="background:var(--navy-bg);border-left:4px solid var(--red);padding:20px 28px;border-radius:8px;margin-bottom:48px;font-family:var(--font-body);font-style:italic;font-size:1.05rem;color:rgba(255,255,255,0.9);line-height:1.7;max-width:720px;margin-left:auto;margin-right:auto;">
-        "Breaking into government shouldn't depend on who you know. But too often, it does."
-      </blockquote>
+      <!-- Header -->
+      <div class="about-header">
+        <div class="section-label reveal"><span class="section-num">06 &nbsp;/&nbsp;</span> About PublicPath</div>
+        <h2 class="section-title reveal reveal-delay-1">The people behind PublicPath.</h2>
+        <p class="section-subtitle reveal reveal-delay-2">A small team with deep roots in public sector hiring — building the infrastructure to make government accessible to everyone.</p>
+      </div>
 
-      <!-- Founder -->
-      <div class="founder-layout reveal reveal-delay-2">
-        <div class="founder-image">
-          <div class="founder-image-frame">
-            <span class="founder-image-placeholder">HQ</span>
+      <!-- Founder card -->
+      <div class="founder-card reveal reveal-delay-2">
+        <div class="founder-card-panel">
+          <div class="founder-avatar">HQ</div>
+          <div>
+            <div class="founder-panel-name">Hira Qureshi</div>
+            <div class="founder-panel-role">Founder</div>
           </div>
         </div>
-        <div class="founder-bio">
-          <h3>Hira Qureshi</h3>
-          <div class="founder-title">Founder</div>
+        <div class="founder-card-body">
           <p>Hira has spent 8+ years building talent pipelines and placing people into public service careers — from the U.S. Treasury Department to the Biden for President campaign. She got her own start with no formal network or inside connections.</p>
           <p>That experience is what PublicPath is built on: the belief that access to public sector careers should not depend on who you know.</p>
           <div class="founder-credentials">
@@ -1719,15 +1791,18 @@
               <div class="credential-text"><strong>Obama Scholar</strong> &middot; Booth MBA '26</div>
             </div>
           </div>
-          <div class="founder-quote reveal reveal-delay-3">
-            Government works best when it reflects the people it serves. Talented, mission-driven candidates exist in every school, every city. What's missing isn't talent — it's access.
-          </div>
+          <blockquote class="founder-pullquote reveal reveal-delay-3">
+            "Government works best when it reflects the people it serves. What's missing isn't talent — it's access."
+          </blockquote>
         </div>
       </div>
 
       <!-- Team -->
       <div class="team-section">
-        <h3 class="team-heading reveal">The team</h3>
+        <div class="team-section-header reveal">
+          <div class="team-eyebrow">The Team</div>
+          <h3 class="team-heading">Built by people who've been there</h3>
+        </div>
         <div class="team-grid">
           <div class="team-card reveal-scale">
             <div class="team-avatar" style="background:linear-gradient(135deg,#2934A8,#111A6E);">
@@ -1775,10 +1850,11 @@
         </div>
       </div>
 
-      <!-- Mission box -->
-      <div class="reveal reveal-delay-4" style="display:flex;background:rgba(240,59,47,0.08);border:1px solid rgba(240,59,47,0.25);border-radius:10px;padding:20px 28px;margin-top:56px;">
-        <p style="font-size:0.95rem;color:var(--navy-dark);font-style:italic;line-height:1.75;margin:0;">We're a nonprofit platform with a simple mission: to help the next generation of public servants access government careers, regardless of where they went to school or who they know.</p>
+      <!-- Mission bar -->
+      <div class="about-mission reveal reveal-delay-4">
+        <p>We're a nonprofit platform with a simple mission: to help the next generation of public servants access government careers, regardless of where they went to school or who they know.</p>
       </div>
+
     </div>
   </section>
 
