@@ -10,561 +10,329 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=DM+Sans:ital,opsz,wght@0,9..40,300..700;1,9..40,300..700&display=swap" rel="stylesheet">
   <style>
-    /* ── Brand tokens ── */
+    /* ── Tokens ── */
     :root {
       --navy: #2934A8;
       --navy-dark: #111A6E;
       --navy-bg: #0D1550;
-      --navy-deep: #080E38;
       --red: #F03B2F;
       --red-hover: #C93026;
       --paper: #F5F2EA;
       --cream: #EDE9DF;
-      --sand: #E2DDD3;
-      --warm-white: #F5F2EA;
+      --border: #E0DCD4;
       --text-primary: #111827;
       --text-secondary: #4A506A;
       --text-muted: #6B7280;
-      --border: #E0DCD4;
       --font-display: 'Alfa Slab One', Georgia, serif;
       --font-body: 'DM Sans', -apple-system, sans-serif;
+      --pad-x: clamp(20px, 4vw, 64px);
+      --pad-y: clamp(64px, 8vw, 112px);
     }
 
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
     html { scroll-behavior: smooth; font-size: 18px; }
-    body {
-      font-family: var(--font-body);
-      color: var(--text-primary);
-      background: var(--paper);
-      line-height: 1.65;
-      -webkit-font-smoothing: antialiased;
-    }
+    body { font-family: var(--font-body); color: var(--text-primary); background: var(--paper); line-height: 1.65; -webkit-font-smoothing: antialiased; }
     a { color: var(--navy); text-decoration: none; }
     a:hover { color: var(--navy-dark); }
 
-    /* ── SKIP LINK ── */
-    .skip-link {
-      position: absolute;
-      top: -100%;
-      left: 0;
-      background: var(--red);
-      color: #fff;
-      padding: 10px 20px;
-      font-weight: 600;
-      font-size: 0.9rem;
-      z-index: 9999;
-      border-radius: 0 0 6px 0;
-      transition: top 0.2s;
-    }
-    .skip-link:focus { top: 0; }
+    /* ── Skip link ── */
+    .skip-link { position:absolute; top:-100%; left:0; background:var(--red); color:#fff; padding:10px 20px; font-weight:600; font-size:.9rem; z-index:9999; border-radius:0 0 6px 0; transition:top .2s; }
+    .skip-link:focus { top:0; }
+    :focus-visible { outline:3px solid var(--red); outline-offset:3px; border-radius:3px; }
 
-    /* ── FOCUS VISIBLE ── */
-    :focus-visible {
-      outline: 3px solid var(--red);
-      outline-offset: 3px;
-      border-radius: 3px;
-    }
-    button:focus-visible, a:focus-visible { outline: 3px solid var(--red); outline-offset: 3px; }
-
-    /* ── Scroll-reveal ── */
-    .reveal {
-      opacity: 0;
-      transform: translateY(36px);
-      transition: opacity 0.65s ease, transform 0.65s ease;
-    }
-    .reveal.is-visible {
-      opacity: 1;
-      transform: translateY(0);
-    }
-    .reveal-delay-1 { transition-delay: 0.1s; }
-    .reveal-delay-2 { transition-delay: 0.2s; }
-    .reveal-delay-3 { transition-delay: 0.3s; }
-    .reveal-delay-4 { transition-delay: 0.4s; }
+    /* ── Scroll reveal ── */
+    .reveal { opacity:0; transform:translateY(28px); transition:opacity .65s ease,transform .65s ease; }
+    .reveal.is-visible { opacity:1; transform:none; }
+    .reveal-left { opacity:0; transform:translateX(-32px); transition:opacity .7s ease,transform .7s ease; }
+    .reveal-right { opacity:0; transform:translateX(32px); transition:opacity .7s ease,transform .7s ease; }
+    .reveal-scale { opacity:0; transform:scale(.95); transition:opacity .6s ease,transform .6s ease; }
+    .reveal-left.is-visible,.reveal-right.is-visible,.reveal-scale.is-visible { opacity:1; transform:none; }
+    .reveal-delay-1 { transition-delay:.1s; }
+    .reveal-delay-2 { transition-delay:.2s; }
+    .reveal-delay-3 { transition-delay:.3s; }
 
     /* ── Nav ── */
-    .nav {
-      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-      background: var(--navy-bg);
-      border-bottom: 1px solid rgba(255,255,255,.07);
-      transition: box-shadow .3s ease;
-    }
-    .nav.scrolled { box-shadow: 0 2px 20px rgba(0,0,0,.3); }
-    .nav-inner {
-      max-width: 1440px; margin: 0 auto; padding: 0 24px;
-      height: 64px; display: flex; align-items: center; justify-content: space-between;
-    }
-    .logo {
-      display: flex; align-items: center; gap: 10px;
-      text-decoration: none; flex-shrink: 0;
-    }
-    .logo-wordmark {
-      font-family: var(--font-display);
-      font-weight: 400;
-      font-size: 1.25rem;
-      color: #fff;
-      letter-spacing: -.01em;
-      line-height: 1;
-    }
-    .logo-icon svg { display: block; }
-    .nav-links {
-      display: flex; align-items: center; gap: 32px; list-style: none;
-    }
-    .nav-links a {
-      font-size: .875rem; font-weight: 500;
-      color: rgba(255,255,255,.65);
-      text-decoration: none; transition: color .2s;
-    }
-    .nav-links a:hover { color: #fff; }
-    .nav-links a.active { color: #fff; font-weight: 600; }
-    .nav-cta {
-      display: inline-flex; align-items: center;
-      padding: 8px 20px;
-      background: var(--red); color: #fff !important;
-      border-radius: 6px; font-size: .875rem; font-weight: 600;
-      transition: background .2s, transform .15s;
-    }
-    .nav-cta:hover { background: var(--red-hover) !important; transform: translateY(-1px); }
-    .mobile-toggle {
-      display: none; background: none; border: none; cursor: pointer; padding: 4px;
-    }
-    .mobile-toggle svg { width: 24px; height: 24px; stroke: #fff; }
+    .nav { position:fixed; top:0; left:0; right:0; z-index:100; background:var(--navy-bg); border-bottom:1px solid rgba(255,255,255,.07); transition:box-shadow .3s ease; }
+    .nav.scrolled { box-shadow:0 2px 20px rgba(0,0,0,.3); }
+    .nav-inner { max-width:1440px; margin:0 auto; padding:0 var(--pad-x); height:64px; display:flex; align-items:center; justify-content:space-between; }
+    .logo { display:flex; align-items:center; gap:10px; text-decoration:none; flex-shrink:0; }
+    .logo-wordmark { font-family:var(--font-display); font-weight:400; font-size:1.25rem; color:#fff; letter-spacing:-.01em; }
+    .logo-icon svg { display:block; }
+    .nav-links { display:flex; align-items:center; gap:32px; list-style:none; }
+    .nav-links a { font-size:.875rem; font-weight:500; color:rgba(255,255,255,.65); text-decoration:none; transition:color .2s; }
+    .nav-links a:hover, .nav-links a.active { color:#fff; font-weight:600; }
+    .nav-cta { display:inline-flex; align-items:center; padding:8px 20px; background:var(--red); color:#fff !important; border-radius:6px; font-size:.875rem; font-weight:600; transition:background .2s,transform .15s; }
+    .nav-cta:hover { background:var(--red-hover) !important; transform:translateY(-1px); }
+    .mobile-toggle { display:none; background:none; border:none; cursor:pointer; padding:4px; }
+    .mobile-toggle svg { width:24px; height:24px; stroke:#fff; }
 
-    /* ── Hero ── */
-    .hero-partners {
-      padding: 140px 24px 96px;
+    /* ── Utilities ── */
+    .inner { max-width:1440px; margin:0 auto; width:100%; }
+    .section-tag { display:inline-block; padding:3px 12px; background:rgba(41,52,168,.08); color:var(--navy); border-radius:100px; font-size:.72rem; font-weight:700; letter-spacing:.08em; text-transform:uppercase; margin-bottom:14px; }
+    .section-tag.red { background:rgba(240,59,47,.1); color:var(--red); }
+
+    /* ── HERO ── */
+    .hero {
+      padding: 140px var(--pad-x) 100px;
       background: var(--navy-bg);
-      position: relative; overflow: hidden;
+      position: relative;
+      overflow: hidden;
+      text-align: center;
     }
-    .hero-partners::before {
-      content: '';
-      position: absolute; inset: 0;
+    .hero::before {
+      content:'';
+      position:absolute; inset:0;
       background:
-        radial-gradient(ellipse 60% 60% at 80% 50%, rgba(41,52,168,.35) 0%, transparent 70%),
-        radial-gradient(ellipse 40% 50% at 10% 80%, rgba(240,59,47,.12) 0%, transparent 60%);
-      pointer-events: none;
+        radial-gradient(ellipse 70% 70% at 50% 0%, rgba(41,52,168,.5) 0%, transparent 70%),
+        radial-gradient(ellipse 50% 50% at 10% 80%, rgba(240,59,47,.12) 0%, transparent 60%),
+        radial-gradient(ellipse 50% 50% at 90% 80%, rgba(41,52,168,.15) 0%, transparent 60%);
+      pointer-events:none;
     }
     .hero-grid {
-      position: absolute; inset: 0; pointer-events: none;
-      background-image:
-        linear-gradient(rgba(255,255,255,.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255,255,255,.03) 1px, transparent 1px);
-      background-size: 80px 80px;
+      position:absolute; inset:0; pointer-events:none;
+      background-image: linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px), linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px);
+      background-size:80px 80px;
     }
-    .hero-inner {
-      max-width: 860px; margin: 0 auto; position: relative; z-index: 1;
-    }
+    .hero-inner-wrap { position:relative; z-index:1; max-width:760px; margin:0 auto; }
     .hero-label {
-      display: inline-flex; align-items: center; gap: 8px;
-      background: rgba(240,59,47,.15);
-      border: 1px solid rgba(240,59,47,.3);
-      border-radius: 100px;
-      padding: 5px 14px;
-      font-size: .72rem; font-weight: 700;
-      letter-spacing: .1em; text-transform: uppercase;
-      color: #FF8A80;
-      margin-bottom: 20px;
+      display:inline-flex; align-items:center; gap:8px;
+      background:rgba(240,59,47,.15); border:1px solid rgba(240,59,47,.3);
+      border-radius:100px; padding:5px 16px;
+      font-size:.72rem; font-weight:700; letter-spacing:.1em; text-transform:uppercase;
+      color:#FF8A80; margin-bottom:24px;
     }
-    .hero-partners h1 {
-      font-family: var(--font-display);
-      font-weight: 400;
-      font-size: clamp(2.8rem, 6vw, 4.4rem);
-      color: #fff;
-      letter-spacing: -.01em;
-      line-height: 1.12;
-      margin-bottom: 20px;
+    .hero h1 {
+      font-family:var(--font-display); font-weight:400;
+      font-size:clamp(2.6rem, 6vw, 4.4rem);
+      color:#fff; letter-spacing:-.02em; line-height:1.1; margin-bottom:20px;
     }
-    .hero-partners p {
-      font-size: 1.1rem; color: rgba(255,255,255,.7);
-      max-width: 600px; line-height: 1.75;
-      margin-bottom: 36px;
-    }
-    .hero-actions {
-      display: flex; gap: 16px; flex-wrap: wrap;
-    }
+    .hero h1 em { font-style:normal; color:var(--red); }
+    .hero p { font-size:1.1rem; color:rgba(255,255,255,.7); line-height:1.75; max-width:600px; margin:0 auto 36px; }
+    .hero-actions { display:flex; gap:16px; flex-wrap:wrap; justify-content:center; }
 
-    /* ── Buttons ── */
     .btn {
-      display: inline-flex; align-items: center; gap: 8px;
-      padding: 14px 28px; border-radius: 8px;
-      font-family: var(--font-body);
-      font-size: .95rem; font-weight: 600;
-      text-decoration: none;
-      transition: all .2s ease;
-      cursor: pointer; border: none;
+      display:inline-flex; align-items:center; gap:8px;
+      padding:14px 28px; border-radius:8px;
+      font-family:var(--font-body); font-size:.95rem; font-weight:600;
+      text-decoration:none; transition:all .2s; cursor:pointer; border:none;
     }
-    .btn-primary {
-      background: var(--red); color: #fff;
-      box-shadow: 0 2px 8px rgba(232,53,39,.25), 0 6px 20px rgba(232,53,39,.15);
-    }
-    .btn-primary:hover {
-      background: var(--red-hover); color: #fff;
-      transform: translateY(-2px);
-      box-shadow: 0 4px 16px rgba(232,53,39,.35), 0 8px 24px rgba(232,53,39,.2);
-    }
-    .btn-secondary {
-      background: transparent; color: rgba(255,255,255,.85);
-      border: 1.5px solid rgba(255,255,255,.25);
-    }
-    .btn-secondary:hover {
-      border-color: rgba(255,255,255,.6);
-      background: rgba(255,255,255,.07); color: #fff;
-    }
-
-    /* ── Section common ── */
-    .section-label {
-      font-size: .72rem; font-weight: 700;
-      letter-spacing: .14em; text-transform: uppercase;
-      color: var(--red); margin-bottom: 12px;
-    }
-
-    /* ── Partner sections ── */
-    .partner-section {
-      padding: 80px 24px;
-    }
-    .partner-section.white { background: #fff; }
-    .partner-section.paper { background: var(--paper); }
-
-    .partner-inner {
-      max-width: 1440px; margin: 0 auto;
-    }
-    .partner-inner h2 {
-      font-family: var(--font-display);
-      font-weight: 400;
-      font-size: clamp(2.2rem, 4.5vw, 3rem);
-      color: var(--navy-dark);
-      letter-spacing: -.01em;
-      line-height: 1.2;
-      margin-bottom: 48px;
-    }
-
-    /* Two-column layout */
-    .partner-2col {
-      display: grid;
-      grid-template-columns: 1fr 1.2fr;
-      gap: 64px;
-      align-items: start;
-    }
-    .partner-copy p {
-      font-size: 1.05rem;
-      color: var(--text-secondary);
-      line-height: 1.8;
-      margin-bottom: 20px;
-    }
-    .partner-copy p:last-child { margin-bottom: 0; }
-
-    /* Dark CTA card */
-    .partner-card {
-      background: var(--navy-bg);
-      border-radius: 16px;
-      padding: 40px;
-      border-top: 3px solid var(--red);
-    }
-    .partner-card h3 {
-      font-family: var(--font-display);
-      font-weight: 400;
-      font-size: 1.3rem;
-      color: #fff;
-      margin-bottom: 14px;
-    }
-    .partner-card p {
-      font-size: 1rem;
-      color: rgba(255,255,255,.65);
-      line-height: 1.7;
-      margin-bottom: 28px;
-    }
-    .form-note {
-      margin-top: 14px !important;
-      font-size: .8rem !important;
-      color: rgba(255,255,255,.35) !important;
-      font-style: italic;
-      margin-bottom: 0 !important;
-    }
-
-    /* ── Closing banner ── */
-    .closing-banner {
-      background: var(--navy);
-      padding: 80px 24px;
-      text-align: center;
-    }
-    .closing-banner p {
-      font-style: italic;
-      color: rgba(255,255,255,.65);
-      font-size: 1rem;
-      margin-bottom: 16px;
-    }
-    .closing-banner h2 {
-      font-family: var(--font-display);
-      font-weight: 400;
-      font-size: clamp(1.8rem, 4vw, 2.6rem);
-      color: #fff;
-      letter-spacing: -.01em;
-      margin-bottom: 32px;
-    }
-
-    /* ── Footer ── */
-    .footer {
-      background: var(--navy-bg);
-      border-top: 3px solid var(--red);
-      padding: 48px 24px 40px;
-    }
-    .footer-inner {
-      max-width: 1440px; margin: 0 auto;
-      display: flex; flex-direction: column; align-items: center; gap: 20px;
-    }
-    .footer-logo {
-      display: flex; align-items: center; gap: 10px; text-decoration: none;
-    }
-    .footer-logo .logo-wordmark { font-size: 1.1rem; }
-    .footer-links {
-      display: flex; justify-content: center;
-      gap: 24px; list-style: none;
-    }
-    .footer-links a {
-      font-size: .875rem;
-      color: rgba(255,255,255,.45);
-      transition: color .2s;
-    }
-    .footer-links a:hover { color: #fff; }
-    .footer-copy {
-      font-size: .8rem;
-      color: rgba(255,255,255,.3);
-    }
-
-    /* ── Mobile ── */
-    @media (max-width: 860px) {
-      .nav-links { display: none; }
-      .nav-links.open {
-        display: flex; flex-direction: column;
-        position: absolute; top: 64px; left: 0; right: 0;
-        background: var(--navy-bg);
-        border-bottom: 1px solid rgba(255,255,255,.07);
-        padding: 16px 24px; gap: 14px;
-        box-shadow: 0 12px 32px rgba(0,0,0,.3);
-      }
-      .mobile-toggle { display: block; }
-      .partner-2col { grid-template-columns: 1fr; gap: 40px; }
-      .hero-partners { padding: 110px 20px 72px; }
-      .partner-section { padding: 56px 20px; }
-      .closing-banner { padding: 56px 20px; }
-    }
-
-    /* ── Interactive enhancements ── */
-    #scroll-progress{position:fixed;top:0;left:0;height:3px;width:0%;background:linear-gradient(90deg,var(--red) 0%,#FF6B5E 60%,#FFB347 100%);z-index:10001;transition:width 0.06s linear}
-    .cursor-glow{position:fixed;width:600px;height:600px;border-radius:50%;background:radial-gradient(circle,rgba(41,52,168,0.06) 0%,transparent 65%);pointer-events:none;z-index:0;transform:translate(-50%,-50%);transition:top 0.25s ease,left 0.25s ease}
-    .reveal-left{opacity:0;transform:translateX(-40px);transition:opacity 0.7s cubic-bezier(0.25,0.46,0.45,0.94),transform 0.7s cubic-bezier(0.25,0.46,0.45,0.94)}
-    .reveal-right{opacity:0;transform:translateX(40px);transition:opacity 0.7s cubic-bezier(0.25,0.46,0.45,0.94),transform 0.7s cubic-bezier(0.25,0.46,0.45,0.94)}
-    .reveal-scale{opacity:0;transform:scale(0.93);transition:opacity 0.6s cubic-bezier(0.34,1.56,0.64,1),transform 0.6s cubic-bezier(0.34,1.56,0.64,1)}
-    .reveal-left.is-visible,.reveal-right.is-visible,.reveal-scale.is-visible{opacity:1;transform:none}
+    .btn-primary { background:var(--red); color:#fff; box-shadow:0 2px 8px rgba(232,53,39,.3); }
+    .btn-primary:hover { background:var(--red-hover); color:#fff; transform:translateY(-2px); box-shadow:0 6px 20px rgba(232,53,39,.35); }
+    .btn-secondary { background:transparent; color:rgba(255,255,255,.85); border:1.5px solid rgba(255,255,255,.25); }
+    .btn-secondary:hover { border-color:rgba(255,255,255,.6); background:rgba(255,255,255,.07); color:#fff; }
+    .btn-outline { background:transparent; color:var(--navy); border:1.5px solid var(--navy); }
+    .btn-outline:hover { background:var(--navy); color:#fff; }
 
     /* ── STATS BAND ── */
-    .stats-band {
-      background: var(--navy);
-      padding: 56px 24px;
-      border-top: 3px solid var(--red);
+    .stats-band { background:var(--navy); padding:clamp(48px,6vw,80px) var(--pad-x); }
+    .stats-inner {
+      max-width:1440px; margin:0 auto;
+      display:grid; grid-template-columns:repeat(3,1fr);
+      gap:0;
     }
-    .stats-band-inner {
-      max-width: 1440px;
-      margin: 0 auto;
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 0;
+    .stat-col {
+      text-align:center; padding:0 clamp(16px,3vw,48px);
+      border-right:1px solid rgba(255,255,255,.1);
     }
-    .sb-stat {
-      text-align: center;
-      padding: 0 32px;
-      border-right: 1px solid rgba(255,255,255,.1);
+    .stat-col:last-child { border-right:none; }
+    .stat-num {
+      font-family:var(--font-display); font-size:clamp(2.4rem,5vw,3.8rem);
+      font-weight:400; color:#fff; line-height:1; margin-bottom:10px;
     }
-    .sb-stat:last-child { border-right: none; }
-    .sb-num {
-      font-family: var(--font-display);
-      font-size: clamp(2.4rem, 5vw, 3.6rem);
-      font-weight: 400;
-      color: #fff;
-      line-height: 1;
-      margin-bottom: 8px;
+    .stat-num em { font-style:normal; color:var(--red); }
+    .stat-label { font-size:.9rem; color:rgba(255,255,255,.55); line-height:1.55; max-width:220px; margin:0 auto; }
+
+    /* ── WHO WE WORK WITH ── */
+    .who-section { padding:var(--pad-y) var(--pad-x); background:#fff; border-bottom:1px solid var(--border); }
+    .who-header { text-align:center; margin-bottom:clamp(36px,5vw,56px); }
+    .who-header h2 { font-family:var(--font-display); font-size:clamp(2rem,4vw,3rem); font-weight:400; color:var(--navy-dark); letter-spacing:-.01em; margin-bottom:12px; }
+    .who-header p { font-size:1rem; color:var(--text-muted); max-width:540px; margin:0 auto; }
+    .who-grid {
+      max-width:1440px; margin:0 auto;
+      display:grid; grid-template-columns:repeat(4,1fr);
+      gap:20px;
     }
-    .sb-num .sb-accent { color: var(--red); }
-    .sb-label {
-      font-size: .9rem;
-      color: rgba(255,255,255,.55);
-      line-height: 1.5;
+    .who-card {
+      border-radius:14px; border:1px solid var(--border);
+      background:#fff; overflow:hidden;
+      transition:transform .22s ease, box-shadow .22s ease;
+    }
+    .who-card:hover { transform:translateY(-4px); box-shadow:0 12px 36px rgba(41,52,168,.1); }
+    .who-card-top {
+      height:120px; display:flex; align-items:center; justify-content:center;
+    }
+    .who-card-top svg { width:44px; height:44px; stroke-width:1.4; }
+    .who-card-body { padding:20px 22px 24px; }
+    .who-tag {
+      display:inline-block; padding:2px 9px; border-radius:100px;
+      font-size:.68rem; font-weight:700; letter-spacing:.05em; text-transform:uppercase;
+      margin-bottom:8px;
+    }
+    .who-card-body h3 { font-family:var(--font-display); font-weight:400; font-size:1.05rem; color:var(--navy-dark); margin-bottom:6px; }
+    .who-card-body p { font-size:.88rem; color:var(--text-secondary); line-height:1.6; }
+
+    /* ── PARTNER SECTIONS ── */
+    .partner-section { padding:var(--pad-y) var(--pad-x); }
+    .partner-section.white { background:#fff; }
+    .partner-section.paper { background:var(--paper); }
+    .partner-section.cream { background:var(--cream); }
+    .partner-wrap { max-width:1440px; margin:0 auto; }
+
+    .partner-split {
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:clamp(40px,6vw,96px);
+      align-items:center;
+    }
+    .partner-split.flip { direction:rtl; }
+    .partner-split.flip > * { direction:ltr; }
+
+    /* Visual panel (left or right) */
+    .partner-visual {
+      border-radius:16px; overflow:hidden;
+      min-height:360px; display:flex; flex-direction:column;
+      align-items:flex-start; justify-content:space-between;
+      padding:40px;
+      position:relative;
+    }
+    .partner-visual-icon {
+      width:56px; height:56px;
+      background:rgba(255,255,255,.15);
+      border-radius:12px;
+      display:flex; align-items:center; justify-content:center;
+      margin-bottom:auto;
+    }
+    .partner-visual-icon svg { width:28px; height:28px; stroke:#fff; stroke-width:1.5; }
+    .partner-visual-label {
+      font-family:var(--font-display); font-size:clamp(1.6rem,3vw,2.2rem);
+      font-weight:400; color:#fff; line-height:1.2;
+    }
+    .partner-visual-sub { font-size:.85rem; color:rgba(255,255,255,.6); margin-top:6px; }
+
+    /* University → blue */
+    .pv-universities { background:linear-gradient(140deg,#0D1550 0%,#1e2e9e 50%,#2934A8 100%); }
+    /* Fellowship → purple */
+    .pv-fellowships { background:linear-gradient(140deg,#2D1264 0%,#5B21B6 50%,#7C3AED 100%); }
+    /* Employers → teal/green */
+    .pv-employers { background:linear-gradient(140deg,#064E3B 0%,#065F46 50%,#047857 100%); }
+
+    .partner-copy { }
+    .partner-copy h2 {
+      font-family:var(--font-display); font-weight:400;
+      font-size:clamp(1.8rem,3.5vw,2.6rem);
+      color:var(--navy-dark); letter-spacing:-.01em;
+      line-height:1.2; margin-bottom:20px;
+    }
+    .partner-copy p {
+      font-size:1rem; color:var(--text-secondary);
+      line-height:1.8; margin-bottom:16px;
+    }
+    .partner-copy p:last-of-type { margin-bottom:0; }
+    .partner-benefits {
+      list-style:none; margin:24px 0 32px;
+      display:flex; flex-direction:column; gap:12px;
+    }
+    .partner-benefits li {
+      display:flex; align-items:flex-start; gap:12px;
+      font-size:.95rem; color:var(--text-secondary); line-height:1.6;
+    }
+    .partner-benefits li::before {
+      content:'';
+      flex-shrink:0;
+      width:8px; height:8px;
+      border-radius:2px;
+      background:var(--red);
+      margin-top:7px;
     }
 
-    /* ── PARTNER TYPE GRID ── */
-    .ptype-section {
-      background: var(--paper);
-      padding: 80px 24px;
-      border-top: 1px solid var(--border);
+    /* ── QUOTE ── */
+    .quote-section {
+      padding:clamp(64px,8vw,100px) var(--pad-x);
+      background:var(--navy-bg);
+      text-align:center;
     }
-    .ptype-inner {
-      max-width: 1440px;
-      margin: 0 auto;
+    .quote-section blockquote {
+      font-family:var(--font-display); font-weight:400;
+      font-size:clamp(1.6rem,3.5vw,2.6rem);
+      color:#fff; line-height:1.3; max-width:800px;
+      margin:0 auto 20px;
     }
-    .ptype-header {
-      text-align: center;
-      margin-bottom: 48px;
-    }
-    .ptype-header h2 {
-      font-family: var(--font-display);
-      font-size: clamp(2rem, 4vw, 2.8rem);
-      font-weight: 400;
-      color: var(--navy-dark);
-      margin-bottom: 10px;
-    }
-    .ptype-header p {
-      font-size: 1.05rem;
-      color: var(--text-muted);
-      max-width: 520px;
-      margin: 0 auto;
-    }
-    .ptype-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 20px;
-    }
-    .pt-card {
-      border-radius: 16px;
-      overflow: hidden;
-      border: 1px solid var(--border);
-      background: #fff;
-      display: grid;
-      grid-template-columns: 180px 1fr;
-      min-height: 180px;
-      transition: transform .25s, box-shadow .25s;
-    }
-    .pt-card:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 10px 32px rgba(41,52,168,.1);
-    }
-    .pt-img {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .pt-img svg {
-      width: 44px;
-      height: 44px;
-      stroke-width: 1.4;
-    }
-    .pt-body {
-      padding: 28px 28px;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-    }
-    .pt-tag {
-      display: inline-block;
-      padding: 2px 9px; border-radius: 100px;
-      font-size: .68rem; font-weight: 700;
-      letter-spacing: .05em; text-transform: uppercase;
-      margin-bottom: 10px;
-    }
-    .pt-body h3 {
-      font-family: var(--font-display);
-      font-weight: 400;
-      font-size: 1.15rem;
-      color: var(--navy-dark);
-      margin-bottom: 8px;
-    }
-    .pt-body p {
-      font-size: .92rem;
-      color: var(--text-secondary);
-      line-height: 1.65;
-      margin: 0;
-    }
+    .quote-section blockquote em { font-style:normal; color:var(--red); }
+    .quote-section cite { font-size:.9rem; color:rgba(255,255,255,.4); font-style:normal; letter-spacing:.06em; text-transform:uppercase; }
 
-    /* ── TESTIMONIAL / QUOTE BAND ── */
-    .quote-band {
-      background: #fff;
-      border-top: 1px solid var(--border);
-      border-bottom: 1px solid var(--border);
-      padding: 72px 24px;
-      text-align: center;
+    /* ── CLOSING CTA ── */
+    .cta-section {
+      padding:clamp(64px,8vw,100px) var(--pad-x);
+      background:var(--paper);
+      text-align:center;
+      border-top:1px solid var(--border);
     }
-    .quote-band blockquote {
-      font-family: var(--font-display);
-      font-size: clamp(1.6rem, 3.5vw, 2.4rem);
-      font-weight: 400;
-      color: var(--navy-dark);
-      line-height: 1.3;
-      max-width: 760px;
-      margin: 0 auto 16px;
-    }
-    .quote-band blockquote em {
-      font-style: normal;
-      color: var(--red);
-    }
-    .quote-band cite {
-      font-size: .9rem;
-      color: var(--text-muted);
-      font-style: normal;
+    .cta-section p { font-style:italic; color:var(--text-muted); font-size:1rem; margin-bottom:12px; }
+    .cta-section h2 {
+      font-family:var(--font-display); font-weight:400;
+      font-size:clamp(2rem,4.5vw,3.2rem);
+      color:var(--navy-dark); letter-spacing:-.01em;
+      margin-bottom:32px;
     }
 
     /* ── FOOTER SUBSCRIBE ── */
-    .footer-subscribe {
-      background: var(--paper);
-      border-top: 1px solid var(--border);
-      padding: 40px 24px;
-    }
-    .footer-subscribe-inner {
-      max-width: 1440px;
-      margin: 0 auto;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 32px;
-      flex-wrap: wrap;
-    }
-    .footer-subscribe h3 {
-      font-family: var(--font-display);
-      font-size: 1.4rem;
-      font-weight: 400;
-      color: var(--navy-dark);
-      margin-bottom: 4px;
-    }
-    .footer-subscribe p { font-size: .9rem; color: var(--text-muted); }
-    .footer-sub-form { display: flex; gap: 10px; flex-wrap: wrap; }
-    .footer-sub-form input {
-      padding: 11px 16px;
-      border: 1.5px solid var(--border);
-      border-radius: 8px;
-      font-family: var(--font-body);
-      font-size: .9rem;
-      min-width: 220px;
-      outline: none;
-      background: #fff;
-    }
-    .footer-sub-form input:focus { border-color: var(--navy); }
-    .footer-sub-form button {
-      padding: 11px 22px;
-      background: var(--red); color: #fff;
-      border: none; border-radius: 8px;
-      font-family: var(--font-body); font-size: .9rem; font-weight: 600;
-      cursor: pointer; transition: background .2s;
-    }
-    .footer-sub-form button:hover { background: var(--red-hover); }
+    .footer-subscribe { background:var(--cream); border-top:1px solid var(--border); padding:clamp(36px,5vw,56px) var(--pad-x); }
+    .footer-subscribe-inner { max-width:1440px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; gap:32px; flex-wrap:wrap; }
+    .footer-subscribe h3 { font-family:var(--font-display); font-size:1.4rem; font-weight:400; color:var(--navy-dark); margin-bottom:4px; }
+    .footer-subscribe p { font-size:.9rem; color:var(--text-muted); }
+    .footer-sub-form { display:flex; gap:10px; flex-wrap:wrap; }
+    .footer-sub-form input { padding:11px 16px; border:1.5px solid var(--border); border-radius:8px; font-family:var(--font-body); font-size:.9rem; min-width:220px; outline:none; background:#fff; }
+    .footer-sub-form input:focus { border-color:var(--navy); }
+    .footer-sub-form button { padding:11px 22px; background:var(--red); color:#fff; border:none; border-radius:8px; font-family:var(--font-body); font-size:.9rem; font-weight:600; cursor:pointer; transition:background .2s; }
+    .footer-sub-form button:hover { background:var(--red-hover); }
 
+    /* ── FOOTER ── */
+    .footer { background:var(--navy-bg); border-top:3px solid var(--red); padding:clamp(40px,5vw,60px) var(--pad-x); }
+    .footer-inner { max-width:1440px; margin:0 auto; display:flex; flex-direction:column; align-items:center; gap:18px; text-align:center; }
+    .footer-links { display:flex; justify-content:center; gap:24px; list-style:none; flex-wrap:wrap; }
+    .footer-links a { font-size:.875rem; color:rgba(255,255,255,.45); transition:color .2s; }
+    .footer-links a:hover { color:#fff; }
+    .footer-social { display:flex; gap:14px; }
+    .footer-social a { color:rgba(255,255,255,.4); transition:color .2s; }
+    .footer-social a:hover { color:#fff; }
+    .footer-copy { font-size:.8rem; color:rgba(255,255,255,.3); }
+
+    /* ── Interactive ── */
+    #scroll-progress { position:fixed; top:0; left:0; height:3px; width:0%; background:linear-gradient(90deg,var(--red) 0%,#FF6B5E 60%,#FFB347 100%); z-index:10001; transition:width .06s linear; }
+    .cursor-glow { position:fixed; width:600px; height:600px; border-radius:50%; background:radial-gradient(circle,rgba(41,52,168,.06) 0%,transparent 65%); pointer-events:none; z-index:0; transform:translate(-50%,-50%); transition:top .25s ease,left .25s ease; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 1100px) {
+      .who-grid { grid-template-columns: repeat(2,1fr); }
+    }
     @media (max-width: 860px) {
-      .stats-band-inner { grid-template-columns: 1fr; gap: 32px; }
-      .sb-stat { border-right: none; border-bottom: 1px solid rgba(255,255,255,.1); padding: 0 0 24px 0; }
-      .sb-stat:last-child { border-bottom: none; padding-bottom: 0; }
-      .ptype-grid { grid-template-columns: 1fr; }
-      .pt-card { grid-template-columns: 120px 1fr; min-height: 140px; }
-      .footer-subscribe-inner { flex-direction: column; align-items: flex-start; }
+      .nav-links { display:none; }
+      .nav-links.open { display:flex; flex-direction:column; position:absolute; top:64px; left:0; right:0; background:var(--navy-bg); border-bottom:1px solid rgba(255,255,255,.07); padding:16px var(--pad-x); gap:14px; box-shadow:0 12px 32px rgba(0,0,0,.3); z-index:50; }
+      .mobile-toggle { display:block; }
+      .stats-inner { grid-template-columns:1fr; gap:32px; }
+      .stat-col { border-right:none; border-bottom:1px solid rgba(255,255,255,.1); padding:0 0 28px; }
+      .stat-col:last-child { border-bottom:none; padding-bottom:0; }
+      .partner-split, .partner-split.flip { grid-template-columns:1fr; direction:ltr; gap:32px; }
+      .partner-visual { min-height:240px; }
+      .footer-subscribe-inner { flex-direction:column; align-items:flex-start; }
+    }
+    @media (max-width: 600px) {
+      .who-grid { grid-template-columns:1fr; }
+      .hero h1 { font-size:clamp(2rem,8vw,2.8rem); }
+      .hero-actions { flex-direction:column; align-items:center; }
     }
   </style>
 </head>
 <body>
 <div id="scroll-progress" aria-hidden="true"></div>
 <div class="cursor-glow" id="cursorGlow" aria-hidden="true"></div>
+<a href="#main-content" class="skip-link">Skip to main content</a>
 
-  <a href="#main-content" class="skip-link">Skip to main content</a>
-
-<!-- ── Nav ── -->
+<!-- Nav -->
 <nav class="nav" id="nav" aria-label="Primary navigation">
   <div class="nav-inner">
     <a href="index.html" class="logo">
-      <span class="logo-wordmark">Public Path</span>
+      <span class="logo-wordmark">PublicPath</span>
       <span class="logo-icon">
         <svg width="26" height="26" viewBox="0 0 48 48" aria-hidden="true">
           <rect width="48" height="48" fill="#F03B2F"/>
@@ -578,11 +346,11 @@
     <ul class="nav-links" id="navLinks">
       <li><a href="jobs.html">Browse Jobs</a></li>
       <li><a href="resources.html">Resources</a></li>
-      <li><a href="partners.html" class="active">Partners</a></li>
+      <li><a href="partners.html" class="active" aria-current="page">Partners</a></li>
       <li><a href="index.html#founder">About</a></li>
       <li><a href="jobs.html" class="nav-cta">Find Your Role</a></li>
     </ul>
-    <button class="mobile-toggle" id="mobileToggle" aria-label="Toggle navigation">
+    <button class="mobile-toggle" id="mobileToggle" aria-label="Toggle navigation" aria-expanded="false">
       <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" aria-hidden="true"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
     </button>
   </div>
@@ -590,178 +358,200 @@
 
 <main id="main-content">
 
-<!-- ── Hero ── -->
-<section class="hero-partners">
-  <div class="hero-grid"></div>
-  <div class="hero-inner">
+<!-- Hero -->
+<section class="hero">
+  <div class="hero-grid" aria-hidden="true"></div>
+  <div class="hero-inner-wrap">
     <div class="hero-label reveal">Early Partnerships</div>
-    <h1 class="reveal reveal-delay-1">Partner with PublicPath</h1>
-    <p class="reveal reveal-delay-2">We're building the pipeline that connects motivated students and early-career candidates to government careers. If you work with students, run a fellowship program, or support public sector workforce development, let's work together.</p>
+    <h1 class="reveal reveal-delay-1">Build the pipeline with <em>PublicPath</em></h1>
+    <p class="reveal reveal-delay-2">We're connecting motivated students and early-career candidates to government careers. If you work with students, run a fellowship, or support public sector hiring — let's work together.</p>
     <div class="hero-actions reveal reveal-delay-3">
-      <a href="mailto:hello@publicpath.com" class="btn btn-primary">Get in touch</a>
-      <a href="#universities" class="btn btn-secondary">Learn more ↓</a>
+      <a href="mailto:hello@publicpath.com" class="btn btn-primary">Get in touch &rarr;</a>
+      <a href="#who-we-work-with" class="btn btn-secondary">See who we partner with</a>
     </div>
   </div>
 </section>
 
-<!-- ── Stats Band ── -->
+<!-- Stats -->
 <div class="stats-band">
-  <div class="stats-band-inner">
-    <div class="sb-stat reveal">
-      <div class="sb-num">20<span class="sb-accent">M+</span></div>
-      <div class="sb-label">Public sector jobs in the U.S.<br>waiting to be filled by the next generation</div>
+  <div class="stats-inner">
+    <div class="stat-col reveal">
+      <div class="stat-num">20<em>M+</em></div>
+      <div class="stat-label">Public sector jobs in the U.S. waiting to be filled by the next generation</div>
     </div>
-    <div class="sb-stat reveal reveal-delay-1">
-      <div class="sb-num"><span class="sb-accent">67</span>%</div>
-      <div class="sb-label">Of young people want to work<br>in public service at some point</div>
+    <div class="stat-col reveal reveal-delay-1">
+      <div class="stat-num"><em>67</em>%</div>
+      <div class="stat-label">Of young people want to work in public service at some point in their careers</div>
     </div>
-    <div class="sb-stat reveal reveal-delay-2">
-      <div class="sb-num">2<span class="sb-accent">%</span></div>
-      <div class="sb-label">Of government workers are under 30.<br>The pipeline is broken. We're fixing it.</div>
+    <div class="stat-col reveal reveal-delay-2">
+      <div class="stat-num">2<em>%</em></div>
+      <div class="stat-label">Of government workers are under 30. The pipeline is broken. We're fixing it.</div>
     </div>
   </div>
 </div>
 
-<!-- ── Section 1: Universities ── -->
+<!-- Who we work with -->
+<section class="who-section" id="who-we-work-with">
+  <div class="who-header reveal">
+    <div class="section-tag">Who we work with</div>
+    <h2>Built for the public service ecosystem</h2>
+    <p>We partner with organizations that share our belief: access to public sector careers should not depend on who you know.</p>
+  </div>
+  <div class="who-grid">
+
+    <div class="who-card reveal-scale">
+      <div class="who-card-top" style="background:linear-gradient(135deg,#EFF6FF,#DBEAFE);">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="#1D4ED8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 10L12 6 2 10l10 4 10-4z"/><path d="M6 12v5c0 1.66 2.69 3 6 3s6-1.34 6-3v-5"/><line x1="22" y1="10" x2="22" y2="15"/></svg>
+      </div>
+      <div class="who-card-body">
+        <span class="who-tag" style="background:#EFF6FF;color:#1D4ED8;">Universities</span>
+        <h3>Career Services Offices</h3>
+        <p>Give your students a direct path to government careers — curated roles and plain-English guidance at no cost to your office.</p>
+      </div>
+    </div>
+
+    <div class="who-card reveal-scale reveal-delay-1">
+      <div class="who-card-top" style="background:linear-gradient(135deg,#F5F3FF,#EDE9FE);">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="#6D28D9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+      </div>
+      <div class="who-card-body">
+        <span class="who-tag" style="background:#F5F3FF;color:#6D28D9;">Fellowships</span>
+        <h3>Fellowship Programs</h3>
+        <p>Reach motivated early-career candidates already committed to public service — surfaced alongside curated government roles.</p>
+      </div>
+    </div>
+
+    <div class="who-card reveal-scale reveal-delay-2">
+      <div class="who-card-top" style="background:linear-gradient(135deg,#ECFDF5,#D1FAE5);">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="#047857" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="9" width="18" height="12" rx="1"/><path d="M3 9l9-6 9 6"/><line x1="3" y1="21" x2="21" y2="21"/><line x1="8" y1="9" x2="8" y2="21"/><line x1="16" y1="9" x2="16" y2="21"/><line x1="12" y1="9" x2="12" y2="21"/></svg>
+      </div>
+      <div class="who-card-body">
+        <span class="who-tag" style="background:#ECFDF5;color:#047857;">Agencies</span>
+        <h3>Government Agencies</h3>
+        <p>Get hard-to-fill entry-level roles in front of an audience that has already committed to a public sector career path.</p>
+      </div>
+    </div>
+
+    <div class="who-card reveal-scale reveal-delay-3">
+      <div class="who-card-top" style="background:linear-gradient(135deg,#FFF7ED,#FFEDD5);">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="#C2410C" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>
+      </div>
+      <div class="who-card-body">
+        <span class="who-tag" style="background:#FFF7ED;color:#C2410C;">Campaigns</span>
+        <h3>Campaigns &amp; Civic Orgs</h3>
+        <p>Connect with motivated early-career talent ready to work on campaigns, coordinating committees, and civic initiatives.</p>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- Universities -->
 <section class="partner-section white" id="universities">
-  <div class="partner-inner">
-    <div class="section-label reveal">For Universities</div>
-    <h2 class="reveal reveal-delay-1">For universities and career services offices</h2>
-
-    <div class="partner-2col">
-      <div class="partner-copy reveal-left reveal-delay-1">
-        <p>Career services offices work hard to connect students to opportunities, but government careers are notoriously difficult to navigate, and most offices don't have the specialized knowledge to guide students through the process.</p>
-        <p>PublicPath is designed to fill that gap. We aggregate hard-to-find government roles, explain what they actually require, and give students a clear path from interest to application, without requiring insider knowledge or connections.</p>
-        <p>As a university partner, your students get early access to curated opportunities across federal, state, and local government, filtered for early-career candidates and accompanied by plain-English guidance on eligibility and next steps.</p>
-        <p>There's no cost to your students or your office. We're in early development and actively building our founding university partnerships. If you work with students who are interested in public service, we'd love to connect.</p>
+  <div class="partner-wrap">
+    <div class="partner-split">
+      <div class="partner-visual pv-universities reveal-left">
+        <div class="partner-visual-icon">
+          <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 10L12 6 2 10l10 4 10-4z"/><path d="M6 12v5c0 1.66 2.69 3 6 3s6-1.34 6-3v-5"/><line x1="22" y1="10" x2="22" y2="15"/></svg>
+        </div>
+        <div>
+          <div class="partner-visual-label">For Universities &amp;<br>Career Services</div>
+          <div class="partner-visual-sub">No cost to your office or students</div>
+        </div>
       </div>
-
-      <div class="partner-card reveal-right reveal-delay-2">
-        <h3>Interested in partnering?</h3>
-        <p>Connect your students to curated government opportunities and navigation support, at no cost.</p>
-        <a href="mailto:hello@publicpath.com" class="btn btn-primary">Get in touch</a>
-        <p class="form-note">Free for students and university partners.</p>
+      <div class="partner-copy reveal-right reveal-delay-1">
+        <div class="section-tag">Universities</div>
+        <h2>Help your students find careers in government</h2>
+        <p>Career services offices work hard to connect students to opportunities, but government careers are notoriously difficult to navigate. Most offices don't have the specialized knowledge to guide students through the federal hiring process.</p>
+        <p>PublicPath fills that gap. We aggregate hard-to-find government roles across federal, state, and local government, filtered for early-career candidates and paired with plain-English guidance on eligibility and next steps.</p>
+        <ul class="partner-benefits">
+          <li>Curated job listings filtered for early-career candidates — no noise</li>
+          <li>Plain-English guides on federal resumes, timelines, and special hiring paths</li>
+          <li>Weekly digest your students can subscribe to directly</li>
+          <li>Free for your students and your office — always</li>
+        </ul>
+        <a href="mailto:hello@publicpath.com" class="btn btn-primary">Partner with us &rarr;</a>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ── Section 2: Fellowships ── -->
+<!-- Fellowships -->
 <section class="partner-section paper" id="fellowships">
-  <div class="partner-inner">
-    <div class="section-label reveal">For Fellowships &amp; Civic Orgs</div>
-    <h2 class="reveal reveal-delay-1">For fellowship programs and civic organizations</h2>
-
-    <div class="partner-2col">
-      <div class="partner-copy reveal-left reveal-delay-1">
-        <p>Fellowship programs and civic organizations are some of the most important on-ramps into public service, but too many qualified candidates never find them. Awareness is a persistent challenge across the sector.</p>
-        <p>PublicPath surfaces fellowships and civic opportunities alongside traditional government roles, putting your program in front of motivated, early-career candidates who are actively looking for a way into public service.</p>
-        <p>We also help candidates understand what fellowships like yours actually involve: the application process, timeline expectations, and what a strong candidate looks like. The people who reach you will be better prepared and more likely to succeed.</p>
-        <p>Whether you run a paid fellowship, a leadership development program, or a civic engagement initiative, we'd like to understand what you're building and explore how we can help expand your reach to the candidates who need you most.</p>
+  <div class="partner-wrap">
+    <div class="partner-split flip">
+      <div class="partner-visual pv-fellowships reveal-right">
+        <div class="partner-visual-icon">
+          <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+        </div>
+        <div>
+          <div class="partner-visual-label">For Fellowship<br>Programs</div>
+          <div class="partner-visual-sub">Expand your candidate reach</div>
+        </div>
       </div>
-
-      <div class="partner-card reveal-right reveal-delay-2">
-        <h3>Interested in partnering?</h3>
-        <p>Reach motivated early-career candidates who are actively looking for pathways into public service.</p>
-        <a href="mailto:hello@publicpath.com" class="btn btn-primary">Get in touch</a>
-        <p class="form-note">Free for students and university partners.</p>
+      <div class="partner-copy reveal-left reveal-delay-1">
+        <div class="section-tag">Fellowships &amp; Civic Orgs</div>
+        <h2>Put your program in front of the right candidates</h2>
+        <p>Fellowship programs and civic organizations are some of the most important on-ramps into public service — but too many qualified candidates never find them. Awareness is a persistent challenge across the sector.</p>
+        <p>PublicPath surfaces fellowships alongside traditional government roles, putting your program in front of motivated, early-career candidates actively looking for a way in.</p>
+        <ul class="partner-benefits">
+          <li>Featured placement alongside curated government job listings</li>
+          <li>Candidates arrive pre-informed about your application process and timeline</li>
+          <li>Reach people who have self-selected into public service — not generic job seekers</li>
+          <li>Works for paid fellowships, leadership programs, and civic initiatives</li>
+        </ul>
+        <a href="mailto:hello@publicpath.com" class="btn btn-primary">Partner with us &rarr;</a>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ── Section 3: Employers & Job Sources ── -->
+<!-- Employers -->
 <section class="partner-section white" id="employers">
-  <div class="partner-inner">
-    <div class="section-label reveal">For Employers &amp; Agencies</div>
-    <h2 class="reveal reveal-delay-1">Government agencies and civic employers</h2>
-
-    <div class="partner-2col">
-      <div class="partner-copy reveal-left reveal-delay-1">
-        <p>PublicPath works with government agencies, campaigns, and civic organizations that are actively hiring early-career talent. We surface your open roles to a curated audience of motivated candidates who have already self-selected into public service careers.</p>
-        <p>Our platform is especially effective for roles that are hard to fill through traditional channels: entry-level policy positions, program coordinators, digital communications roles, and fellowships that don't get the visibility they deserve on generic job boards.</p>
-        <p>We also maintain a "From our network" section in our weekly digest — a curated list of opportunities shared by contacts in the field. If you have roles you'd like us to flag for our pilot cohort, reach out.</p>
-      </div>
-
-      <div class="partner-card reveal-right reveal-delay-2">
-        <h3>List your roles with us</h3>
-        <p>Get your open positions in front of early-career candidates who are ready to work in government.</p>
-        <a href="mailto:hello@publicpath.com" class="btn btn-primary">Get in touch</a>
-        <p class="form-note">Currently accepting founding employer partners.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ── Partner Type Grid ── -->
-<section class="ptype-section">
-  <div class="ptype-inner">
-    <div class="ptype-header reveal">
-      <div style="font-size:.72rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--red);margin-bottom:10px;">Who we work with</div>
-      <h2>Built for the public service ecosystem.</h2>
-      <p>We partner with organizations that share our belief that access to public sector careers should not depend on who you know.</p>
-    </div>
-    <div class="ptype-grid">
-      <div class="pt-card reveal-scale">
-        <div class="pt-img" style="background:linear-gradient(135deg,#EFF6FF,#DBEAFE);">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="#1D4ED8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 10L12 6 2 10l10 4 10-4z"/><path d="M6 12v5c0 1.66 2.69 3 6 3s6-1.34 6-3v-5"/><line x1="22" y1="10" x2="22" y2="15"/></svg>
+  <div class="partner-wrap">
+    <div class="partner-split">
+      <div class="partner-visual pv-employers reveal-left">
+        <div class="partner-visual-icon">
+          <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="9" width="18" height="12" rx="1"/><path d="M3 9l9-6 9 6"/><line x1="3" y1="21" x2="21" y2="21"/><line x1="8" y1="9" x2="8" y2="21"/><line x1="16" y1="9" x2="16" y2="21"/><line x1="12" y1="9" x2="12" y2="21"/></svg>
         </div>
-        <div class="pt-body">
-          <span class="pt-tag" style="background:#EFF6FF;color:#1D4ED8;">Universities</span>
-          <h3>Career Services Offices</h3>
-          <p>We give your students a direct path to government careers with curated listings and plain-English guidance — at no cost to your office.</p>
+        <div>
+          <div class="partner-visual-label">For Agencies &amp;<br>Employers</div>
+          <div class="partner-visual-sub">Reach pre-committed candidates</div>
         </div>
       </div>
-      <div class="pt-card reveal-scale reveal-delay-1">
-        <div class="pt-img" style="background:linear-gradient(135deg,#F5F3FF,#EDE9FE);">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="#6D28D9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
-        </div>
-        <div class="pt-body">
-          <span class="pt-tag" style="background:#F5F3FF;color:#6D28D9;">Fellowships</span>
-          <h3>Fellowship Programs</h3>
-          <p>Reach motivated early-career candidates already self-selected into public service. We surface your program alongside curated government roles.</p>
-        </div>
-      </div>
-      <div class="pt-card reveal-scale reveal-delay-2">
-        <div class="pt-img" style="background:linear-gradient(135deg,#ECFDF5,#D1FAE5);">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="#047857" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="9" width="18" height="12" rx="1"/><path d="M3 9l9-6 9 6"/><line x1="3" y1="21" x2="21" y2="21"/><line x1="8" y1="9" x2="8" y2="21"/><line x1="16" y1="9" x2="16" y2="21"/><line x1="12" y1="9" x2="12" y2="21"/></svg>
-        </div>
-        <div class="pt-body">
-          <span class="pt-tag" style="background:#ECFDF5;color:#047857;">Agencies</span>
-          <h3>Government Agencies</h3>
-          <p>Get hard-to-fill entry-level roles in front of an audience that has already committed to a public sector career path.</p>
-        </div>
-      </div>
-      <div class="pt-card reveal-scale reveal-delay-3">
-        <div class="pt-img" style="background:linear-gradient(135deg,#FFF7ED,#FFEDD5);">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="#C2410C" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>
-        </div>
-        <div class="pt-body">
-          <span class="pt-tag" style="background:#FFF7ED;color:#C2410C;">Campaigns</span>
-          <h3>Campaigns &amp; Civic Orgs</h3>
-          <p>Campaigns, coordinating committees, and civic organizations looking to connect with motivated early-career talent ready to work.</p>
-        </div>
+      <div class="partner-copy reveal-right reveal-delay-1">
+        <div class="section-tag">Agencies &amp; Employers</div>
+        <h2>Get your open roles in front of candidates who are ready</h2>
+        <p>PublicPath works with government agencies, campaigns, and civic organizations that are actively hiring early-career talent. Our audience has already self-selected into public service — they're not browsing generic job boards.</p>
+        <p>We're especially effective for roles that struggle to gain visibility through traditional channels: entry-level policy positions, program coordinators, communications roles, and fellowships.</p>
+        <ul class="partner-benefits">
+          <li>Featured in the weekly digest sent to our subscriber base</li>
+          <li>"From our network" section spotlights roles flagged by our contacts</li>
+          <li>Ideal for entry-level and early-career roles that need targeted reach</li>
+          <li>Currently accepting founding employer partners</li>
+        </ul>
+        <a href="mailto:hello@publicpath.com" class="btn btn-primary">List your roles &rarr;</a>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ── Quote Band ── -->
-<div class="quote-band">
+<!-- Quote -->
+<section class="quote-section">
   <blockquote class="reveal">"The people who run our cities and agencies tomorrow are looking for a way in <em>today.</em>"</blockquote>
   <cite class="reveal reveal-delay-1">— PublicPath Mission</cite>
-</div>
+</section>
 
-<!-- ── Closing banner ── -->
-<div class="closing-banner">
+<!-- CTA -->
+<section class="cta-section">
   <p class="reveal">PublicPath is in early development and actively seeking founding partners.</p>
   <h2 class="reveal reveal-delay-1">Let's build this together.</h2>
   <a href="mailto:hello@publicpath.com" class="btn btn-primary reveal reveal-delay-2">Get in touch &rarr;</a>
-</div>
+</section>
 
 </main>
 
-<!-- FOOTER SUBSCRIBE -->
+<!-- Footer subscribe -->
 <div class="footer-subscribe">
   <div class="footer-subscribe-inner">
     <div>
@@ -777,7 +567,7 @@
 
 <footer class="footer">
   <div class="footer-inner">
-    <a href="index.html" style="display:inline-flex;align-items:center;gap:10px;text-decoration:none;margin-bottom:4px;">
+    <a href="index.html" style="display:inline-flex;align-items:center;gap:10px;text-decoration:none;">
       <span style="font-family:'Alfa Slab One',Georgia,serif;font-size:1.2rem;font-weight:400;color:#fff;letter-spacing:-.01em;">PublicPath</span>
       <svg width="22" height="22" viewBox="0 0 48 48" aria-hidden="true"><rect width="48" height="48" fill="#F03B2F"/><g stroke="#fff" stroke-width="6.5" stroke-linecap="round" stroke-linejoin="round" fill="none"><line x1="12" y1="36" x2="36" y2="12"/><polyline points="21,12 36,12 36,27"/></g></svg>
     </a>
@@ -788,58 +578,51 @@
       <li><a href="partners.html">Partners</a></li>
       <li><a href="index.html#founder">About</a></li>
     </ul>
-    <div style="display:flex;gap:14px;margin-bottom:8px;">
-      <a href="https://twitter.com/publicpath" aria-label="Twitter" style="color:rgba(255,255,255,0.4);transition:color .2s;" onmouseenter="this.style.color='#fff'" onmouseleave="this.style.color='rgba(255,255,255,0.4)'"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M22.46 6c-.77.35-1.6.58-2.46.69.88-.53 1.56-1.37 1.88-2.38-.83.5-1.75.85-2.72 1.05C18.37 4.5 17.26 4 16 4c-2.35 0-4.27 1.92-4.27 4.29 0 .34.04.67.11.98C8.28 9.09 5.11 7.38 3 4.79c-.37.63-.58 1.37-.58 2.15 0 1.49.75 2.81 1.91 3.56-.71 0-1.37-.2-1.95-.5v.03c0 2.08 1.48 3.82 3.44 4.21a4.22 4.22 0 0 1-1.93.07 4.28 4.28 0 0 0 4 2.98 8.521 8.521 0 0 1-5.33 1.84c-.34 0-.68-.02-1.02-.06C3.44 20.29 5.7 21 8.12 21 16 21 20.33 14.46 20.33 8.79c0-.19 0-.37-.01-.56.84-.6 1.56-1.36 2.14-2.23z"/></svg></a>
-      <a href="https://linkedin.com/company/publicpath" aria-label="LinkedIn" style="color:rgba(255,255,255,0.4);transition:color .2s;" onmouseenter="this.style.color='#fff'" onmouseleave="this.style.color='rgba(255,255,255,0.4)'"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6zM2 9h4v12H2z"/><circle cx="4" cy="4" r="2"/></svg></a>
+    <div class="footer-social">
+      <a href="https://twitter.com/publicpath" aria-label="Twitter">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M22.46 6c-.77.35-1.6.58-2.46.69.88-.53 1.56-1.37 1.88-2.38-.83.5-1.75.85-2.72 1.05C18.37 4.5 17.26 4 16 4c-2.35 0-4.27 1.92-4.27 4.29 0 .34.04.67.11.98C8.28 9.09 5.11 7.38 3 4.79c-.37.63-.58 1.37-.58 2.15 0 1.49.75 2.81 1.91 3.56-.71 0-1.37-.2-1.95-.5v.03c0 2.08 1.48 3.82 3.44 4.21a4.22 4.22 0 0 1-1.93.07 4.28 4.28 0 0 0 4 2.98 8.521 8.521 0 0 1-5.33 1.84c-.34 0-.68-.02-1.02-.06C3.44 20.29 5.7 21 8.12 21 16 21 20.33 14.46 20.33 8.79c0-.19 0-.37-.01-.56.84-.6 1.56-1.36 2.14-2.23z"/></svg>
+      </a>
+      <a href="https://linkedin.com/company/publicpath" aria-label="LinkedIn">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6zM2 9h4v12H2z"/><circle cx="4" cy="4" r="2"/></svg>
+      </a>
+      <a href="https://instagram.com/publicpath" aria-label="Instagram">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+      </a>
     </div>
-    <div class="footer-copy">&copy; 2026 PublicPath. Expanding access to public sector careers.</div>
+    <div class="footer-copy">&copy; 2026 PublicPath. Expanding access to public sector careers. Icons by <a href="https://www.streamlinehq.com" style="color:inherit">Streamline</a>.</div>
   </div>
 </footer>
 
 <script>
-  // ── Nav scroll state ──
+  // Nav scroll
   const nav = document.getElementById('nav');
-  window.addEventListener('scroll', () => {
-    nav.classList.toggle('scrolled', window.scrollY > 10);
-  }, { passive: true });
+  window.addEventListener('scroll', () => nav.classList.toggle('scrolled', window.scrollY > 10), { passive: true });
 
-  // ── Mobile toggle ──
+  // Mobile toggle
   const toggle = document.getElementById('mobileToggle');
   const links = document.getElementById('navLinks');
-  toggle.addEventListener('click', () => links.classList.toggle('open'));
+  toggle.addEventListener('click', () => {
+    const open = links.classList.toggle('open');
+    toggle.setAttribute('aria-expanded', open);
+  });
   links.querySelectorAll('a').forEach(a => a.addEventListener('click', () => links.classList.remove('open')));
 
-  // ── Scroll reveal (IntersectionObserver) ──
-  const revealObserver = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('is-visible');
-        revealObserver.unobserve(entry.target);
-      }
-    });
+  // Scroll reveal
+  const revealObs = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('is-visible'); revealObs.unobserve(e.target); } });
   }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+  document.querySelectorAll('.reveal,.reveal-left,.reveal-right,.reveal-scale').forEach(el => revealObs.observe(el));
 
-  document.querySelectorAll('.reveal,.reveal-left,.reveal-right,.reveal-scale').forEach(el => revealObserver.observe(el));
-
-  // Scroll progress bar
-  (function(){
-    var bar=document.getElementById('scroll-progress');
-    if(!bar)return;
-    window.addEventListener('scroll',function(){
-      var t=document.documentElement.scrollHeight-window.innerHeight;
-      bar.style.width=(t>0?(window.scrollY/t)*100:0)+'%';
-    },{passive:true});
-  })();
+  // Scroll progress
+  const bar = document.getElementById('scroll-progress');
+  window.addEventListener('scroll', () => {
+    const t = document.documentElement.scrollHeight - window.innerHeight;
+    bar.style.width = (t > 0 ? (window.scrollY / t) * 100 : 0) + '%';
+  }, { passive: true });
 
   // Cursor glow
-  (function(){
-    var glow=document.getElementById('cursorGlow');
-    if(!glow)return;
-    document.addEventListener('mousemove',function(e){
-      glow.style.left=e.clientX+'px';
-      glow.style.top=e.clientY+'px';
-    },{passive:true});
-  })();
+  const glow = document.getElementById('cursorGlow');
+  document.addEventListener('mousemove', e => { glow.style.left = e.clientX + 'px'; glow.style.top = e.clientY + 'px'; }, { passive: true });
 </script>
 </body>
 </html>
