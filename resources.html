@@ -356,6 +356,7 @@
       max-width: 800px;
       margin-left: auto;
       margin-right: auto;
+      text-align: center;
     }
 
     /* Two-column layout for section body */
@@ -372,7 +373,7 @@
     /* ── Tip cards grid ── */
     .tip-cards-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      grid-template-columns: repeat(3, 1fr);
       gap: 16px;
       margin-top: 8px;
       text-align: left;
@@ -703,10 +704,13 @@
 
     /* ── Responsive ── */
 
-    /* Tablet: featured cards 2-col */
+    /* Tablet: featured cards 2-col, tip cards 2-col */
     @media (max-width: 1024px) {
       .feat-guides-grid {
         grid-template-columns: 1fr 1fr;
+      }
+      .tip-cards-grid {
+        grid-template-columns: repeat(2, 1fr);
       }
       .section-2col,
       .section-2col--wide-left {
