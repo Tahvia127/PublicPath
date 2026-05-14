@@ -1406,10 +1406,15 @@
       .founder-card  { grid-template-columns: 220px 1fr; }
       .signup-2col   { grid-template-columns: 1fr; gap: 40px; }
       .advisors-grid { grid-template-columns: repeat(2, 1fr) !important; }
+      .how-step      { padding: 28px 20px; }
     }
 
     @media (max-width: 600px) {
       .solution-grid { grid-template-columns: 1fr; }
+      .hero-actions  { flex-direction: column; align-items: flex-start; }
+      .hero-actions .btn { width: 100%; justify-content: center; }
+      .footer-sub-form input { min-width: 0; width: 100%; }
+      .footer-sub-form { flex-direction: column; }
     }
 
     /* ═══════════════════════════════════
@@ -1465,6 +1470,14 @@
       .footer-inner { flex-direction: column; text-align: center; }
       .footer-links { flex-wrap: wrap; justify-content: center; }
       .advisors-grid { grid-template-columns: 1fr !important; }
+      html { font-size: 16px; }
+      .hero { padding: 110px 20px 72px; }
+      .logo-wordmark { font-size: 1.5rem; }
+      .section-inner { padding-left: 20px; padding-right: 20px; }
+      .about-mission { padding: 32px 24px; border-radius: 14px; }
+      .quote-block   { padding: 22px 22px; }
+      .quote-block p { font-size: 0.95rem; }
+      .team-grid     { grid-template-columns: repeat(2, 1fr); }
     }
 
     /* ═══════════════════════════════════
@@ -1473,6 +1486,12 @@
     @media (max-width: 480px) {
       .team-grid { grid-template-columns: 1fr; }
       .founder-image-frame { max-width: 240px; }
+      .hero { padding: 96px 16px 64px; }
+      .demand-stat { padding: 28px 20px; }
+      .drop-card { padding: 20px 16px; }
+      .solution-card { padding: 28px 22px; }
+      #ce-panel { width: calc(100vw - 32px); right: 16px; bottom: 76px; }
+      #ce-trigger { right: 16px; bottom: 16px; }
     }
   </style>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>

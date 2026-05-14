@@ -719,13 +719,17 @@
       .nav-links { display: none; }
       .nav-links.open {
         display: flex; flex-direction: column;
-        position: absolute; top: 64px; left: 0; right: 0;
+        position: fixed; top: 64px; left: 0; right: 0;
         background: var(--navy-bg);
         border-bottom: 1px solid rgba(255,255,255,.07);
         padding: 16px 24px; gap: 14px;
         box-shadow: 0 12px 32px rgba(0,0,0,.3);
       }
       .mobile-toggle { display: block; }
+      html { font-size: 16px; }
+      .hero-resources { padding: 96px 20px 56px; }
+      .hero-resources h1 { font-size: clamp(2rem, 8vw, 2.8rem); }
+      .hero-resources p { font-size: 0.95rem; }
 
       .feat-guides-grid {
         grid-template-columns: 1fr;
