@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Public Path: Resources &amp; Guides</title>
+  <title>PublicPath: Resources &amp; Guides</title>
   <meta name="description" content="Everything you need to know about applying to government jobs. Federal resume tips, hiring timelines, clearance basics, and more.">
   <link rel="canonical" href="https://publicpath.com/resources">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -18,8 +18,8 @@
       --navy-deep: #080E38;
       --red: #F03B2F;
       --red-hover: #C93026;
-      --paper: #F5F2EA;
-      --cream: #EDE9DF;
+      --paper: #F8FAFC;
+      --cream: #EEF2F7;
       --text-primary: #1E293B;
       --text-secondary: #475569;
       --text-muted: #64748B;
@@ -33,7 +33,7 @@
     body {
       font-family: var(--font-body);
       color: var(--text-primary);
-      background: var(--paper);
+      background: #fff;
       line-height: 1.65;
       -webkit-font-smoothing: antialiased;
     }
@@ -224,7 +224,7 @@
       border-radius: 16px;
       overflow: hidden;
       border: 1px solid var(--border);
-      background: var(--paper);
+      background: #fff;
       transition: transform .25s, box-shadow .25s;
       text-decoration: none;
       display: block;
@@ -304,10 +304,10 @@
     }
     /* Alternating backgrounds */
     .guide-section:nth-child(odd) .guide-section-wrap  { background: #fff; }
-    .guide-section:nth-child(even) .guide-section-wrap { background: var(--paper); }
+    .guide-section:nth-child(even) .guide-section-wrap { background: #fff; }
 
     /* Override for specific sections if needed */
-    .guide-section--paper .guide-section-wrap { background: var(--paper); }
+    .guide-section--paper .guide-section-wrap { background: #fff; }
     .guide-section--white .guide-section-wrap { background: #fff; }
 
     .guide-section-inner {
@@ -388,7 +388,7 @@
     /* When tip-card is inside a white section, give it paper background */
     .guide-section--white .tip-card,
     .guide-section:nth-child(odd) .tip-card {
-      background: var(--paper);
+      background: #fff;
     }
     .guide-section--paper .tip-card,
     .guide-section:nth-child(even) .tip-card {
@@ -441,7 +441,7 @@
     /* When timeline is on white background, use paper */
     .guide-section--white .timeline-item,
     .guide-section:nth-child(odd) .timeline-item {
-      background: var(--paper);
+      background: #fff;
     }
     .timeline-item:hover {
       transform: translateY(-3px);
@@ -481,7 +481,7 @@
     }
     .guide-section--white .link-card,
     .guide-section:nth-child(odd) .link-card {
-      background: var(--paper);
+      background: #fff;
     }
     .link-card::after {
       content: '↗';
@@ -564,7 +564,7 @@
     /* ── CTA box ── */
     .cta-section {
       padding: clamp(56px, 6vw, 96px) clamp(20px, 4vw, 48px);
-      background: var(--paper);
+      background: #fff;
     }
     .cta-section-inner {
       max-width: 1440px;
@@ -610,7 +610,7 @@
 
     /* ── Footer subscribe ── */
     .footer-subscribe {
-      background: var(--paper);
+      background: #fff;
       border-top: 1px solid var(--border);
       padding: 40px clamp(20px, 4vw, 48px);
     }
@@ -763,7 +763,7 @@
 <nav class="nav" id="nav" aria-label="Primary navigation">
   <div class="nav-inner">
     <a href="index.html" class="logo">
-      <span class="logo-wordmark">Public Path</span>
+      <span class="logo-wordmark">PublicPath</span>
       <span class="logo-icon">
         <svg width="26" height="26" viewBox="0 0 48 48" aria-hidden="true">
           <rect width="48" height="48" fill="#F03B2F"/>

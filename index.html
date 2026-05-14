@@ -17,10 +17,10 @@
       --navy-deep: #080E38;
       --red: #F03B2F;
       --red-hover: #C93026;
-      --paper: #F5F2EA;
-      --cream: #EDE9DF;
+      --paper: #F8FAFC;
+      --cream: #EEF2F7;
       --sand: #E2DDD3;
-      --warm-white: #F5F2EA;
+      --warm-white: #F8FAFC;
       --text-primary: #111827;
       --text-secondary: #4A506A;
       --text-muted: #6B7280;
@@ -113,7 +113,7 @@
 
     .logo-wordmark {
       font-family: 'Alfa Slab One', Georgia, serif;
-      font-size: 1.45rem;
+      font-size: 2rem;
       font-weight: 400;
       color: #fff;
       letter-spacing: -0.01em;
@@ -192,6 +192,9 @@
     .hero {
       padding: 160px clamp(20px, 4vw, 48px) 120px;
       background: var(--navy-bg);
+      background-image: url('https://images.unsplash.com/photo-1529156069898-49953e39b3ac?auto=format&fit=crop&w=1920&q=80');
+      background-size: cover;
+      background-position: center top;
       position: relative;
       overflow: hidden;
     }
@@ -199,11 +202,10 @@
     .hero::before {
       content: '';
       position: absolute;
-      top: -300px; right: -200px;
-      width: 700px; height: 700px;
-      border-radius: 50%;
-      background: radial-gradient(circle, rgba(28,46,107,0.6) 0%, transparent 70%);
+      inset: 0;
+      background: rgba(8, 14, 56, 0.82);
       pointer-events: none;
+      z-index: 0;
     }
 
     .hero::after {
@@ -214,6 +216,7 @@
       border-radius: 50%;
       background: radial-gradient(circle, rgba(232,53,39,0.12) 0%, transparent 70%);
       pointer-events: none;
+      z-index: 0;
     }
 
     .hero-grid {
@@ -224,6 +227,7 @@
         linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
       background-size: 80px 80px;
       pointer-events: none;
+      z-index: 0;
     }
 
     .hero-inner {
@@ -295,6 +299,8 @@
       gap: 16px;
       flex-wrap: wrap;
       animation: fadeUp 0.6s ease 0.3s both;
+      position: relative;
+      z-index: 1;
     }
 
     @keyframes fadeUp {
@@ -348,6 +354,7 @@
       position: absolute;
       border-radius: 50%;
       pointer-events: none;
+      z-index: 0;
     }
     .hero-orb-1 {
       width: 340px; height: 340px;
@@ -389,11 +396,13 @@
       border-top: 1px solid rgba(255,255,255,0.07);
       mask-image: linear-gradient(90deg, transparent, black 8%, black 92%, transparent);
       -webkit-mask-image: linear-gradient(90deg, transparent, black 8%, black 92%, transparent);
+      position: relative;
+      z-index: 1;
     }
     .hero-ticker-track {
       display: flex;
       gap: 0;
-      animation: tickerScroll 22s linear infinite;
+      animation: tickerScroll 50s linear infinite;
       width: max-content;
     }
     .hero-ticker-item {
@@ -426,6 +435,7 @@
       bottom: 28px;
       left: 50%;
       transform: translateX(-50%);
+      z-index: 1;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -538,6 +548,7 @@
       color: var(--text-secondary);
       max-width: 600px;
       line-height: 1.72;
+      margin-left: 0;
     }
 
     /* ── SECTION NUMBERING ── */
@@ -620,7 +631,7 @@
     .demand-stat.is-visible { transform: none !important; }
 
     /* ── PROBLEM ── */
-    .problem { background: var(--paper); }
+    .problem { background: #fff; }
 
     .drop-list {
       display: flex;
@@ -756,7 +767,7 @@
     /* ── SOLUTION ── */
     .solution-grid {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: repeat(4, 1fr);
       gap: 24px;
       margin-top: 48px;
     }
@@ -1394,6 +1405,11 @@
       .demand-grid   { grid-template-columns: repeat(2, 1fr); }
       .founder-card  { grid-template-columns: 220px 1fr; }
       .signup-2col   { grid-template-columns: 1fr; gap: 40px; }
+      .advisors-grid { grid-template-columns: repeat(2, 1fr) !important; }
+    }
+
+    @media (max-width: 600px) {
+      .solution-grid { grid-template-columns: 1fr; }
     }
 
     /* ═══════════════════════════════════
@@ -1448,6 +1464,7 @@
       .footer-subscribe-inner { flex-direction: column; align-items: flex-start; }
       .footer-inner { flex-direction: column; text-align: center; }
       .footer-links { flex-wrap: wrap; justify-content: center; }
+      .advisors-grid { grid-template-columns: 1fr !important; }
     }
 
     /* ═══════════════════════════════════
@@ -1479,9 +1496,9 @@
   <nav class="nav" id="nav" aria-label="Primary navigation">
     <div class="nav-inner">
       <a href="index.html" class="logo">
-        <span class="logo-wordmark">Public Path</span>
+        <span class="logo-wordmark">PublicPath</span>
         <span class="logo-icon">
-          <svg width="28" height="28" viewBox="0 0 48 48" aria-hidden="true">
+          <svg width="36" height="36" viewBox="0 0 48 48" aria-hidden="true">
             <rect width="48" height="48" fill="#F03B2F"/>
             <g stroke="#fff" stroke-width="6.5" stroke-linecap="round" stroke-linejoin="round" fill="none">
               <line x1="12" y1="36" x2="36" y2="12"/>
@@ -1516,7 +1533,6 @@
     <div class="hero-orb hero-orb-2" aria-hidden="true"></div>
     <div class="hero-orb hero-orb-3" aria-hidden="true"></div>
     <div class="hero-inner">
-      <div class="hero-label">Now live &nbsp;·&nbsp; Chicago &nbsp;·&nbsp; DC &nbsp;·&nbsp; New York &nbsp;·&nbsp; California</div>
       <h1>Your path into <em>public service</em> starts here.</h1>
       <p>PublicPath helps students and early-career candidates discover, navigate, and land roles in government, from city hall to Capitol Hill.</p>
       <div class="hero-actions">
@@ -1598,22 +1614,22 @@
   <section class="demand" id="demand">
     <div class="section-inner">
       <div class="section-label reveal"><span class="section-num section-num-dark">01 &nbsp;/&nbsp;</span> Why Now</div>
-      <h2 class="section-title reveal reveal-delay-1">Young people want to serve. The pathways are broken.</h2>
+      <h2 class="section-title reveal reveal-delay-1">Young people want impact. The pathways don't exist.</h2>
       <div class="demand-grid">
         <div class="demand-stat reveal">
           <div class="demand-num red" data-count="67" data-suffix="%">67%</div>
-          <div class="demand-desc">of young people say they want to work in public service at some point in their career</div>
+          <div class="demand-desc">of young people see government careers as a way to make an impact</div>
         </div>
         <div class="demand-stat reveal reveal-delay-1">
-          <div class="demand-num" data-count="51" data-suffix="%">51%</div>
-          <div class="demand-desc">of Millennials &amp; Gen Z would consider a government career, if they knew how to get started</div>
+          <div class="demand-num" data-count="70" data-suffix="%">70%</div>
+          <div class="demand-desc">don't know where to start or how to break into public service</div>
         </div>
         <div class="demand-stat reveal reveal-delay-2">
-          <div class="demand-num" data-count="10" data-prefix="7–" data-suffix="%">7–10%</div>
-          <div class="demand-desc">of those who express interest actually end up in a public sector role</div>
+          <div class="demand-num" data-count="9" data-prefix="<" data-suffix="%">&lt;9%</div>
+          <div class="demand-desc">of federal government workers are under 30 — a generational gap widening every year</div>
         </div>
       </div>
-      <p class="demand-closer reveal">Demand is real. The infrastructure to convert it doesn't exist.</p>
+      <p class="demand-closer reveal">Demand is real. The infrastructure to convert it doesn't exist yet.</p>
     </div>
   </section>
 
@@ -1679,29 +1695,48 @@
       <div class="solution-grid">
         <div class="solution-card reveal-scale">
           <div class="solution-icon-wrap" aria-hidden="true">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2" d="M6 11.5c3.03757 0 5.5-2.46243 5.5-5.5S9.03757.5 6 .5.5 2.96243.5 6s2.46243 5.5 5.5 5.5Z"/><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2" d="M13.5 13.5 10 10"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
           </div>
           <div class="solution-number">01</div>
-          <h3>Curated public sector roles</h3>
-          <p>Discover local, state, and federal opportunities in one place, handpicked and filtered for early-career candidates.</p>
+          <h3>Discover</h3>
+          <p>Browse curated government and campaign roles — federal, state, and local — all in one place, filtered for early-career candidates.</p>
         </div>
         <div class="solution-card reveal-scale reveal-delay-1">
           <div class="solution-icon-wrap" aria-hidden="true">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2" d="M11.0402 1.60472c.8257-.23188 1.5869.52931 1.355 1.35498l-1.9021 6.77271c-.1036.36889-.3919.65719-.76075.76079l-6.77271 1.9021c-.82567.2318-1.58686-.5293-1.35498-1.355l1.90207-6.77273c.1036-.36889.39189-.65718.76078-.76078l6.77269-1.90207Z"/><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2" transform="rotate(45 7 7)" d="M5.146 7a1.854 1.854 0 1 0 3.708 0 1.854 1.854 0 1 0-3.708 0"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
           </div>
           <div class="solution-number">02</div>
-          <h3>Plain-English guidance</h3>
-          <p>Understand eligibility, timelines, and next steps without the jargon. We make the process clear and actionable.</p>
+          <h3>Navigate</h3>
+          <p>Step-by-step guidance on eligibility, timelines, and applications. We demystify the hiring black box so you know exactly what to do next.</p>
         </div>
         <div class="solution-card reveal-scale reveal-delay-2">
           <div class="solution-icon-wrap" aria-hidden="true">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14"><circle cx="5" cy="3.5" r="2.5" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2"/><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2" d="M.5 13.5c0-2.48528 2.01472-4.5 4.5-4.5"/><circle cx="10.5" cy="5" r="1.5" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2"/><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2" d="M8 10.5h5M10.5 8v5"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
           </div>
           <div class="solution-number">03</div>
-          <h3>No connections required</h3>
-          <p>Built for students and early-career professionals without a government network, so you can break in on your own terms.</p>
+          <h3>Match</h3>
+          <p>Personalized role recommendations based on your background and goals. Get the week's best picks delivered to your inbox every Monday.</p>
+        </div>
+        <div class="solution-card reveal-scale reveal-delay-3">
+          <div class="solution-icon-wrap" aria-hidden="true">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          <div class="solution-number">04</div>
+          <h3>Get Hired</h3>
+          <p>Direct connections to partner offices, fellowships, and campaigns. Track your applications and move from interest to offer.</p>
         </div>
       </div>
+    </div>
+  </section>
+
+  <!-- TESTIMONIAL -->
+  <section class="section" style="background:#fff;border-top:1px solid var(--border);padding-top:clamp(48px,6vw,80px);padding-bottom:clamp(48px,6vw,80px);">
+    <div class="section-inner" style="text-align:center;">
+      <div class="section-label reveal" style="justify-content:center;">Validation</div>
+      <blockquote class="reveal reveal-delay-1" style="font-family:var(--font-display);font-size:clamp(1.1rem,2.5vw,1.5rem);font-weight:400;color:var(--navy-dark);line-height:1.55;max-width:860px;margin:16px auto 20px;font-style:italic;">
+        "Securing government and political careers can be challenging for students. They have to navigate a complicated web of hiring timelines and application requirements, and it's not always easy to find the right pathway into their top-choice employer. If PublicPath can deliver strong curation of government and political roles, this would be a very attractive tool for career centers to consider."
+      </blockquote>
+      <cite class="reveal reveal-delay-2" style="font-style:normal;font-size:0.9rem;color:var(--text-muted);display:block;">— Meredith Daw, Associate Dean &amp; Executive Director of Career Advancement</cite>
     </div>
   </section>
 
@@ -1768,7 +1803,9 @@
       <!-- Founder card -->
       <div class="founder-card reveal reveal-delay-2">
         <div class="founder-card-panel">
-          <div class="founder-avatar">HQ</div>
+          <div class="founder-avatar">
+            <img src="images/hira-qureshi.jpg" alt="Hira Qureshi" onerror="this.style.display='none';this.parentElement.textContent='HQ';" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">
+          </div>
           <div>
             <div class="founder-panel-name">Hira Qureshi</div>
             <div class="founder-panel-role">Founder</div>
@@ -1844,7 +1881,47 @@
             <div class="team-card-body">
               <div class="team-card-name">Anees Amjad</div>
               <div class="team-card-title">Tech Co-lead</div>
-              <p class="team-card-bio">Harris '26 &middot; Public Sector Tech. Builds and scales the tools that connect candidates to government careers.</p>
+              <p class="team-card-bio">Harris '27 &middot; Public Sector Tech. Builds and scales the tools that connect candidates to government careers.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Advisors -->
+      <div class="team-section reveal" style="margin-top:64px;padding-top:48px;border-top:1px solid var(--border);">
+        <div class="team-section-header">
+          <div class="team-eyebrow">Advisors</div>
+          <h3 class="team-heading">People who've been in the room</h3>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px;" class="advisors-grid">
+          <div class="team-card reveal-scale">
+            <div class="team-avatar" style="background:linear-gradient(135deg,#1E3A8A,#2934A8);">
+              <span class="team-avatar-initials">LH</span>
+            </div>
+            <div class="team-card-body">
+              <div class="team-card-name">Laraib Haider</div>
+              <div class="team-card-title">Advisor</div>
+              <p class="team-card-bio">TechStars '24 &middot; White House &middot; DoD &middot; Obama for America</p>
+            </div>
+          </div>
+          <div class="team-card reveal-scale reveal-delay-1">
+            <div class="team-avatar" style="background:linear-gradient(135deg,#7C3AED,#5B21B6);">
+              <span class="team-avatar-initials">AS</span>
+            </div>
+            <div class="team-card-body">
+              <div class="team-card-name">Andrew Schreyer</div>
+              <div class="team-card-title">Advisor</div>
+              <p class="team-card-bio">City of LA &middot; EPA &middot; Biden for President &middot; Hillary for America</p>
+            </div>
+          </div>
+          <div class="team-card reveal-scale reveal-delay-2">
+            <div class="team-avatar" style="background:linear-gradient(135deg,#047857,#065F46);">
+              <span class="team-avatar-initials">BL</span>
+            </div>
+            <div class="team-card-body">
+              <div class="team-card-name">Bard Luppipold</div>
+              <div class="team-card-title">Advisor</div>
+              <p class="team-card-bio">Product @ Amazon &middot; 9+ years in tech leadership</p>
             </div>
           </div>
         </div>
@@ -1877,7 +1954,7 @@
   <footer class="footer">
     <div class="footer-inner">
       <a href="index.html" style="display:inline-flex;align-items:center;gap:10px;text-decoration:none;margin-bottom:4px;">
-        <span style="font-family:'Alfa Slab One',Georgia,serif;font-size:1.2rem;font-weight:400;color:#fff;letter-spacing:-.01em;">PublicPath</span>
+        <span style="font-family:'Alfa Slab One',Georgia,serif;font-size:1.4rem;font-weight:400;color:#fff;letter-spacing:-.01em;">PublicPath</span>
         <svg width="22" height="22" viewBox="0 0 48 48" aria-hidden="true"><rect width="48" height="48" fill="#F03B2F"/><g stroke="#fff" stroke-width="6.5" stroke-linecap="round" stroke-linejoin="round" fill="none"><line x1="12" y1="36" x2="36" y2="12"/><polyline points="21,12 36,12 36,27"/></g></svg>
       </a>
       <ul class="footer-links">
